@@ -1,0 +1,154 @@
+name: Build and Release
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        include:
+          - target: ubuntu22-amd64
+            rust_target: x86_64-unknown-linux-gnu
+          - target: centos7-amd64
+            rust_target: x86_64-unknown-linux-musl
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@1.88.0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Install Zig for cross-compilation
+        if: matrix.rust_target == 'x86_64-unknown-linux-musl'
+        uses: mlugg/setup-zig@v1
+        with:
+          version: 0.13.0
+
+      - name: Install cargo-zigbuild
+        if: matrix.rust_target == 'x86_64-unknown-linux-musl'
+        run: cargo install cargo-zigbuild
+
+      - name: Add musl target
+        if: matrix.rust_target == 'x86_64-unknown-linux-musl'
+        run: rustup target add x86_64-unknown-linux-musl
+
+      - name: Build
+        run: |
+          if [ "${{ matrix.rust_target }}" = "x86_64-unknown-linux-musl" ]; then
+            cargo zigbuild --release --target ${{ matrix.rust_target }}
+          else
+            cargo build --release
+          fi
+
+      - name: Prepare release asset
+        run: |
+          if [ "${{ matrix.rust_target }}" = "x86_64-unknown-linux-musl" ]; then
+            mv target/${{ matrix.rust_target }}/release/tokenswitch tokenswitch-${{ matrix.target }}
+          else
+            mv target/release/tokenswitch tokenswitch-${{ matrix.target }}
+          fi
+          echo "RELEASE_ASSET=tokenswitch-${{ matrix.target }}" >> $GITHUB_ENV
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: tokenswitch-${{ matrix.target }}
+          path: ${{ env.RELEASE_ASSET }}
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Prepare release files
+        run: |
+          mkdir -p release-files
+          cp artifacts/tokenswitch-ubuntu22-amd64/tokenswitch-ubuntu22-amd64 release-files/
+          cp artifacts/tokenswitch-centos7-amd64/tokenswitch-centos7-amd64 release-files/
+          ls -lh release-files/
+
+      - name: Get version from Cargo.toml
+        id: version
+        run: |
+          VERSION=$(grep '^version = ' Cargo.toml | head -1 | sed 's/version = "\(.*\)"/\1/')
+          echo "version=v${VERSION}" >> $GITHUB_OUTPUT
+          echo "Current version: v${VERSION}"
+
+      - name: Delete existing latest release and tag
+        run: |
+          gh release delete latest --yes || true
+          git push origin :refs/tags/latest || true
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Create latest tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -f latest
+          git push -f origin latest
+
+      - name: Create or Update Latest Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          name: "Latest Build (${{ steps.version.outputs.version }})"
+          body: |
+            ## Latest Build
+
+            **Version**: ${{ steps.version.outputs.version }}
+            **Commit**: ${{ github.sha }}
+            **Branch**: ${{ github.ref_name }}
+            **Build Time**: ${{ github.event.head_commit.timestamp }}
+
+            ### Changes
+
+            ${{ github.event.head_commit.message }}
+
+            ---
+
+            ### Download
+
+            | Target | File | Link Type |
+            |--------|------|-----------|
+            | Ubuntu 22+ AMD64 | `tokenswitch-ubuntu22-amd64` | glibc dynamic |
+            | CentOS 7+ AMD64 | `tokenswitch-centos7-amd64` | musl static |
+
+            ### Quick Install
+
+            ```bash
+            # Ubuntu 22+
+            wget https://github.com/${{ github.repository }}/releases/download/latest/tokenswitch-ubuntu22-amd64 -O tokenswitch && chmod +x tokenswitch
+
+            # CentOS 7+ / Universal
+            wget https://github.com/${{ github.repository }}/releases/download/latest/tokenswitch-centos7-amd64 -O tokenswitch && chmod +x tokenswitch
+            ```
+          files: release-files/*
+          prerelease: false
+          draft: false

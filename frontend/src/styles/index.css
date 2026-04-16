@@ -1,0 +1,159 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #F5F5F7;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.world-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+}
+
+.world-canvas:active {
+  cursor: grabbing;
+}
+
+/* Glassmorphism Status Card */
+.status-card {
+  position: fixed;
+  top: 32px;
+  left: 32px;
+  padding: 20px 24px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.04), 0 0 0 0.5px rgba(0, 0, 0, 0.03);
+  z-index: 10;
+  min-width: 160px;
+}
+
+.status-live {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #34C759;
+  transition: opacity 0.8s ease;
+}
+
+.status-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #86868B;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.status-count {
+  font-size: 32px;
+  font-weight: 600;
+  color: #1D1D1F;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.status-unit {
+  font-size: 15px;
+  font-weight: 400;
+  color: #86868B;
+}
+
+.status-secondary {
+  margin-top: 4px;
+  font-size: 13px;
+  color: #86868B;
+  font-weight: 400;
+}
+
+/* Routers Dropdown */
+.status-dropdown {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 0.5px solid rgba(0, 0, 0, 0.06);
+  position: relative;
+}
+
+.status-dropdown-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 6px 10px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #1D1D1F;
+  background: rgba(0, 0, 0, 0.03);
+  border: 0.5px solid rgba(0, 0, 0, 0.06);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+  font-family: inherit;
+}
+
+.status-dropdown-trigger:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.status-dropdown-arrow {
+  font-size: 10px;
+  color: #86868B;
+  transition: transform 0.2s;
+}
+
+.status-dropdown-arrow.open {
+  transform: rotate(180deg);
+}
+
+.status-dropdown-menu {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 6px);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 0.5px solid rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  z-index: 20;
+}
+
+.status-dropdown-item {
+  display: block;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 400;
+  color: #1D1D1F;
+  text-decoration: none;
+  text-transform: capitalize;
+  transition: background 0.15s;
+}
+
+.status-dropdown-item:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
