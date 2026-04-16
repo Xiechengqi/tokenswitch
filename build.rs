@@ -59,12 +59,9 @@ fn main() {
         assert!(status.success(), "pnpm build failed");
     }
 
-    // Rebuild when frontend source changes
-    println!("cargo:rerun-if-changed=frontend/src");
-    println!("cargo:rerun-if-changed=frontend/public");
-    println!("cargo:rerun-if-changed=frontend/index.html");
-    println!("cargo:rerun-if-changed=frontend/vite.config.js");
-    println!("cargo:rerun-if-changed=frontend/package.json");
+    // No rerun-if-changed directives: build.rs always re-runs so that
+    // regions are freshly fetched from the remote URL on every build.
+    // pnpm build is fast on no-op (vite skips if nothing changed).
 }
 
 fn fetch_regions() -> Result<String, String> {

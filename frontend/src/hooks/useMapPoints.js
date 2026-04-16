@@ -38,7 +38,7 @@ export function useMapPoints(onUpdate) {
       const key = n === 0 ? base : `${base}#${n}`;
       newKeys.set(key, c);
       if (!state.clientKeys.has(key)) {
-        state.clients.push(createClientState(c.lat, c.lon, key));
+        state.clients.push(createClientState(c.lat, c.lon, key, c.region));
       }
     }
 

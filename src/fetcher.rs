@@ -30,11 +30,18 @@ pub struct RegionInfo {
     pub url: String,
 }
 
+#[derive(Debug, Clone, Serialize)]
+pub struct ClientPoint {
+    pub lat: f64,
+    pub lon: f64,
+    pub region: String,
+}
+
 #[derive(Debug, Clone, Serialize, Default)]
 pub struct AggregatedData {
     pub regions: Vec<RegionInfo>,
     pub servers: Vec<ServerPoint>,
-    pub clients: Vec<LatLonPoint>,
+    pub clients: Vec<ClientPoint>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -108,7 +115,11 @@ async fn fetch_all(client: &reqwest::Client) -> AggregatedData {
                         url: format!("https://{base_url}"),
                     });
                 }
-                aggregated.clients.extend(data.clients);
+                aggregated.clients.extend(data.clients.into_iter().map(|c| ClientPoint {
+                    lat: c.lat,
+                    lon: c.lon,
+                    region: region.clone(),
+                }));
             }
             Err(e) => {
                 tracing::warn!("region fetch failed: {e}");

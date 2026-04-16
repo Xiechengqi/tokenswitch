@@ -8,11 +8,12 @@ function nextColor() {
   return color;
 }
 
-export function createClientState(lat, lon, key) {
+export function createClientState(lat, lon, key, region) {
   return {
     key,
     lat,
     lon,
+    region,
     color: nextColor(),
     createdAt: performance.now(),
     enterProgress: 0,

@@ -97,29 +97,60 @@ export default function WorldMap() {
     ctx.setTransform(dpr * zoom, 0, 0, dpr * zoom, panX * dpr, panY * dpr);
     ctx.drawImage(offscreen, 0, 0, offscreen.width / dpr, offscreen.height / dpr);
 
-    // Project positions with zoom/pan applied
-    const serverPositions = servers
-      .map(s => {
-        const p = projection([s.lon, s.lat]);
-        return p ? { x: p[0], y: p[1], url: s.url, region: s.region } : null;
-      })
-      .filter(Boolean);
+    // Project server positions, build region→server map
+    const regionToServer = new Map();
+    const serverPositions = [];
+    for (const s of servers) {
+      const p = projection([s.lon, s.lat]);
+      if (!p) continue;
+      const sp = { x: p[0], y: p[1], url: s.url, region: s.region };
+      serverPositions.push(sp);
+      regionToServer.set(s.region, sp);
+    }
 
-    // Draw arcs
+    // Project client positions + offset overlapping ones
+    const OVERLAP_THRESHOLD = 15;
+    const OFFSET_RADIUS = 18;
+
+    // Group clients that overlap with their server
+    const overlapCounts = new Map(); // region → count of overlapping clients
+    const clientProjections = [];
     for (const client of clients) {
       const cp = projection([client.lon, client.lat]);
       if (!cp) continue;
-      for (const sp of serverPositions) {
-        renderArc(ctx, cp[0], cp[1], sp.x, sp.y, client);
-        renderFlowDot(ctx, cp[0], cp[1], sp.x, sp.y, client);
+      const sp = regionToServer.get(client.region);
+      let overlaps = false;
+      if (sp && Math.hypot(cp[0] - sp.x, cp[1] - sp.y) < OVERLAP_THRESHOLD) {
+        overlaps = true;
+        overlapCounts.set(client.region, (overlapCounts.get(client.region) || 0) + 1);
       }
+      clientProjections.push({ client, x: cp[0], y: cp[1], overlaps });
+    }
+
+    // Assign angular positions for overlapping clients
+    const overlapIndices = new Map(); // region → next index
+    for (const cp of clientProjections) {
+      if (!cp.overlaps) continue;
+      const sp = regionToServer.get(cp.client.region);
+      const total = overlapCounts.get(cp.client.region);
+      const idx = overlapIndices.get(cp.client.region) || 0;
+      overlapIndices.set(cp.client.region, idx + 1);
+      const angle = (2 * Math.PI * idx) / total - Math.PI / 2;
+      cp.x = sp.x + Math.cos(angle) * OFFSET_RADIUS;
+      cp.y = sp.y + Math.sin(angle) * OFFSET_RADIUS;
+    }
+
+    // Draw arcs (only to own region's server)
+    for (const cp of clientProjections) {
+      const sp = regionToServer.get(cp.client.region);
+      if (!sp) continue;
+      renderArc(ctx, cp.x, cp.y, sp.x, sp.y, cp.client);
+      renderFlowDot(ctx, cp.x, cp.y, sp.x, sp.y, cp.client);
     }
 
     // Draw ripples
-    for (const client of clients) {
-      const cp = projection([client.lon, client.lat]);
-      if (!cp) continue;
-      renderRipple(ctx, cp[0], cp[1], client);
+    for (const cp of clientProjections) {
+      renderRipple(ctx, cp.x, cp.y, cp.client);
     }
 
     // Draw servers
@@ -128,10 +159,8 @@ export default function WorldMap() {
     }
 
     // Draw clients
-    for (const client of clients) {
-      const cp = projection([client.lon, client.lat]);
-      if (!cp) continue;
-      renderClient(ctx, cp[0], cp[1], client);
+    for (const cp of clientProjections) {
+      renderClient(ctx, cp.x, cp.y, cp.client);
     }
 
     ctx.restore();
