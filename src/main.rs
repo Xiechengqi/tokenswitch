@@ -6,7 +6,7 @@ use axum::routing::get;
 use axum::{Json, Router};
 use tokio::net::TcpListener;
 
-const LISTEN_ADDR: &str = "0.0.0.0:3000";
+const DEFAULT_PORT: u16 = 3000;
 
 async fn map_points(State(shared): State<fetcher::SharedData>) -> Json<fetcher::AggregatedData> {
     Json(shared.read().await.clone())
@@ -21,6 +21,12 @@ async fn main() {
         )
         .init();
 
+    let port = std::env::args()
+        .nth(1)
+        .or_else(|| std::env::var("PORT").ok())
+        .and_then(|s| s.parse::<u16>().ok())
+        .unwrap_or(DEFAULT_PORT);
+
     let shared = fetcher::new_shared_data();
 
     // Start background fetcher
@@ -31,7 +37,8 @@ async fn main() {
         .fallback(get(embedded::static_handler))
         .with_state(shared);
 
-    tracing::info!("listening on {LISTEN_ADDR}");
-    let listener = TcpListener::bind(LISTEN_ADDR).await.unwrap();
+    let addr = format!("0.0.0.0:{port}");
+    tracing::info!("listening on {addr}");
+    let listener = TcpListener::bind(&addr).await.unwrap();
     axum::serve(listener, app).await.unwrap();
 }
