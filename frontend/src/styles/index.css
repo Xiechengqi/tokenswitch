@@ -157,3 +157,18 @@ html, body, #root {
 .status-dropdown-item:hover {
   background: rgba(0, 0, 0, 0.04);
 }
+
+.map-tooltip {
+  position: fixed;
+  z-index: 30;
+  pointer-events: none;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: rgba(15, 23, 42, 0.9);
+  color: #F8FAFC;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.2);
+}

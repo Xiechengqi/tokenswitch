@@ -35,13 +35,25 @@ pub struct ClientPoint {
     pub lat: f64,
     pub lon: f64,
     pub region: String,
+    pub count: usize,
 }
 
 #[derive(Debug, Clone, Serialize, Default)]
+#[serde(rename_all = "camelCase")]
 pub struct AggregatedData {
     pub regions: Vec<RegionInfo>,
     pub servers: Vec<ServerPoint>,
+    pub client_count: usize,
     pub clients: Vec<ClientPoint>,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct RegionClientPoint {
+    lat: f64,
+    lon: f64,
+    #[serde(default = "default_client_point_count")]
+    count: usize,
 }
 
 #[derive(Debug, Deserialize)]
@@ -49,7 +61,13 @@ pub struct AggregatedData {
 struct RegionResponse {
     server: Option<LatLonPoint>,
     #[serde(default)]
-    clients: Vec<LatLonPoint>,
+    client_count: usize,
+    #[serde(default)]
+    clients: Vec<RegionClientPoint>,
+}
+
+fn default_client_point_count() -> usize {
+    1
 }
 
 pub type SharedData = Arc<RwLock<AggregatedData>>;
@@ -115,11 +133,19 @@ async fn fetch_all(client: &reqwest::Client) -> AggregatedData {
                         url: format!("https://{base_url}"),
                     });
                 }
-                aggregated.clients.extend(data.clients.into_iter().map(|c| ClientPoint {
-                    lat: c.lat,
-                    lon: c.lon,
-                    region: region.clone(),
-                }));
+                aggregated.client_count += if data.client_count > 0 {
+                    data.client_count
+                } else {
+                    data.clients.iter().map(|c| c.count).sum()
+                };
+                aggregated
+                    .clients
+                    .extend(data.clients.into_iter().map(|c| ClientPoint {
+                        lat: c.lat,
+                        lon: c.lon,
+                        region: region.clone(),
+                        count: c.count,
+                    }));
             }
             Err(e) => {
                 tracing::warn!("region fetch failed: {e}");

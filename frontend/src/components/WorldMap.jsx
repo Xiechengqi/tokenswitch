@@ -22,10 +22,12 @@ export default function WorldMap() {
   const offscreenRef = useRef(null);
   const projRef = useRef(null);
   const dataRef = useRef({ regions: [], servers: [], clients: [] });
+  const clientHitRef = useRef([]);
   const rafRef = useRef(null);
   const lastTimeRef = useRef(0);
   const [counts, setCounts] = useState({ clients: 0, servers: 0 });
   const [regions, setRegions] = useState([]);
+  const [hoveredClient, setHoveredClient] = useState(null);
 
   // Zoom/pan state (in refs for perf — no re-render needed)
   const viewRef = useRef({ zoom: 1, panX: 0, panY: 0 });
@@ -33,8 +35,7 @@ export default function WorldMap() {
 
   const handleUpdate = useCallback((data) => {
     dataRef.current = data;
-    const active = data.clients.filter(c => !c.exiting).length;
-    setCounts({ clients: active, servers: data.servers.length });
+    setCounts({ clients: data.clientCount || 0, servers: data.servers.length });
     if (data.regions.length > 0) setRegions(data.regions);
   }, []);
 
@@ -163,6 +164,12 @@ export default function WorldMap() {
       renderClient(ctx, cp.x, cp.y, cp.client);
     }
 
+    clientHitRef.current = clientProjections.map((cp) => ({
+      x: cp.x,
+      y: cp.y,
+      count: cp.client.count || 1,
+    }));
+
     ctx.restore();
 
     rafRef.current = requestAnimationFrame(animate);
@@ -210,6 +217,13 @@ export default function WorldMap() {
     canvasRef.current?.releasePointerCapture(e.pointerId);
   }, []);
 
+  const handlePointerLeave = useCallback(() => {
+    setHoveredClient(null);
+    if (canvasRef.current) {
+      canvasRef.current.style.cursor = 'grab';
+    }
+  }, []);
+
   // Click on server dot → open URL in new tab
   const handleClick = useCallback((e) => {
     if (!projRef.current) return;
@@ -246,6 +260,7 @@ export default function WorldMap() {
     const mapY = (e.clientY - rect.top - panY) / zoom;
 
     let overServer = false;
+    let hoveredCount = null;
     const HIT_RADIUS = 12;
     for (const s of servers) {
       const p = projection([s.lon, s.lat]);
@@ -255,7 +270,18 @@ export default function WorldMap() {
         break;
       }
     }
-    canvasRef.current.style.cursor = overServer ? 'pointer' : 'grab';
+    for (const client of clientHitRef.current) {
+      if (Math.hypot(client.x - mapX, client.y - mapY) <= HIT_RADIUS) {
+        hoveredCount = client.count;
+        break;
+      }
+    }
+    setHoveredClient(
+      hoveredCount == null
+        ? null
+        : { count: hoveredCount, x: e.clientX + 14, y: e.clientY + 14 },
+    );
+    canvasRef.current.style.cursor = overServer ? 'pointer' : hoveredCount != null ? 'default' : 'grab';
   }, []);
 
   useEffect(() => {
@@ -267,6 +293,7 @@ export default function WorldMap() {
 
     const onResize = () => {
       viewRef.current = { zoom: 1, panX: 0, panY: 0 };
+      setHoveredClient(null);
       setupMap();
     };
     window.addEventListener('resize', onResize);
@@ -286,9 +313,18 @@ export default function WorldMap() {
         onPointerDown={handlePointerDown}
         onPointerMove={(e) => { handlePointerMove(e); handleMouseMove(e); }}
         onPointerUp={handlePointerUp}
+        onPointerLeave={handlePointerLeave}
         onClick={handleClick}
       />
       <StatusCard clientCount={counts.clients} serverCount={counts.servers} regions={regions} />
+      {hoveredClient && (
+        <div
+          className="map-tooltip"
+          style={{ left: hoveredClient.x, top: hoveredClient.y }}
+        >
+          {hoveredClient.count} {hoveredClient.count === 1 ? 'client' : 'clients'}
+        </div>
+      )}
     </>
   );
 }

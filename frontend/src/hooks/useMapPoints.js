@@ -8,6 +8,7 @@ export function useMapPoints(onUpdate) {
   const stateRef = useRef({
     regions: [],
     servers: [],
+    clientCount: 0,
     clients: [],
     clientKeys: new Map(),
   });
@@ -26,19 +27,23 @@ export function useMapPoints(onUpdate) {
 
     state.regions = data.regions || [];
     state.servers = data.servers || [];
+    state.clientCount = data.clientCount || 0;
 
     const newKeys = new Map();
     const incoming = data.clients || [];
 
-    const keyCounts = new Map();
     for (const c of incoming) {
-      const base = `${c.lat},${c.lon}`;
-      const n = keyCounts.get(base) || 0;
-      keyCounts.set(base, n + 1);
-      const key = n === 0 ? base : `${base}#${n}`;
+      const key = `${c.region}:${c.lat},${c.lon}`;
       newKeys.set(key, c);
       if (!state.clientKeys.has(key)) {
-        state.clients.push(createClientState(c.lat, c.lon, key, c.region));
+        state.clients.push(createClientState(c.lat, c.lon, key, c.region, c.count || 1));
+        continue;
+      }
+
+      const existing = state.clients.find((client) => client.key === key);
+      if (existing) {
+        existing.count = c.count || 1;
+        existing.region = c.region;
       }
     }
 
@@ -54,6 +59,7 @@ export function useMapPoints(onUpdate) {
     onUpdate({
       regions: state.regions,
       servers: state.servers,
+      clientCount: state.clientCount || incoming.reduce((sum, client) => sum + (client.count || 1), 0),
       clients: state.clients,
     });
   }, [onUpdate]);

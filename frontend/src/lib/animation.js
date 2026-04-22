@@ -1,20 +1,13 @@
-const CLIENT_COLORS = ['#007AFF', '#34C759', '#AF52DE', '#5AC8FA'];
+const CLIENT_COLOR = '#22C55E';
 
-let colorIndex = 0;
-
-function nextColor() {
-  const color = CLIENT_COLORS[colorIndex % CLIENT_COLORS.length];
-  colorIndex++;
-  return color;
-}
-
-export function createClientState(lat, lon, key, region) {
+export function createClientState(lat, lon, key, region, count) {
   return {
     key,
     lat,
     lon,
     region,
-    color: nextColor(),
+    count,
+    color: CLIENT_COLOR,
     createdAt: performance.now(),
     enterProgress: 0,
     ripplePhase: Math.random() * Math.PI * 2,

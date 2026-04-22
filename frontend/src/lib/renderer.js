@@ -26,13 +26,13 @@ export function renderServer(ctx, x, y) {
   // Shadow
   ctx.beginPath();
   ctx.arc(x, y, 8, 0, Math.PI * 2);
-  ctx.fillStyle = 'rgba(0,0,0,0.08)';
+  ctx.fillStyle = 'rgba(37, 99, 235, 0.18)';
   ctx.fill();
 
   // Core dot
   ctx.beginPath();
   ctx.arc(x, y, 5, 0, Math.PI * 2);
-  ctx.fillStyle = '#1D1D1F';
+  ctx.fillStyle = '#2563EB';
   ctx.fill();
 }
 
@@ -106,7 +106,7 @@ export function renderArc(ctx, cx, cy, sx, sy, client) {
     ctx.quadraticCurveTo(cp[0], cp[1], sx, sy);
   }
 
-  ctx.strokeStyle = 'rgba(0,0,0,0.08)';
+  ctx.strokeStyle = 'rgba(34, 197, 94, 0.24)';
   ctx.lineWidth = 1;
   ctx.stroke();
   ctx.restore();
@@ -133,7 +133,7 @@ export function renderFlowDot(ctx, cx, cy, sx, sy, client) {
   ctx.beginPath();
   ctx.moveTo(tx, ty);
   ctx.lineTo(x, y);
-  ctx.strokeStyle = '#1D1D1F';
+  ctx.strokeStyle = '#22C55E';
   ctx.lineWidth = 2.5;
   ctx.lineCap = 'round';
   ctx.stroke();
@@ -143,7 +143,7 @@ export function renderFlowDot(ctx, cx, cy, sx, sy, client) {
   ctx.globalAlpha = 0.3 * exitAlpha;
   ctx.beginPath();
   ctx.arc(x, y, 2, 0, Math.PI * 2);
-  ctx.fillStyle = '#1D1D1F';
+  ctx.fillStyle = '#22C55E';
   ctx.fill();
   ctx.restore();
 }
