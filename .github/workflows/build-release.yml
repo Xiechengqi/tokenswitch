@@ -11,13 +11,6 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-22.04
-    strategy:
-      matrix:
-        include:
-          - target: ubuntu22-amd64
-            rust_target: x86_64-unknown-linux-gnu
-          - target: centos7-amd64
-            rust_target: x86_64-unknown-linux-musl
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -37,41 +30,18 @@ jobs:
         with:
           version: 9
 
-      - name: Install Zig for cross-compilation
-        if: matrix.rust_target == 'x86_64-unknown-linux-musl'
-        uses: mlugg/setup-zig@v1
-        with:
-          version: 0.13.0
-
-      - name: Install cargo-zigbuild
-        if: matrix.rust_target == 'x86_64-unknown-linux-musl'
-        run: cargo install cargo-zigbuild
-
-      - name: Add musl target
-        if: matrix.rust_target == 'x86_64-unknown-linux-musl'
-        run: rustup target add x86_64-unknown-linux-musl
-
       - name: Build
-        run: |
-          if [ "${{ matrix.rust_target }}" = "x86_64-unknown-linux-musl" ]; then
-            cargo zigbuild --release --target ${{ matrix.rust_target }}
-          else
-            cargo build --release
-          fi
+        run: cargo build --release
 
       - name: Prepare release asset
         run: |
-          if [ "${{ matrix.rust_target }}" = "x86_64-unknown-linux-musl" ]; then
-            mv target/${{ matrix.rust_target }}/release/tokenswitch tokenswitch-${{ matrix.target }}
-          else
-            mv target/release/tokenswitch tokenswitch-${{ matrix.target }}
-          fi
-          echo "RELEASE_ASSET=tokenswitch-${{ matrix.target }}" >> $GITHUB_ENV
+          mv target/release/tokenswitch tokenswitch-ubuntu22-amd64
+          echo "RELEASE_ASSET=tokenswitch-ubuntu22-amd64" >> $GITHUB_ENV
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: tokenswitch-${{ matrix.target }}
+          name: tokenswitch-ubuntu22-amd64
           path: ${{ env.RELEASE_ASSET }}
 
   release:
@@ -90,7 +60,6 @@ jobs:
         run: |
           mkdir -p release-files
           cp artifacts/tokenswitch-ubuntu22-amd64/tokenswitch-ubuntu22-amd64 release-files/
-          cp artifacts/tokenswitch-centos7-amd64/tokenswitch-centos7-amd64 release-files/
           ls -lh release-files/
 
       - name: Get version from Cargo.toml
@@ -138,16 +107,12 @@ jobs:
             | Target | File | Link Type |
             |--------|------|-----------|
             | Ubuntu 22+ AMD64 | `tokenswitch-ubuntu22-amd64` | glibc dynamic |
-            | CentOS 7+ AMD64 | `tokenswitch-centos7-amd64` | musl static |
 
             ### Quick Install
 
             ```bash
             # Ubuntu 22+
             wget https://github.com/${{ github.repository }}/releases/download/latest/tokenswitch-ubuntu22-amd64 -O tokenswitch && chmod +x tokenswitch
-
-            # CentOS 7+ / Universal
-            wget https://github.com/${{ github.repository }}/releases/download/latest/tokenswitch-centos7-amd64 -O tokenswitch && chmod +x tokenswitch
             ```
           files: release-files/*
           prerelease: false
