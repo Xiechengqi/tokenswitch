@@ -1,5 +1,7 @@
 import TopNav from './components/TopNav';
 import Hero from './components/Hero';
+import StatsStrip from './components/StatsStrip';
+import Features from './components/Features';
 import Footer from './components/Footer';
 
 export default function App() {
@@ -8,6 +10,8 @@ export default function App() {
       <TopNav />
       <main>
         <Hero />
+        <StatsStrip />
+        <Features />
       </main>
       <Footer />
     </div>
