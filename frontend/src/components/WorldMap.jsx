@@ -17,6 +17,7 @@ const MIN_ZOOM = 1;
 const MAX_ZOOM = 8;
 
 export default function WorldMap() {
+  const containerRef = useRef(null);
   const canvasRef = useRef(null);
   const offscreenRef = useRef(null);
   const projRef = useRef(null);
@@ -24,8 +25,6 @@ export default function WorldMap() {
   const clientHitRef = useRef([]);
   const rafRef = useRef(null);
   const lastTimeRef = useRef(0);
-  const [counts, setCounts] = useState({ clients: 0, servers: 0 });
-  const [regions, setRegions] = useState([]);
   const [hoveredClient, setHoveredClient] = useState(null);
 
   // Zoom/pan state (in refs for perf — no re-render needed)
@@ -34,20 +33,20 @@ export default function WorldMap() {
 
   const handleUpdate = useCallback((data) => {
     dataRef.current = data;
-    setCounts({ clients: data.clientCount || 0, servers: data.servers.length });
-    if (data.regions.length > 0) setRegions(data.regions);
   }, []);
 
   useMapPoints(handleUpdate);
 
-  // Setup projection + offscreen base map
+  // Setup projection + offscreen base map — sized to the container, not the window
   const setupMap = useCallback(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    const container = containerRef.current;
+    if (!canvas || !container) return;
 
+    const rect = container.getBoundingClientRect();
+    const w = Math.max(1, Math.floor(rect.width));
+    const h = Math.max(1, Math.floor(rect.height));
     const dpr = window.devicePixelRatio || 1;
-    const w = window.innerWidth;
-    const h = window.innerHeight;
 
     canvas.width = w * dpr;
     canvas.height = h * dpr;
@@ -226,7 +225,7 @@ export default function WorldMap() {
   // Click on server dot → open URL in new tab
   const handleClick = useCallback((e) => {
     if (!projRef.current) return;
-    const { projection, dpr } = projRef.current;
+    const { projection } = projRef.current;
     const { zoom, panX, panY } = viewRef.current;
     const { servers } = dataRef.current;
 
@@ -290,22 +289,23 @@ export default function WorldMap() {
     const canvas = canvasRef.current;
     canvas.addEventListener('wheel', handleWheel, { passive: false });
 
-    const onResize = () => {
+    const container = containerRef.current;
+    const ro = new ResizeObserver(() => {
       viewRef.current = { zoom: 1, panX: 0, panY: 0 };
       setHoveredClient(null);
       setupMap();
-    };
-    window.addEventListener('resize', onResize);
+    });
+    if (container) ro.observe(container);
 
     return () => {
       cancelAnimationFrame(rafRef.current);
       canvas.removeEventListener('wheel', handleWheel);
-      window.removeEventListener('resize', onResize);
+      ro.disconnect();
     };
   }, [setupMap, animate, handleWheel]);
 
   return (
-    <>
+    <div ref={containerRef} className="world-map">
       <canvas
         ref={canvasRef}
         className="world-canvas"
@@ -323,6 +323,6 @@ export default function WorldMap() {
           {hoveredClient.count} {hoveredClient.count === 1 ? 'client' : 'clients'}
         </div>
       )}
-    </>
+    </div>
   );
 }
