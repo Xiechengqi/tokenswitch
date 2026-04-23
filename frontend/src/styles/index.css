@@ -171,7 +171,19 @@ main {
   display: grid;
   grid-template-columns: 1.05fr 0.95fr;
   gap: 64px;
-  align-items: center;
+  align-items: stretch;
+}
+
+.hero-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.hero-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .hero-headline {
@@ -334,6 +346,14 @@ main {
 .terminal-sep {
   margin: 0 8px;
   color: rgba(248, 250, 252, 0.3);
+}
+
+.terminal-video {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: #000;
+  border-top: 0.5px solid rgba(255, 255, 255, 0.08);
 }
 
 /* ===== Stats Strip ===== */

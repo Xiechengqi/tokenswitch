@@ -51,6 +51,16 @@ export default function TerminalCard() {
         <span className="terminal-sep" aria-hidden="true">·</span>
         default login <code>user</code> / <code>mypasswd</code>
       </p>
+      <video
+        className="terminal-video"
+        src="/tokenswitch-use.mp4"
+        autoPlay
+        loop
+        muted
+        playsInline
+        preload="metadata"
+        aria-label="cc-switch web UI walkthrough"
+      />
     </div>
   );
 }
