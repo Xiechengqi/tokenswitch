@@ -144,8 +144,9 @@ main {
 }
 
 .topnav-links {
+  margin-left: auto;
   display: flex;
-  gap: 24px;
+  gap: 28px;
   font-size: 14px;
   font-weight: 500;
   color: var(--text-muted);
@@ -156,29 +157,6 @@ main {
 }
 
 .topnav-links a:hover {
-  color: var(--text);
-}
-
-.topnav-actions {
-  margin-left: auto;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.topnav-search {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-muted);
-  transition: background 0.15s ease, color 0.15s ease;
-}
-
-.topnav-search:hover {
-  background: rgba(0, 0, 0, 0.04);
   color: var(--text);
 }
 
