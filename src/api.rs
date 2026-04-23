@@ -7,8 +7,8 @@ use axum::{Json, Router};
 
 use crate::error::{AppError, AppResult};
 use crate::models::{
-    SendVerificationEmailRequest, SendVerificationEmailResponse, VerifyEmailCodeRequest,
-    VerifyEmailCodeResponse,
+    RedeemVerificationTokenRequest, RedeemVerificationTokenResponse, SendVerificationEmailRequest,
+    SendVerificationEmailResponse, VerifyEmailCodeRequest, VerifyEmailCodeResponse,
 };
 use crate::AppState;
 
@@ -17,6 +17,10 @@ pub fn router(state: AppState) -> Router {
         .route("/api/map-points", get(map_points))
         .route("/v1/verification/email/send", post(send_verification_email))
         .route("/v1/verification/email/verify", post(verify_email_code))
+        .route(
+            "/v1/verification/email/redeem",
+            post(redeem_verification_token),
+        )
         .with_state(state)
 }
 
@@ -48,6 +52,20 @@ async fn verify_email_code(
     authorize(&state, &headers)?;
     Ok(Json(
         state.store.verify_email_code(&state.config, input).await?,
+    ))
+}
+
+async fn redeem_verification_token(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+    Json(input): Json<RedeemVerificationTokenRequest>,
+) -> AppResult<Json<RedeemVerificationTokenResponse>> {
+    authorize(&state, &headers)?;
+    Ok(Json(
+        state
+            .store
+            .redeem_verification_token(&state.config, input)
+            .await?,
     ))
 }
 

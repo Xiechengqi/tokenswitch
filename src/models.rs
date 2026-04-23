@@ -31,4 +31,22 @@ pub struct VerifyEmailCodeResponse {
     pub verified: bool,
     pub email: String,
     pub purpose: String,
+    pub verification_token: String,
+    pub verification_token_expires_at: i64,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct RedeemVerificationTokenRequest {
+    pub verification_token: String,
+    pub purpose: String,
+}
+
+#[derive(Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct RedeemVerificationTokenResponse {
+    pub ok: bool,
+    pub email: String,
+    pub purpose: String,
+    pub verified_at: i64,
 }

@@ -12,8 +12,8 @@ use uuid::Uuid;
 use crate::config::Config;
 use crate::error::{AppError, AppResult};
 use crate::models::{
-    SendVerificationEmailRequest, SendVerificationEmailResponse, VerifyEmailCodeRequest,
-    VerifyEmailCodeResponse,
+    RedeemVerificationTokenRequest, RedeemVerificationTokenResponse, SendVerificationEmailRequest,
+    SendVerificationEmailResponse, VerifyEmailCodeRequest, VerifyEmailCodeResponse,
 };
 
 #[derive(Clone)]
@@ -25,6 +25,13 @@ struct EmailChallenge {
     id: String,
     code_hash: String,
     attempt_count: i64,
+}
+
+struct VerificationTokenRecord {
+    id: String,
+    email_normalized: String,
+    purpose: String,
+    verified_at: DateTime<Utc>,
 }
 
 impl AppStore {
@@ -53,6 +60,18 @@ impl AppStore {
                  ON email_verification_challenges(email_normalized, purpose, created_at DESC);
              CREATE INDEX IF NOT EXISTS idx_email_verification_created_at
                  ON email_verification_challenges(created_at DESC);
+             CREATE TABLE IF NOT EXISTS email_verification_tokens (
+                 id TEXT PRIMARY KEY,
+                 token_hash TEXT NOT NULL UNIQUE,
+                 email_normalized TEXT NOT NULL,
+                 purpose TEXT NOT NULL,
+                 verified_at TEXT NOT NULL,
+                 expires_at TEXT NOT NULL,
+                 consumed_at TEXT,
+                 created_at TEXT NOT NULL
+             );
+             CREATE INDEX IF NOT EXISTS idx_email_verification_tokens_lookup
+                 ON email_verification_tokens(token_hash);
              CREATE TABLE IF NOT EXISTS email_send_logs (
                  id TEXT PRIMARY KEY,
                  email_type TEXT NOT NULL,
@@ -190,11 +209,70 @@ impl AppStore {
         )
         .map_err(|err| AppError::Internal(format!("consume challenge failed: {err}")))?;
 
+        let verification_token = generate_secret(48);
+        let verification_token_expires_at =
+            now + Duration::seconds(config.verification_token_ttl_secs);
+        conn.execute(
+            "INSERT INTO email_verification_tokens (
+                id, token_hash, email_normalized, purpose, verified_at, expires_at, consumed_at, created_at
+            ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, NULL, ?7)",
+            params![
+                Uuid::new_v4().to_string(),
+                hash_token(&verification_token),
+                email,
+                purpose,
+                now.to_rfc3339(),
+                verification_token_expires_at.to_rfc3339(),
+                now.to_rfc3339(),
+            ],
+        )
+        .map_err(|err| AppError::Internal(format!("insert verification token failed: {err}")))?;
+
         Ok(VerifyEmailCodeResponse {
             ok: true,
             verified: true,
             email,
             purpose,
+            verification_token,
+            verification_token_expires_at: verification_token_expires_at.timestamp(),
+        })
+    }
+
+    pub async fn redeem_verification_token(
+        &self,
+        _config: &Config,
+        input: RedeemVerificationTokenRequest,
+    ) -> AppResult<RedeemVerificationTokenResponse> {
+        let purpose = normalize_purpose(&input.purpose)?;
+        let token = input.verification_token.trim();
+        if token.is_empty() {
+            return Err(AppError::Unauthorized(
+                "verification token is required".into(),
+            ));
+        }
+
+        let now = Utc::now();
+        let conn = self
+            .conn
+            .lock()
+            .map_err(|_| AppError::Internal("sqlite mutex poisoned".into()))?;
+        let record = get_active_verification_token(&conn, &hash_token(token), &purpose, now)?
+            .ok_or_else(|| {
+                AppError::Unauthorized("verification token expired or not found".into())
+            })?;
+        conn.execute(
+            "UPDATE email_verification_tokens
+             SET consumed_at = ?2
+             WHERE id = ?1",
+            params![record.id, now.to_rfc3339()],
+        )
+        .map_err(|err| AppError::Internal(format!("consume verification token failed: {err}")))?;
+
+        Ok(RedeemVerificationTokenResponse {
+            ok: true,
+            email: record.email_normalized,
+            purpose: record.purpose,
+            verified_at: record.verified_at.timestamp(),
         })
     }
 
@@ -360,6 +438,34 @@ fn get_latest_active_challenge(
     .map_err(|err| AppError::Internal(format!("query active challenge failed: {err}")))
 }
 
+fn get_active_verification_token(
+    conn: &Connection,
+    token_hash: &str,
+    purpose: &str,
+    now: DateTime<Utc>,
+) -> AppResult<Option<VerificationTokenRecord>> {
+    conn.query_row(
+        "SELECT id, email_normalized, purpose, verified_at
+         FROM email_verification_tokens
+         WHERE token_hash = ?1
+           AND purpose = ?2
+           AND consumed_at IS NULL
+           AND expires_at >= ?3
+         LIMIT 1",
+        params![token_hash, purpose, now.to_rfc3339()],
+        |row| {
+            Ok(VerificationTokenRecord {
+                id: row.get(0)?,
+                email_normalized: row.get(1)?,
+                purpose: row.get(2)?,
+                verified_at: parse_dt_row(&row.get::<_, String>(3)?)?,
+            })
+        },
+    )
+    .optional()
+    .map_err(|err| AppError::Internal(format!("query verification token failed: {err}")))
+}
+
 fn normalize_email(value: &str) -> AppResult<String> {
     let email = value.trim().to_ascii_lowercase();
     let Some((local, domain)) = email.split_once('@') else {
@@ -402,6 +508,14 @@ fn generate_numeric_code(digits: usize) -> String {
         .collect()
 }
 
+fn generate_secret(len: usize) -> String {
+    const ALPHABET: &[u8] = b"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    let mut rng = rand::thread_rng();
+    (0..len)
+        .map(|_| ALPHABET[rng.gen_range(0..ALPHABET.len())] as char)
+        .collect()
+}
+
 fn hash_token(value: &str) -> String {
     let mut hasher = Sha256::new();
     hasher.update(value.as_bytes());
@@ -417,6 +531,18 @@ fn parse_dt_sql(value: &str) -> AppResult<DateTime<Utc>> {
     DateTime::parse_from_rfc3339(value)
         .map(|dt| dt.with_timezone(&Utc))
         .map_err(|err| AppError::Internal(format!("parse datetime failed: {err}")))
+}
+
+fn parse_dt_row(value: &str) -> rusqlite::Result<DateTime<Utc>> {
+    DateTime::parse_from_rfc3339(value)
+        .map(|dt| dt.with_timezone(&Utc))
+        .map_err(|err| {
+            rusqlite::Error::FromSqlConversionFailure(
+                value.len(),
+                rusqlite::types::Type::Text,
+                Box::new(err),
+            )
+        })
 }
 
 fn mask_email(email: &str) -> String {

@@ -13,6 +13,7 @@ pub struct Config {
     pub verify_max_attempts: i64,
     pub verify_email_hourly_limit: i64,
     pub verify_ip_hourly_limit: i64,
+    pub verification_token_ttl_secs: i64,
     pub db_path: PathBuf,
 }
 
@@ -28,6 +29,10 @@ impl Config {
             verify_max_attempts: parse_env_i64("TOKENSWITCH_VERIFY_MAX_ATTEMPTS", 5),
             verify_email_hourly_limit: parse_env_i64("TOKENSWITCH_VERIFY_EMAIL_HOURLY_LIMIT", 5),
             verify_ip_hourly_limit: parse_env_i64("TOKENSWITCH_VERIFY_IP_HOURLY_LIMIT", 20),
+            verification_token_ttl_secs: parse_env_i64(
+                "TOKENSWITCH_VERIFICATION_TOKEN_TTL_SECS",
+                15 * 60,
+            ),
             db_path: env::var("TOKENSWITCH_DB_PATH")
                 .map(PathBuf::from)
                 .unwrap_or_else(|_| default_db_path()),
