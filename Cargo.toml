@@ -14,3 +14,10 @@ rust-embed = "8"
 mime_guess = "2"
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+chrono = { version = "0.4", features = ["serde"] }
+rand = "0.8"
+resend-rs = "0.15"
+rusqlite = { version = "0.32", features = ["bundled", "chrono"] }
+sha2 = "0.10"
+thiserror = "2"
+uuid = { version = "1", features = ["v4"] }

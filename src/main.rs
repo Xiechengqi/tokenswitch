@@ -1,15 +1,24 @@
+mod api;
+mod config;
 mod embedded;
+mod error;
 mod fetcher;
+mod models;
+mod store;
 
-use axum::extract::State;
-use axum::routing::get;
-use axum::{Json, Router};
+use std::sync::Arc;
+
+use resend_rs::Resend;
 use tokio::net::TcpListener;
 
 const DEFAULT_PORT: u16 = 3000;
 
-async fn map_points(State(shared): State<fetcher::SharedData>) -> Json<fetcher::AggregatedData> {
-    Json(shared.read().await.clone())
+#[derive(Clone)]
+pub struct AppState {
+    pub shared: fetcher::SharedData,
+    pub config: config::Config,
+    pub store: store::AppStore,
+    pub resend: Option<Arc<Resend>>,
 }
 
 #[tokio::main]
@@ -27,18 +36,34 @@ async fn main() {
         .and_then(|s| s.parse::<u16>().ok())
         .unwrap_or(DEFAULT_PORT);
 
+    let config = config::Config::from_env();
     let shared = fetcher::new_shared_data();
+    let store = store::AppStore::new(&config).expect("failed to initialize sqlite store");
+    let resend = config
+        .resend_api_key
+        .as_deref()
+        .map(Resend::new)
+        .map(Arc::new);
 
     // Start background fetcher
     tokio::spawn(fetcher::run(shared.clone()));
 
-    let app = Router::new()
-        .route("/api/map-points", get(map_points))
-        .fallback(get(embedded::static_handler))
-        .with_state(shared);
+    let state = AppState {
+        shared,
+        config,
+        store,
+        resend,
+    };
+
+    let app = api::router(state).fallback(axum::routing::get(embedded::static_handler));
 
     let addr = format!("0.0.0.0:{port}");
     tracing::info!("listening on {addr}");
     let listener = TcpListener::bind(&addr).await.unwrap();
-    axum::serve(listener, app).await.unwrap();
+    axum::serve(
+        listener,
+        app.into_make_service_with_connect_info::<std::net::SocketAddr>(),
+    )
+    .await
+    .unwrap();
 }
