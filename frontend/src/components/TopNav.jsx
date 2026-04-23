@@ -3,7 +3,7 @@ export default function TopNav() {
     <header className="topnav">
       <div className="topnav-inner">
         <a className="topnav-brand" href="#">
-          <span className="brand-mark" aria-hidden="true" />
+          <img className="brand-mark" src="/favicon.svg" alt="" width="22" height="22" />
           <span className="brand-text">token-switch</span>
         </a>
         <nav className="topnav-links">
