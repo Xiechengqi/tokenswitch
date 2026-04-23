@@ -12,8 +12,6 @@ import {
   renderFlowDot,
 } from '../lib/renderer';
 import { useMapPoints } from '../hooks/useMapPoints';
-import StatusCard from './StatusCard';
-import HeroOverlay from './HeroOverlay';
 
 const MIN_ZOOM = 1;
 const MAX_ZOOM = 8;
@@ -317,8 +315,6 @@ export default function WorldMap() {
         onPointerLeave={handlePointerLeave}
         onClick={handleClick}
       />
-      <StatusCard clientCount={counts.clients} serverCount={counts.servers} regions={regions} />
-      <HeroOverlay />
       {hoveredClient && (
         <div
           className="map-tooltip"

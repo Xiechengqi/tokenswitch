@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 const COMMAND = 'docker run -itd -p 8008:8008 -v $HOME/.token-switch:/root/.cc-switch --name cc-switch ghcr.io/xiechengqi/cc-switch:latest';
 
-export default function HeroOverlay() {
+export default function TerminalCard() {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
@@ -23,35 +23,32 @@ export default function HeroOverlay() {
   };
 
   return (
-    <div className="hero-overlay" role="region" aria-label="Quick start">
-      <p className="hero-tagline">
-        One command to launch and share your own{' '}
-        <strong>Claude</strong>, <strong>Codex</strong> &amp; <strong>Gemini</strong>.
-      </p>
-
-      <div className="hero-command">
-        <span className="hero-dots" aria-hidden="true">
+    <div className="terminal-card" id="install">
+      <div className="terminal-head">
+        <span className="terminal-dots" aria-hidden="true">
           <i style={{ background: '#FF5F57' }} />
           <i style={{ background: '#FEBC2E' }} />
           <i style={{ background: '#28C840' }} />
         </span>
-        <span className="hero-prompt" aria-hidden="true">$</span>
-        <code className="hero-code">{COMMAND}</code>
+        <span className="terminal-label">bash</span>
         <button
-          className={`hero-copy ${copied ? 'is-copied' : ''}`}
+          className={`terminal-copy ${copied ? 'is-copied' : ''}`}
           onClick={handleCopy}
-          aria-label="Copy command to clipboard"
+          aria-label="Copy command"
         >
           {copied ? '✓ Copied' : 'Copy'}
         </button>
       </div>
-
-      <p className="hero-hint">
+      <div className="terminal-body">
+        <span className="terminal-prompt" aria-hidden="true">$</span>
+        <code className="terminal-code">{COMMAND}</code>
+      </div>
+      <p className="terminal-hint">
         Once running, open{' '}
         <a href="http://localhost:8008" target="_blank" rel="noopener noreferrer">
           http://localhost:8008
         </a>
-        <span className="hero-sep" aria-hidden="true">·</span>
+        <span className="terminal-sep" aria-hidden="true">·</span>
         default login <code>user</code> / <code>mypasswd</code>
       </p>
     </div>
