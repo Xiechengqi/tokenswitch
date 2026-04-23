@@ -1,22 +1,15 @@
 import TopNav from './components/TopNav';
-import Hero from './components/Hero';
-import StatsStrip from './components/StatsStrip';
-import Features from './components/Features';
-import HowItWorks from './components/HowItWorks';
-import MapSection from './components/MapSection';
 import Footer from './components/Footer';
+import LandingPage from './components/LandingPage';
+import RoutersPage from './components/RoutersPage';
+import { usePath } from './hooks/usePath';
 
 export default function App() {
+  const path = usePath();
   return (
     <div className="page">
       <TopNav />
-      <main>
-        <Hero />
-        <StatsStrip />
-        <Features />
-        <HowItWorks />
-        <MapSection />
-      </main>
+      <main>{path === '/routers' ? <RoutersPage /> : <LandingPage />}</main>
       <Footer />
     </div>
   );
