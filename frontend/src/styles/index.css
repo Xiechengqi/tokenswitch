@@ -523,6 +523,179 @@ main {
   color: var(--text);
 }
 
+/* ===== How It Works ===== */
+.how {
+  padding: 24px 24px 96px;
+}
+
+.how-inner {
+  max-width: var(--container);
+  margin: 0 auto;
+}
+
+.how-heading {
+  text-align: center;
+  margin-bottom: 36px;
+}
+
+.how-title {
+  font-size: clamp(28px, 3.2vw, 36px);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--text);
+  line-height: 1.15;
+}
+
+.how-sub {
+  margin-top: 14px;
+  font-size: 16px;
+  color: var(--text-muted);
+  max-width: 560px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.5;
+}
+
+.how-diagram-wrap {
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  padding: 24px;
+}
+
+.how-diagram {
+  display: block;
+  width: 100%;
+  height: auto;
+  font-family: inherit;
+}
+
+.how-node-bg {
+  fill: var(--bg-alt);
+  stroke: var(--border-strong);
+  stroke-width: 1;
+}
+
+.how-node-icon {
+  color: #94A3B8;
+}
+
+.how-node-label {
+  font-size: 14px;
+  font-weight: 600;
+  fill: var(--text);
+}
+
+.how-node-caption {
+  font-size: 10px;
+  fill: var(--text-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.how-path {
+  fill: none;
+  stroke-linecap: round;
+}
+
+.how-path-tunnel {
+  stroke: var(--accent);
+  stroke-width: 1.5;
+  stroke-dasharray: 5 5;
+  opacity: 0.65;
+}
+
+.how-path-req {
+  stroke: #3B82F6;
+  stroke-width: 1.5;
+  opacity: 0.22;
+}
+
+.how-path-back {
+  stroke: #10B981;
+  stroke-width: 1.5;
+  opacity: 0.22;
+}
+
+.how-dot-req {
+  fill: #3B82F6;
+  filter: drop-shadow(0 0 6px rgba(59, 130, 246, 0.55));
+}
+
+.how-dot-route {
+  fill: var(--accent);
+  filter: drop-shadow(0 0 6px rgba(124, 58, 237, 0.55));
+}
+
+.how-dot-back {
+  fill: #10B981;
+  filter: drop-shadow(0 0 6px rgba(16, 185, 129, 0.55));
+}
+
+.how-label {
+  font-size: 10px;
+  font-weight: 500;
+  fill: var(--text-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-anchor: middle;
+}
+
+.how-label-req {
+  fill: #3B82F6;
+}
+
+.how-label-back {
+  fill: #10B981;
+}
+
+.how-steps {
+  list-style: none;
+  margin-top: 36px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.how-step {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.how-step-num {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.how-step p {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--text-muted);
+}
+
+.how-step p b {
+  color: var(--text);
+  font-weight: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .how-dot {
+    opacity: 0 !important;
+  }
+}
+
 /* ===== Map Section ===== */
 .map-section {
   padding: 0 24px 96px;
@@ -621,6 +794,16 @@ main {
   .map-section-frame {
     aspect-ratio: 4 / 3;
   }
+  .how {
+    padding: 16px 24px 72px;
+  }
+  .how-steps {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .how-diagram-wrap {
+    padding: 16px;
+  }
 }
 
 @media (max-width: 640px) {
@@ -667,6 +850,12 @@ main {
   }
   .map-section-frame {
     aspect-ratio: 1 / 1;
+  }
+  .how {
+    padding: 8px 20px 56px;
+  }
+  .how-diagram-wrap {
+    padding: 12px;
   }
   .footer-inner {
     flex-direction: column;

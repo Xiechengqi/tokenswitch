@@ -7,8 +7,8 @@ export default function TopNav() {
           <span className="brand-text">token-switch</span>
         </a>
         <nav className="topnav-links">
-          <a href="#">Features</a>
-          <a href="#">How it works</a>
+          <a href="#features">Features</a>
+          <a href="#how-it-works">How it works</a>
           <a href="#">Docs</a>
         </nav>
         <div className="topnav-actions">
