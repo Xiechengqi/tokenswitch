@@ -4,7 +4,7 @@ use std::path::Path;
 use std::process::Command;
 
 const REGIONS_URL: &str =
-    "https://raw.githubusercontent.com/Xiechengqi/portr-rs/refs/heads/master/regions";
+    "https://raw.githubusercontent.com/Xiechengqi/cc-switch-router/refs/heads/master/regions";
 
 fn main() {
     let out_dir = env::var("OUT_DIR").unwrap();
@@ -12,7 +12,8 @@ fn main() {
     // --- 1. Download and parse regions ---
     let regions_text = fetch_regions().unwrap_or_else(|e| {
         eprintln!("cargo:warning=Failed to fetch regions from URL ({e}), trying local fallback");
-        fs::read_to_string("/data/projects/portr-rs/regions")
+        fs::read_to_string("/data/projects/cc-switch-router/regions")
+            .or_else(|_| fs::read_to_string("/data/projects/portr-rs/regions"))
             .expect("Failed to load regions from both URL and local fallback")
     });
 
