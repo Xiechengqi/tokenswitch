@@ -3,8 +3,15 @@ use std::fs;
 use std::path::Path;
 use std::process::Command;
 
-const REGIONS_URL: &str =
-    "https://raw.githubusercontent.com/Xiechengqi/cc-switch-router/refs/heads/master/regions";
+const REGIONS_URLS: &[&str] = &[
+    "https://raw.githubusercontent.com/Xiechengqi/cc-switch-router/refs/heads/master/regions",
+    "https://raw.githubusercontent.com/Xiechengqi/portr-rs/refs/heads/master/regions",
+];
+const LOCAL_REGIONS_FALLBACKS: &[&str] = &[
+    "regions",
+    "/data/projects/cc-switch-router/regions",
+    "/data/projects/portr-rs/regions",
+];
 
 fn main() {
     let out_dir = env::var("OUT_DIR").unwrap();
@@ -12,9 +19,7 @@ fn main() {
     // --- 1. Download and parse regions ---
     let regions_text = fetch_regions().unwrap_or_else(|e| {
         eprintln!("cargo:warning=Failed to fetch regions from URL ({e}), trying local fallback");
-        fs::read_to_string("/data/projects/cc-switch-router/regions")
-            .or_else(|_| fs::read_to_string("/data/projects/portr-rs/regions"))
-            .expect("Failed to load regions from both URL and local fallback")
+        load_local_regions().expect("Failed to load regions from both remote URLs and local fallbacks")
     });
 
     let mut entries = Vec::new();
@@ -66,12 +71,29 @@ fn main() {
 }
 
 fn fetch_regions() -> Result<String, String> {
-    let output = Command::new("curl")
-        .args(["-sSfL", "--connect-timeout", "10", REGIONS_URL])
-        .output()
-        .map_err(|e| format!("curl exec failed: {e}"))?;
-    if !output.status.success() {
-        return Err(format!("curl failed with {}", output.status));
+    let mut errors = Vec::new();
+    for url in REGIONS_URLS {
+        let output = Command::new("curl")
+            .args(["-sSfL", "--connect-timeout", "10", url])
+            .output()
+            .map_err(|e| format!("curl exec failed for {url}: {e}"))?;
+        if !output.status.success() {
+            errors.push(format!("{url} -> curl failed with {}", output.status));
+            continue;
+        }
+        return String::from_utf8(output.stdout)
+            .map_err(|e| format!("invalid utf8 from {url}: {e}"));
     }
-    String::from_utf8(output.stdout).map_err(|e| format!("invalid utf8: {e}"))
+    Err(errors.join("; "))
+}
+
+fn load_local_regions() -> Result<String, String> {
+    let mut errors = Vec::new();
+    for path in LOCAL_REGIONS_FALLBACKS {
+        match fs::read_to_string(path) {
+            Ok(text) => return Ok(text),
+            Err(err) => errors.push(format!("{path}: {err}")),
+        }
+    }
+    Err(errors.join("; "))
 }
