@@ -27,7 +27,7 @@ impl Config {
             verify_code_ttl_secs: parse_env_i64("TOKENSWITCH_VERIFY_CODE_TTL_SECS", 5 * 60),
             verify_code_cooldown_secs: parse_env_i64("TOKENSWITCH_VERIFY_CODE_COOLDOWN_SECS", 60),
             verify_max_attempts: parse_env_i64("TOKENSWITCH_VERIFY_MAX_ATTEMPTS", 5),
-            verify_email_hourly_limit: parse_env_i64("TOKENSWITCH_VERIFY_EMAIL_HOURLY_LIMIT", 5),
+            verify_email_hourly_limit: parse_env_i64("TOKENSWITCH_VERIFY_EMAIL_HOURLY_LIMIT", 30),
             verify_ip_hourly_limit: parse_env_i64("TOKENSWITCH_VERIFY_IP_HOURLY_LIMIT", 20),
             verification_token_ttl_secs: parse_env_i64(
                 "TOKENSWITCH_VERIFICATION_TOKEN_TTL_SECS",
