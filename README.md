@@ -44,10 +44,10 @@ Requires CORS on router public routes (deployed in `cc-switch-router`).
 
 ### GitHub
 
-1. Repository **Settings → Pages → Source**: GitHub Actions
-2. Push to `main` — workflow `.github/workflows/deploy.yml` builds and deploys `out/`
-3. Custom domain: `tokenswitch.org` (see `public/CNAME`)
-4. Enable **Enforce HTTPS**
+1. Repository **Settings → Pages → Source**: **Deploy from a branch**
+2. Branch: `gh-pages` / `/ (root)`
+3. Push to `main` — workflow `.github/workflows/deploy.yml` builds `out/` and pushes to `gh-pages` with `CNAME=tokenswitch.org`
+4. Enable **Enforce HTTPS** after the first deploy
 
 ### Cloudflare DNS
 
