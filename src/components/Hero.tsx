@@ -7,7 +7,7 @@ export function Hero({ locale }: { locale: Locale }) {
   const t = getDict(locale);
 
   return (
-    <section className="relative overflow-hidden border-b-2 border-border">
+    <section className="relative overflow-hidden">
       <div
         className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-secondary/30"
         aria-hidden

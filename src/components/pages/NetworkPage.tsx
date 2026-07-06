@@ -35,9 +35,9 @@ export function NetworkPage({ locale }: { locale: Locale }) {
 
   return (
     <>
-      <section className="border-b-2 border-border bg-background py-8">
+      <section className="bg-background py-8">
         <div className="mx-auto max-w-[var(--container)] px-4 sm:px-6">
-          <div className="overflow-hidden rounded-2xl border-2 border-border bg-card">
+          <div className="overflow-hidden rounded-2xl bg-card shadow-sm">
             <WorldMapLazy locale={locale} className="relative h-[320px] w-full sm:h-[420px]" />
           </div>
         </div>
@@ -64,7 +64,7 @@ export function NetworkPage({ locale }: { locale: Locale }) {
             })}
           </div>
 
-          <div className="mt-16 rounded-3xl border-2 border-dashed border-border bg-muted/30 p-8 text-center">
+          <div className="mt-16 rounded-3xl bg-muted/30 p-8 text-center">
             <h2 className="font-heading text-2xl font-bold">{t.network.selfHost}</h2>
             <p className="mx-auto mt-3 max-w-xl text-muted-foreground">{t.network.selfHostDesc}</p>
             <div className="mt-6">

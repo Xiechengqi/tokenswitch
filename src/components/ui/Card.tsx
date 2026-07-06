@@ -12,7 +12,7 @@ export function Card({
   return (
     <div
       className={cn(
-        "rounded-2xl border-2 border-border bg-card p-6",
+        "rounded-2xl bg-card p-6 shadow-sm",
         hover && "transition-transform hover:scale-[1.01]",
         className,
       )}

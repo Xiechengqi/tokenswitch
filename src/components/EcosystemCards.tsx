@@ -13,7 +13,7 @@ export function EcosystemCards({ locale }: { locale: Locale }) {
   ];
 
   return (
-    <section className="border-b-2 border-border py-16 sm:py-20">
+    <section className="py-16 sm:py-20">
       <div className="mx-auto max-w-[var(--container)] px-4 sm:px-6">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="font-heading text-3xl font-bold sm:text-4xl">{t.ecosystem.title}</h2>

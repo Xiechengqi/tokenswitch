@@ -61,7 +61,7 @@ export function DownloadPage({ locale }: { locale: Locale }) {
               className={
                 tab === item.id
                   ? "rounded-full border-2 border-border-strong bg-accent px-4 py-2 text-sm font-medium text-white"
-                  : "rounded-full border-2 border-border px-4 py-2 text-sm font-medium text-muted-foreground"
+                  : "rounded-full bg-muted/60 px-4 py-2 text-sm font-medium text-muted-foreground"
               }
             >
               {item.label}
@@ -99,7 +99,7 @@ export function DownloadPage({ locale }: { locale: Locale }) {
           {tab === "docker" && (
             <div className="space-y-4">
               <p className="text-muted-foreground">{t.download.dockerDesc}</p>
-              <pre className="overflow-x-auto rounded-xl border-2 border-border bg-terminal p-4 font-mono text-xs text-white">
+              <pre className="overflow-x-auto rounded-xl bg-terminal p-4 font-mono text-xs text-white">
                 {DOCKER_COMMAND}
               </pre>
             </div>

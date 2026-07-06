@@ -48,7 +48,7 @@ export function MarketsPage({ locale }: { locale: Locale }) {
                   {stats.publicModels.slice(0, 8).map((model) => (
                     <span
                       key={model}
-                      className="rounded-full border border-border bg-muted/50 px-2 py-0.5 font-mono text-[11px]"
+                      className="rounded-full bg-muted/60 px-2 py-0.5 font-mono text-[11px]"
                     >
                       {model}
                     </span>

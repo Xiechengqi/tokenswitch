@@ -7,7 +7,7 @@ export function MapSection({ locale }: { locale: Locale }) {
   const t = getDict(locale);
 
   return (
-    <section className="border-b-2 border-border bg-background py-16">
+    <section className="bg-background py-16">
       <div className="mx-auto max-w-[var(--container)] px-4 sm:px-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
@@ -18,7 +18,7 @@ export function MapSection({ locale }: { locale: Locale }) {
             {t.nav.network} →
           </Button>
         </div>
-        <div className="mt-8 overflow-hidden rounded-2xl border-2 border-border bg-card">
+        <div className="mt-8 overflow-hidden rounded-2xl bg-card shadow-sm">
           <WorldMapLazy locale={locale} className="relative h-[360px] w-full sm:h-[480px]" />
         </div>
       </div>

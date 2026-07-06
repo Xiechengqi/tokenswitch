@@ -50,11 +50,11 @@ export function StatsStrip({ locale }: { locale: Locale }) {
   return (
     <Link
       href={localePath(locale, "network")}
-      className="relative block border-b-2 border-border bg-card transition-colors hover:bg-muted/50"
+      className="relative block bg-card transition-colors hover:bg-muted/50"
     >
       <span
         className={cn(
-          "absolute right-4 top-3 inline-flex items-center gap-1.5 rounded-full border border-border px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide",
+          "absolute right-4 top-3 inline-flex items-center gap-1.5 rounded-full bg-muted/60 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide",
           isSnapshot ? "text-muted-foreground" : "text-quaternary",
         )}
       >

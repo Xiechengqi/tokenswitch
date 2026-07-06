@@ -25,9 +25,6 @@ interface MapRenderData {
   clients: ClientAnimState[];
 }
 
-const MIN_ZOOM = 1;
-const MAX_ZOOM = 8;
-
 export function WorldMap({ locale, className }: { locale: Locale; className?: string }) {
   const t = getDict(locale);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -173,27 +170,9 @@ export function WorldMap({ locale, className }: { locale: Locale; className?: st
     rafRef.current = requestAnimationFrame(animate);
   }, []);
 
-  const handleWheel = useCallback((e: WheelEvent) => {
-    e.preventDefault();
-    const view = viewRef.current;
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const rect = canvas.getBoundingClientRect();
-    const mx = e.clientX - rect.left;
-    const my = e.clientY - rect.top;
-    const factor = e.deltaY < 0 ? 1.1 : 1 / 1.1;
-    const newZoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, view.zoom * factor));
-    const scale = newZoom / view.zoom;
-    view.panX = mx - scale * (mx - view.panX);
-    view.panY = my - scale * (my - view.panY);
-    view.zoom = newZoom;
-  }, []);
-
   useEffect(() => {
     setupMap();
     rafRef.current = requestAnimationFrame(animate);
-    const canvas = canvasRef.current;
-    canvas?.addEventListener("wheel", handleWheel, { passive: false });
     const container = containerRef.current;
     const ro = new ResizeObserver(() => {
       viewRef.current = { zoom: 1, panX: 0, panY: 0 };
@@ -203,10 +182,9 @@ export function WorldMap({ locale, className }: { locale: Locale; className?: st
     if (container) ro.observe(container);
     return () => {
       cancelAnimationFrame(rafRef.current);
-      canvas?.removeEventListener("wheel", handleWheel);
       ro.disconnect();
     };
-  }, [setupMap, animate, handleWheel]);
+  }, [setupMap, animate]);
 
   const mapCoords = (e: React.MouseEvent<HTMLCanvasElement>) => {
     const rect = canvasRef.current!.getBoundingClientRect();

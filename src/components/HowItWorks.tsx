@@ -95,7 +95,7 @@ export function HowItWorks({ locale }: { locale: Locale }) {
   }, []);
 
   return (
-    <section className="border-b-2 border-border py-16 sm:py-20" id="how-it-works">
+    <section className="py-16 sm:py-20" id="how-it-works">
       <div className="mx-auto max-w-[var(--container)] px-4 sm:px-6">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="font-heading text-3xl font-bold sm:text-4xl">{t.howItWorks.title}</h2>
@@ -160,7 +160,7 @@ export function HowItWorks({ locale }: { locale: Locale }) {
 
         <ol className="mx-auto mt-10 grid max-w-3xl gap-4">
           {t.howItWorks.steps.map((step, i) => (
-            <li key={step.bold} className="flex gap-4 rounded-2xl border-2 border-border bg-card p-4">
+            <li key={step.bold} className="flex gap-4 rounded-2xl bg-card p-4 shadow-sm">
               <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 border-border-strong bg-accent text-sm font-bold text-white">
                 {i + 1}
               </span>

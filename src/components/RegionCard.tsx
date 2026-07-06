@@ -51,7 +51,7 @@ export function RegionCard({
   ];
 
   return (
-    <div className="rounded-2xl border-2 border-border bg-card p-6">
+    <div className="rounded-2xl bg-card p-6 shadow-sm">
       <div className="flex items-start justify-between gap-3">
         <div>
           <div className="flex items-center gap-2">
@@ -84,7 +84,7 @@ export function RegionCard({
             href={link.href}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 rounded-full border-2 border-border px-3 py-1.5 text-xs font-medium hover:bg-muted"
+            className="inline-flex items-center gap-1 rounded-full bg-muted/60 px-3 py-1.5 text-xs font-medium hover:bg-muted"
           >
             {link.label}
             <ArrowUpRight className="h-3 w-3" />

@@ -6,7 +6,7 @@ export function EarnStrip({ locale }: { locale: Locale }) {
   const t = getDict(locale);
 
   return (
-    <section className="border-b-2 border-border bg-muted/30 py-16">
+    <section className="bg-muted/30 py-16">
       <div className="mx-auto max-w-[var(--container)] px-4 sm:px-6">
         <div className="rounded-3xl border-2 border-border-strong bg-card p-8 sm:p-10">
           <h2 className="font-heading text-2xl font-bold sm:text-3xl">{t.earn.title}</h2>
@@ -35,7 +35,7 @@ function FlowPill({ label, accent }: { label: string; accent?: boolean }) {
       className={
         accent
           ? "rounded-full border-2 border-accent bg-accent/10 px-3 py-1.5 font-semibold"
-          : "rounded-full border-2 border-border px-3 py-1.5"
+          : "rounded-full bg-muted/60 px-3 py-1.5"
       }
     >
       {label}

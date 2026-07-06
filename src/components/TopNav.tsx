@@ -22,7 +22,7 @@ export function TopNav({ locale }: { locale: Locale }) {
   ];
 
   return (
-    <header className="sticky top-0 z-50 border-b-2 border-border bg-background/90 backdrop-blur-md">
+    <header className="sticky top-0 z-50 bg-background/90 shadow-sm backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-[var(--container)] items-center justify-between gap-4 px-4 sm:px-6">
         <Link href={localePath(locale)} className="flex items-center gap-2 font-heading text-lg font-bold">
           <span className="text-accent" aria-hidden>
@@ -56,7 +56,7 @@ export function TopNav({ locale }: { locale: Locale }) {
         </nav>
 
         <div className="flex items-center gap-2 sm:gap-3">
-          <div className="inline-flex rounded-full border border-border bg-muted/50 p-0.5 text-xs font-medium">
+          <div className="inline-flex rounded-full bg-muted/50 p-0.5 text-xs font-medium">
             {LOCALES.map((l) => (
               <Link
                 key={l}
@@ -75,7 +75,7 @@ export function TopNav({ locale }: { locale: Locale }) {
           </div>
           <a
             href={GITHUB_REPO}
-            className="hidden rounded-full border-2 border-border p-2 sm:inline-flex"
+            className="hidden rounded-full bg-muted/50 p-2 sm:inline-flex"
             target="_blank"
             rel="noopener noreferrer"
             aria-label={t.nav.github}

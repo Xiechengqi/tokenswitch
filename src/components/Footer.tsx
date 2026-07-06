@@ -16,7 +16,7 @@ export function Footer({ locale }: { locale: Locale }) {
   const { regions } = getBakedRegions();
 
   return (
-    <footer className="border-t-2 border-border bg-muted/40">
+    <footer className="bg-muted/40">
       <div className="mx-auto grid max-w-[var(--container)] gap-8 px-4 py-12 sm:px-6 md:grid-cols-3">
         <div>
           <p className="font-heading text-lg font-bold">{t.brand}</p>

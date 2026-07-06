@@ -24,7 +24,7 @@ export function TerminalCard({ locale }: { locale: Locale }) {
       id="install"
       className="overflow-hidden rounded-2xl border-2 border-border-strong bg-terminal text-white shadow-[8px_8px_0_0_#1e293b]"
     >
-      <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
+      <div className="flex items-center justify-between px-4 py-3">
         <div className="flex items-center gap-2">
           <span className="flex gap-1.5" aria-hidden>
             <i className="h-3 w-3 rounded-full bg-[#ff5f57]" />
