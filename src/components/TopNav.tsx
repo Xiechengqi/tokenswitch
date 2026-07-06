@@ -2,13 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Github } from "lucide-react";
 import type { Locale } from "@/lib/types";
 import { LOCALES } from "@/lib/types";
 import { getDict, localePath, switchLocalePath } from "@/lib/i18n";
-import { DOCS_URL, GITHUB_REPO } from "@/lib/constants";
+import { DOCS_URL } from "@/lib/constants";
 import { cn } from "@/lib/cn";
 import { Button } from "./ui/Button";
+import { SocialIconLinks } from "./SocialLinks";
 
 export function TopNav({ locale }: { locale: Locale }) {
   const t = getDict(locale);
@@ -73,15 +73,10 @@ export function TopNav({ locale }: { locale: Locale }) {
               </Link>
             ))}
           </div>
-          <a
-            href={GITHUB_REPO}
-            className="hidden rounded-full bg-muted/50 p-2 sm:inline-flex"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={t.nav.github}
-          >
-            <Github className="h-4 w-4" />
-          </a>
+          <SocialIconLinks
+            labels={{ telegram: t.nav.telegram, x: t.nav.x, github: t.nav.github }}
+            className="hidden sm:flex"
+          />
           <Button href={localePath(locale, "download")} className="hidden sm:inline-flex">
             {t.nav.getStarted}
           </Button>

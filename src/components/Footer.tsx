@@ -10,6 +10,7 @@ import {
   SHARE_MARKET_REPO,
 } from "@/lib/constants";
 import { getBakedRegions, regionLabel } from "@/lib/regions";
+import { SocialTextLinks } from "@/components/SocialLinks";
 
 export function Footer({ locale }: { locale: Locale }) {
   const t = getDict(locale);
@@ -21,6 +22,10 @@ export function Footer({ locale }: { locale: Locale }) {
         <div>
           <p className="font-heading text-lg font-bold">{t.brand}</p>
           <p className="mt-2 text-sm text-muted-foreground">{t.tagline}</p>
+          <SocialTextLinks
+            labels={{ telegram: t.footer.telegram, x: t.footer.x }}
+            className="mt-4"
+          />
           <p className="mt-4 text-sm text-muted-foreground">{t.footer.copyright}</p>
         </div>
 

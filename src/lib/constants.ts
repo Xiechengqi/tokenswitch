@@ -24,6 +24,8 @@ export const DOCKER_COMMAND =
   "docker run -itd -p 8008:8008 -v $HOME/.token-switch:/root/.cc-switch --name cc-switch ghcr.io/xiechengqi/cc-switch:latest";
 
 export const GITHUB_REPO = "https://github.com/Xiechengqi/tokenswitch";
+export const TELEGRAM_URL = "https://t.me/tokenswitchorg";
+export const X_URL = "https://x.com/TokenSwitch";
 export const CLIENT_REPO = "https://github.com/xiechengqi/cc-switch";
 export const ROUTER_REPO = "https://github.com/xiechengqi/cc-switch-router";
 export const MARKET_REPO = "https://github.com/xiechengqi/cc-switch-market";
