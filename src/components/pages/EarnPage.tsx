@@ -1,15 +1,8 @@
-"use client";
-
-import { useMemo, useState } from "react";
 import type { Locale } from "@/lib/types";
 import { getDict } from "@/lib/i18n";
-import { formatUsd, providerNetFromGross } from "@/lib/constants";
-import { Card } from "@/components/ui/Card";
 
 export function EarnPage({ locale }: { locale: Locale }) {
   const t = getDict(locale);
-  const [monthly, setMonthly] = useState(500);
-  const net = useMemo(() => providerNetFromGross(monthly), [monthly]);
 
   const rows = [
     t.earnPage.rows.billing,
@@ -45,28 +38,6 @@ export function EarnPage({ locale }: { locale: Locale }) {
             </tbody>
           </table>
         </div>
-
-        <Card className="mt-10">
-          <h2 className="font-heading text-xl font-bold">{t.earnPage.calculator.title}</h2>
-          <label className="mt-6 block text-sm font-medium">
-            {t.earnPage.calculator.label}
-            <input
-              type="range"
-              min={50}
-              max={5000}
-              step={50}
-              value={monthly}
-              onChange={(e) => setMonthly(Number(e.target.value))}
-              className="mt-3 w-full accent-accent"
-            />
-          </label>
-          <p className="mt-4 font-mono text-2xl font-bold">{formatUsd(monthly, locale)}</p>
-          <p className="mt-2 text-muted-foreground">
-            {t.earnPage.calculator.net}:{" "}
-            <span className="font-semibold text-foreground">{formatUsd(net, locale)}</span>
-          </p>
-          <p className="mt-2 text-xs text-muted-foreground">{t.earnPage.calculator.note}</p>
-        </Card>
 
         <div className="mt-12">
           <h2 className="font-heading text-2xl font-bold">{t.earnPage.steps.title}</h2>

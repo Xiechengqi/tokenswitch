@@ -56,15 +56,17 @@ export function TopNav({ locale }: { locale: Locale }) {
         </nav>
 
         <div className="flex items-center gap-2 sm:gap-3">
-          <div className="flex rounded-full border-2 border-border text-xs font-medium">
+          <div className="inline-flex rounded-full border border-border bg-muted/50 p-0.5 text-xs font-medium">
             {LOCALES.map((l) => (
               <Link
                 key={l}
                 href={switchLocalePath(locale, l, pathname)}
                 onClick={() => localStorage.setItem("tokenswitch-locale", l)}
                 className={cn(
-                  "px-2.5 py-1.5 uppercase",
-                  l === locale ? "bg-accent text-white" : "text-muted-foreground",
+                  "rounded-full px-2.5 py-1.5 uppercase transition-colors",
+                  l === locale
+                    ? "bg-background text-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground",
                 )}
               >
                 {t.lang[l]}

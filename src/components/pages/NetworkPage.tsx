@@ -35,9 +35,11 @@ export function NetworkPage({ locale }: { locale: Locale }) {
 
   return (
     <>
-      <section className="border-b-2 border-border bg-terminal py-8 text-white">
+      <section className="border-b-2 border-border bg-background py-8">
         <div className="mx-auto max-w-[var(--container)] px-4 sm:px-6">
-          <WorldMapLazy locale={locale} className="relative h-[320px] w-full sm:h-[420px]" />
+          <div className="overflow-hidden rounded-2xl border-2 border-border bg-card">
+            <WorldMapLazy locale={locale} className="relative h-[320px] w-full sm:h-[420px]" />
+          </div>
         </div>
       </section>
 

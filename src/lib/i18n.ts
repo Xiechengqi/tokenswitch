@@ -84,15 +84,6 @@ const dict = {
       breakdown: "Market 10% · Router 5% · fully ledgered",
       cta: "Start earning",
     },
-    trust: {
-      title: "Built for trust",
-      items: [
-        { title: "Keys never leave", desc: "Upstream API keys stay on the provider device." },
-        { title: "Short-lived leases", desc: "Tunnel credentials expire in seconds, not months." },
-        { title: "Ledger everything", desc: "Token Market funds are auditable; Share Market never holds money." },
-      ],
-      cta: "Security model",
-    },
     map: {
       title: "Live network",
       subtitle: "Click a region node to open its dashboard.",
@@ -142,12 +133,6 @@ const dict = {
         payout: { label: "Payout", token: "Platform settlement, Gate.io auto-withdraw", share: "Buyer pays you directly" },
         fee: { label: "Platform fee", token: "10% market + 5% router", share: "Zero custody — no platform cut" },
         fit: { label: "Best for", token: "Passive income, no negotiation", share: "Custom pricing, community trades" },
-      },
-      calculator: {
-        title: "Revenue calculator",
-        label: "Estimated monthly usage",
-        net: "Your estimated net income",
-        note: "Token Market only. Share Market pricing is set by you.",
       },
       steps: {
         title: "Get started in four steps",
@@ -251,7 +236,8 @@ const dict = {
       copyright: "© 2026 TokenSwitch",
       components: "Components",
       regions: "Regions",
-      legal: "Security · FAQ",
+      security: "Security",
+      faq: "FAQ",
     },
     lang: { en: "EN", zh: "中文", ja: "日本語" },
     notFound: { title: "Page not found", back: "Back home" },
@@ -338,15 +324,6 @@ const dict = {
       breakdown: "Market 10% · Router 5% · 全程 ledger 可查",
       cta: "开始变现",
     },
-    trust: {
-      title: "为信任而设计",
-      items: [
-        { title: "密钥不出本机", desc: "上游 API Key 始终留在 Provider 设备。" },
-        { title: "短期租约", desc: "隧道凭证以秒计过期，而非长期共享。" },
-        { title: "账本审计", desc: "Token Market 资金可审计；Share Market 不经手资金。" },
-      ],
-      cta: "安全模型",
-    },
     map: {
       title: "实时网络",
       subtitle: "点击区域节点打开 Dashboard。",
@@ -396,12 +373,6 @@ const dict = {
         payout: { label: "收款", token: "平台结算，Gate.io 自动提现", share: "买家在群聊中直接转给你" },
         fee: { label: "抽成", token: "Market 10% + Router 5%", share: "平台不经手资金" },
         fit: { label: "适合", token: "想躺赚、不想沟通", share: "自主定价、熟人/社群交易" },
-      },
-      calculator: {
-        title: "收益计算器",
-        label: "预计月消费",
-        net: "预计净收入",
-        note: "仅 Token Market。Share Market 价格由你自定。",
       },
       steps: {
         title: "四步上手",
@@ -505,7 +476,8 @@ const dict = {
       copyright: "© 2026 TokenSwitch",
       components: "组件",
       regions: "区域",
-      legal: "安全 · FAQ",
+      security: "安全",
+      faq: "FAQ",
     },
     lang: { en: "EN", zh: "中文", ja: "日本語" },
     notFound: { title: "页面未找到", back: "返回首页" },
@@ -592,15 +564,6 @@ const dict = {
       breakdown: "Market 10% · Router 5% · 全額 ledger 記録",
       cta: "収益化を始める",
     },
-    trust: {
-      title: "信頼のために設計",
-      items: [
-        { title: "キーは外出しない", desc: "上流 API キーはプロバイダー端末に留まります。" },
-        { title: "短期リース", desc: "トンネル認証情報は数秒で失効、長期共有ではありません。" },
-        { title: "すべて ledger 化", desc: "Token Market 資金は監査可能。Share Market は資金を預かりません。" },
-      ],
-      cta: "セキュリティモデル",
-    },
     map: {
       title: "ライブネットワーク",
       subtitle: "リージョンノードをクリックしてダッシュボードを開く。",
@@ -650,12 +613,6 @@ const dict = {
         payout: { label: "支払い", token: "プラットフォーム決済、Gate.io 自動出金", share: "購入者が直接支払い" },
         fee: { label: "手数料", token: "Market 10% + Router 5%", share: "非保管——プラットフォーム手数料なし" },
         fit: { label: "向いている人", token: "受動的収入、交渉不要", share: "カスタム価格、コミュニティ取引" },
-      },
-      calculator: {
-        title: "収益計算機",
-        label: "月間利用見積もり",
-        net: "推定純収入",
-        note: "Token Market のみ。Share Market の価格は自分で設定。",
       },
       steps: {
         title: "4 ステップで開始",
@@ -759,7 +716,8 @@ const dict = {
       copyright: "© 2026 TokenSwitch",
       components: "コンポーネント",
       regions: "リージョン",
-      legal: "セキュリティ · FAQ",
+      security: "セキュリティ",
+      faq: "FAQ",
     },
     lang: { en: "EN", zh: "中文", ja: "日本語" },
     notFound: { title: "ページが見つかりません", back: "ホームに戻る" },

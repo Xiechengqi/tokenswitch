@@ -4,6 +4,22 @@ import { useEffect, useRef } from "react";
 import type { Locale } from "@/lib/types";
 import { getDict } from "@/lib/i18n";
 
+/** Node center X in viewBox coords (see Node transform). */
+const NODES = { client: 90, router: 310, market: 520, consumer: 860 } as const;
+const NODE_W = 180;
+const NODE_CY = 150;
+
+const left = (cx: number) => cx - NODE_W / 2;
+const right = (cx: number) => cx + NODE_W / 2;
+
+/** Static paths — endpoints align to node box edges. */
+const PATHS = {
+  tunnel: `M ${right(NODES.client)} ${NODE_CY} L ${left(NODES.router)} ${NODE_CY}`,
+  req: `M ${left(NODES.consumer)} 135 Q 690 45 ${right(NODES.market)} 135`,
+  route: `M ${left(NODES.market)} ${NODE_CY} L ${right(NODES.router)} ${NODE_CY}`,
+  back: `M ${left(NODES.router)} 165 Q 495 245 ${left(NODES.consumer)} 165`,
+} as const;
+
 const CYCLE = 6000;
 const P_REQ: [number, number] = [2000, 3000];
 const P_ROUTE: [number, number] = [3000, 4000];
@@ -14,8 +30,8 @@ export function HowItWorks({ locale }: { locale: Locale }) {
   const t = getDict(locale);
   const tunnelRef = useRef<SVGPathElement>(null);
   const reqRef = useRef<SVGPathElement>(null);
+  const routeRef = useRef<SVGPathElement>(null);
   const backRef = useRef<SVGPathElement>(null);
-  const marketRef = useRef<SVGPathElement>(null);
   const dotReq = useRef<SVGCircleElement>(null);
   const dotRoute = useRef<SVGCircleElement>(null);
   const dotTunnel = useRef<SVGCircleElement>(null);
@@ -27,7 +43,12 @@ export function HowItWorks({ locale }: { locale: Locale }) {
     const start = performance.now();
     let raf = 0;
 
-    const setDot = (el: SVGCircleElement | null, path: SVGPathElement | null, p: number, reverse = false) => {
+    const setDot = (
+      el: SVGCircleElement | null,
+      path: SVGPathElement | null,
+      p: number,
+      reverse = false,
+    ) => {
       if (!el || !path) return;
       const len = path.getTotalLength();
       const tVal = reverse ? 1 - p : p;
@@ -57,7 +78,7 @@ export function HowItWorks({ locale }: { locale: Locale }) {
       if (elapsed >= P_ROUTE[0] && elapsed < P_ROUTE[1]) {
         setDot(
           dotRoute.current,
-          marketRef.current,
+          routeRef.current,
           (elapsed - P_ROUTE[0]) / (P_ROUTE[1] - P_ROUTE[0]),
         );
       } else hide(dotRoute.current);
@@ -83,25 +104,57 @@ export function HowItWorks({ locale }: { locale: Locale }) {
 
         <div className="mt-10 overflow-x-auto">
           <svg
-            className="mx-auto min-w-[720px] max-w-full"
-            viewBox="0 0 1100 300"
+            className="mx-auto block w-full max-w-[950px] min-w-[720px]"
+            viewBox="0 0 950 300"
+            preserveAspectRatio="xMidYMid meet"
             role="img"
             aria-label={t.howItWorks.title}
           >
-            <path ref={tunnelRef} className="stroke-accent" strokeWidth="2" fill="none" d="M 180 150 L 310 150" />
-            <path ref={reqRef} className="stroke-secondary" strokeWidth="2" fill="none" d="M 860 130 Q 600 40 520 130" />
-            <path ref={marketRef} className="stroke-tertiary" strokeWidth="2" fill="none" d="M 520 150 L 700 150" />
-            <path ref={backRef} className="stroke-quaternary" strokeWidth="2" fill="none" d="M 310 170 Q 600 250 860 170" />
+            <path
+              ref={tunnelRef}
+              d={PATHS.tunnel}
+              fill="none"
+              stroke="var(--accent)"
+              strokeWidth="2"
+            />
+            <path ref={reqRef} d={PATHS.req} fill="none" stroke="var(--secondary)" strokeWidth="2" />
+            <path
+              ref={routeRef}
+              d={PATHS.route}
+              fill="none"
+              stroke="var(--tertiary)"
+              strokeWidth="2"
+            />
+            <path ref={backRef} d={PATHS.back} fill="none" stroke="var(--quaternary)" strokeWidth="2" />
 
-            <Node x={90} label={t.howItWorks.nodes.client} caption={t.howItWorks.nodes.clientCap} />
-            <Node x={310} label={t.howItWorks.nodes.router} caption={t.howItWorks.nodes.routerCap} />
-            <Node x={520} label={t.howItWorks.nodes.market} caption={t.howItWorks.nodes.marketCap} accent />
-            <Node x={860} label={t.howItWorks.nodes.consumer} caption={t.howItWorks.nodes.consumerCap} />
+            <text x={245} y={138} className="fill-muted-foreground text-[11px]">
+              {t.howItWorks.labels.tunnel}
+            </text>
+            <text x={690} y={72} className="fill-muted-foreground text-[11px]">
+              {t.howItWorks.labels.request}
+            </text>
+            <text x={495} y={228} className="fill-muted-foreground text-[11px]">
+              {t.howItWorks.labels.response}
+            </text>
 
-            <circle ref={dotTunnel} r="6" className="fill-accent" opacity="0" />
-            <circle ref={dotReq} r="6" className="fill-secondary" opacity="0" />
-            <circle ref={dotRoute} r="6" className="fill-tertiary" opacity="0" />
-            <circle ref={dotBack} r="6" className="fill-quaternary" opacity="0" />
+            <Node x={NODES.client} label={t.howItWorks.nodes.client} caption={t.howItWorks.nodes.clientCap} />
+            <Node x={NODES.router} label={t.howItWorks.nodes.router} caption={t.howItWorks.nodes.routerCap} />
+            <Node
+              x={NODES.market}
+              label={t.howItWorks.nodes.market}
+              caption={t.howItWorks.nodes.marketCap}
+              accent
+            />
+            <Node
+              x={NODES.consumer}
+              label={t.howItWorks.nodes.consumer}
+              caption={t.howItWorks.nodes.consumerCap}
+            />
+
+            <circle ref={dotTunnel} r="6" fill="var(--accent)" opacity="0" />
+            <circle ref={dotReq} r="6" fill="var(--secondary)" opacity="0" />
+            <circle ref={dotRoute} r="6" fill="var(--tertiary)" opacity="0" />
+            <circle ref={dotBack} r="6" fill="var(--quaternary)" opacity="0" />
           </svg>
         </div>
 
@@ -134,18 +187,28 @@ function Node({
   accent?: boolean;
 }) {
   return (
-    <g transform={`translate(${x - 90}, 90)`}>
+    <g transform={`translate(${x - NODE_W / 2}, 90)`}>
       <rect
-        width="180"
+        width={NODE_W}
         height="120"
         rx="16"
         className={accent ? "fill-accent/10 stroke-accent" : "fill-card stroke-border-strong"}
         strokeWidth="2"
       />
-      <text x="90" y="58" textAnchor="middle" className="fill-foreground text-sm font-bold">
+      <text
+        x={NODE_W / 2}
+        y="58"
+        textAnchor="middle"
+        className="fill-foreground text-sm font-bold"
+      >
         {label}
       </text>
-      <text x="90" y="78" textAnchor="middle" className="fill-muted-foreground text-xs">
+      <text
+        x={NODE_W / 2}
+        y="78"
+        textAnchor="middle"
+        className="fill-muted-foreground text-xs"
+      >
         {caption}
       </text>
     </g>

@@ -67,8 +67,12 @@ export function Footer({ locale }: { locale: Locale }) {
             ))}
           </ul>
           <p className="mt-6 text-sm">
-            <Link href={localePath(locale, "security")} className="text-muted-foreground hover:text-foreground">
-              {t.footer.legal}
+            <a href={`${localePath(locale)}#trust`} className="text-muted-foreground hover:text-foreground">
+              {t.footer.security}
+            </a>
+            <span className="mx-2 text-muted-foreground">·</span>
+            <Link href={localePath(locale, "faq")} className="text-muted-foreground hover:text-foreground">
+              {t.footer.faq}
             </Link>
             <span className="mx-2 text-muted-foreground">·</span>
             <a href={DOCS_URL} className="text-muted-foreground hover:text-foreground" target="_blank" rel="noopener noreferrer">

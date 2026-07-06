@@ -4,7 +4,7 @@ import { LOCALES } from "@/lib/types";
 
 export const dynamic = "force-static";
 
-const PAGES = ["", "network", "download", "earn", "markets", "security", "faq"] as const;
+const PAGES = ["", "network", "download", "earn", "markets", "faq"] as const;
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const entries: MetadataRoute.Sitemap = [];
