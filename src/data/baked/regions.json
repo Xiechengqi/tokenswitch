@@ -1,0 +1,15 @@
+{
+  "bakedAt": "2026-07-06T09:46:43.049Z",
+  "regions": [
+    {
+      "name": "japan",
+      "domain": "jptokenswitch.cc",
+      "url": "https://jptokenswitch.cc"
+    },
+    {
+      "name": "singapore",
+      "domain": "sgptokenswitch.cc",
+      "url": "https://sgptokenswitch.cc"
+    }
+  ]
+}

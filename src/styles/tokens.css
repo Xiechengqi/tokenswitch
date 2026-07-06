@@ -1,0 +1,24 @@
+:root {
+  --background: #fffdf5;
+  --foreground: #1e293b;
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+  --accent: #8b5cf6;
+  --accent-foreground: #ffffff;
+  --secondary: #f472b6;
+  --tertiary: #fbbf24;
+  --quaternary: #34d399;
+  --border: #e2e8f0;
+  --border-strong: #1e293b;
+  --card: #ffffff;
+  --terminal: #0f172a;
+  --nav-h: 64px;
+  --container: 1200px;
+  --ring: #8b5cf6;
+}
+
+/* Commission bps — keep in sync with cc-switch-market config defaults */
+:root {
+  --market-platform-commission-bps: 1000;
+  --market-router-commission-bps: 500;
+}

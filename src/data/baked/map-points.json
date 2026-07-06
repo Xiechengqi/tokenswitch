@@ -1,0 +1,37 @@
+{
+  "bakedAt": "2026-07-06T09:46:45.060Z",
+  "source": "live",
+  "regions": [
+    {
+      "region": "japan",
+      "url": "https://jptokenswitch.cc"
+    },
+    {
+      "region": "singapore",
+      "url": "https://sgptokenswitch.cc"
+    }
+  ],
+  "servers": [
+    {
+      "lat": 35.6895,
+      "lon": 139.692,
+      "region": "japan",
+      "url": "https://jptokenswitch.cc"
+    },
+    {
+      "lat": 1.28009,
+      "lon": 103.851,
+      "region": "singapore",
+      "url": "https://sgptokenswitch.cc"
+    }
+  ],
+  "clientCount": 4,
+  "clients": [
+    {
+      "lat": 39.83,
+      "lon": -98.58,
+      "region": "japan",
+      "count": 4
+    }
+  ]
+}

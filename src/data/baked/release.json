@@ -1,0 +1,15 @@
+{
+  "bakedAt": "2026-07-06T09:46:47.839Z",
+  "tagName": "latest",
+  "name": "Latest Deb Build",
+  "publishedAt": "2026-07-04T12:56:12Z",
+  "repo": "xiechengqi/cc-switch",
+  "assets": [
+    {
+      "name": "cc-switch-linux-amd64-ubuntu22-latest.deb",
+      "downloadUrl": "https://github.com/Xiechengqi/cc-switch/releases/download/latest/cc-switch-linux-amd64-ubuntu22-latest.deb",
+      "size": 21630594,
+      "contentType": "application/x-debian-package"
+    }
+  ]
+}

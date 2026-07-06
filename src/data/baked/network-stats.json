@@ -1,0 +1,27 @@
+{
+  "bakedAt": "2026-07-06T09:46:47.610Z",
+  "source": "live",
+  "sharesOnline": null,
+  "tokenMarketShares": 6,
+  "shareListings": null,
+  "publicModels": [
+    "claude-fable-5",
+    "claude-haiku-4-5-20251001",
+    "claude-opus-4-7",
+    "gpt-5.5"
+  ],
+  "byRegion": [
+    {
+      "region": "japan",
+      "sharesOnline": null,
+      "tokenMarketShares": 6,
+      "shareListings": null
+    },
+    {
+      "region": "singapore",
+      "sharesOnline": null,
+      "tokenMarketShares": null,
+      "shareListings": null
+    }
+  ]
+}
