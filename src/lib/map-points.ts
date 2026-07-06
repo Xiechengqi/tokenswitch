@@ -1,6 +1,7 @@
 import mapPointsData from "@/data/baked/map-points.json";
 import type { AggregatedMapData } from "./types";
 import { getBakedRegions } from "./regions";
+import { safeFetch } from "./safe-fetch";
 
 const POLL_INTERVAL_MS = 60_000;
 
@@ -26,8 +27,8 @@ export async function fetchLiveMapPoints(): Promise<AggregatedMapData | null> {
   const results = await Promise.allSettled(
     regions.map(async (region) => {
       const url = `${region.url.replace(/\/$/, "")}/v1/public/map-points`;
-      const res = await fetch(url, { mode: "cors" });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const res = await safeFetch(url, { mode: "cors" });
+      if (!res?.ok) throw new Error(`HTTP ${res?.status ?? "failed"}`);
       const data = await res.json();
       return { region: region.name, baseUrl: region.url, data };
     }),
@@ -77,11 +78,11 @@ export async function probeRegionHealth(
 ): Promise<{ healthy: boolean; latencyMs: number } | null> {
   const start = performance.now();
   try {
-    const res = await fetch(`${url.replace(/\/$/, "")}/v1/healthz`, {
+    const res = await safeFetch(`${url.replace(/\/$/, "")}/v1/healthz`, {
       mode: "cors",
       cache: "no-store",
     });
-    if (!res.ok) return { healthy: false, latencyMs: Math.round(performance.now() - start) };
+    if (!res?.ok) return { healthy: false, latencyMs: Math.round(performance.now() - start) };
     const body = await res.json();
     return {
       healthy: body?.ok === true,

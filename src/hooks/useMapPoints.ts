@@ -55,6 +55,7 @@ export function useMapPoints(onUpdate: (data: MapPointsState) => void) {
     clientKeys: new Set<string>(),
     isSnapshot: true,
   });
+  const liveEnabledRef = useRef(true);
 
   const applyPayload = useCallback(
     (payload: AggregatedMapData) => {
@@ -82,17 +83,27 @@ export function useMapPoints(onUpdate: (data: MapPointsState) => void) {
     let cancelled = false;
 
     const refresh = async () => {
-      if (document.visibilityState === "hidden") return;
-      const live = await fetchLiveMapPoints();
-      if (cancelled || !live) return;
-      applyPayload(live);
+      if (!liveEnabledRef.current || document.visibilityState === "hidden") return;
+      try {
+        const live = await fetchLiveMapPoints();
+        if (cancelled) return;
+        if (live) {
+          applyPayload(live);
+        } else {
+          liveEnabledRef.current = false;
+          if (timer) clearInterval(timer);
+        }
+      } catch {
+        liveEnabledRef.current = false;
+        if (timer) clearInterval(timer);
+      }
     };
 
     timer = setInterval(refresh, POLL_INTERVAL_MS);
     void refresh();
 
     const onVisibility = () => {
-      if (document.visibilityState === "visible") void refresh();
+      if (document.visibilityState === "visible" && liveEnabledRef.current) void refresh();
     };
     document.addEventListener("visibilitychange", onVisibility);
 

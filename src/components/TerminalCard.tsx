@@ -53,16 +53,11 @@ export function TerminalCard({ locale }: { locale: Locale }) {
           <span className="mx-2">·</span>
           {t.download.webLoginHint}
         </p>
-        <video
-          className="aspect-video w-full rounded-lg border border-white/10 bg-black/30 object-cover"
-          src="/tokenswitch-use.mp4"
-          poster="/og.png"
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="metadata"
-          aria-label="cc-switch web UI walkthrough"
+        <img
+          src="/og.png"
+          alt=""
+          className="aspect-video w-full rounded-lg bg-black/30 object-cover"
+          loading="lazy"
         />
       </div>
     </div>
