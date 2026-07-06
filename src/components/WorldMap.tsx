@@ -36,8 +36,6 @@ export function WorldMap({ locale, className }: { locale: Locale; className?: st
   const rafRef = useRef(0);
   const lastTimeRef = useRef(0);
   const [hoveredClient, setHoveredClient] = useState<{ count: number; x: number; y: number } | null>(null);
-  const viewRef = useRef({ zoom: 1, panX: 0, panY: 0 });
-  const dragRef = useRef({ dragging: false, lastX: 0, lastY: 0 });
 
   const handleUpdate = useCallback((data: MapRenderData) => {
     dataRef.current = data;
@@ -92,14 +90,13 @@ export function WorldMap({ locale, className }: { locale: Locale; className?: st
 
     const { projection, dpr } = proj;
     const { servers, clients } = dataRef.current;
-    const { zoom, panX, panY } = viewRef.current;
 
     updateAnimationStates(clients, timestamp, dt);
 
     ctx.save();
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.setTransform(dpr * zoom, 0, 0, dpr * zoom, panX * dpr, panY * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.drawImage(offscreen, 0, 0, offscreen.width / dpr, offscreen.height / dpr);
 
     const regionToServer = new Map<string, { x: number; y: number; url: string; region: string }>();
@@ -175,7 +172,6 @@ export function WorldMap({ locale, className }: { locale: Locale; className?: st
     rafRef.current = requestAnimationFrame(animate);
     const container = containerRef.current;
     const ro = new ResizeObserver(() => {
-      viewRef.current = { zoom: 1, panX: 0, panY: 0 };
       setHoveredClient(null);
       setupMap();
     });
@@ -188,10 +184,9 @@ export function WorldMap({ locale, className }: { locale: Locale; className?: st
 
   const mapCoords = (e: React.MouseEvent<HTMLCanvasElement>) => {
     const rect = canvasRef.current!.getBoundingClientRect();
-    const { zoom, panX, panY } = viewRef.current;
     return {
-      mapX: (e.clientX - rect.left - panX) / zoom,
-      mapY: (e.clientY - rect.top - panY) / zoom,
+      mapX: e.clientX - rect.left,
+      mapY: e.clientY - rect.top,
     };
   };
 
@@ -199,21 +194,9 @@ export function WorldMap({ locale, className }: { locale: Locale; className?: st
     <div ref={containerRef} className={className ?? "relative h-[420px] w-full sm:h-[520px]"}>
       <canvas
         ref={canvasRef}
-        className="h-full w-full cursor-grab touch-none"
-        onPointerDown={(e) => {
-          dragRef.current = { dragging: true, lastX: e.clientX, lastY: e.clientY };
-          canvasRef.current?.setPointerCapture(e.pointerId);
-        }}
+        className="h-full w-full touch-none"
         onPointerMove={(e) => {
-          const drag = dragRef.current;
-          if (drag.dragging) {
-            const view = viewRef.current;
-            view.panX += e.clientX - drag.lastX;
-            view.panY += e.clientY - drag.lastY;
-            drag.lastX = e.clientX;
-            drag.lastY = e.clientY;
-          }
-          if (!projRef.current || drag.dragging) return;
+          if (!projRef.current) return;
           const { projection } = projRef.current;
           const { mapX, mapY } = mapCoords(e);
           const { servers } = dataRef.current;
@@ -231,16 +214,12 @@ export function WorldMap({ locale, className }: { locale: Locale; className?: st
             hoveredCount == null ? null : { count: hoveredCount, x: e.clientX + 14, y: e.clientY + 14 },
           );
           if (canvasRef.current) {
-            canvasRef.current.style.cursor = overServer ? "pointer" : hoveredCount != null ? "default" : "grab";
+            canvasRef.current.style.cursor = overServer ? "pointer" : "default";
           }
-        }}
-        onPointerUp={(e) => {
-          dragRef.current.dragging = false;
-          canvasRef.current?.releasePointerCapture(e.pointerId);
         }}
         onPointerLeave={() => {
           setHoveredClient(null);
-          if (canvasRef.current) canvasRef.current.style.cursor = "grab";
+          if (canvasRef.current) canvasRef.current.style.cursor = "default";
         }}
         onClick={(e) => {
           if (!projRef.current) return;
