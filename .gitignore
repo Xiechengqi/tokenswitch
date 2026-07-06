@@ -5,6 +5,7 @@ node_modules
 .next
 out
 .vite
+tsconfig.tsbuildinfo
 
 # Logs
 logs
