@@ -9,6 +9,7 @@ import { DOCS_URL } from "@/lib/constants";
 import { cn } from "@/lib/cn";
 import { Button } from "./ui/Button";
 import { SocialIconLinks } from "./SocialLinks";
+import { BrandMark } from "./BrandMark";
 
 export function TopNav({ locale }: { locale: Locale }) {
   const t = getDict(locale);
@@ -24,10 +25,8 @@ export function TopNav({ locale }: { locale: Locale }) {
   return (
     <header className="sticky top-0 z-50 bg-background/90 shadow-sm backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-[var(--container)] items-center justify-between gap-4 px-4 sm:px-6">
-        <Link href={localePath(locale)} className="flex items-center gap-2 font-heading text-lg font-bold">
-          <span className="text-accent" aria-hidden>
-            ◆
-          </span>
+        <Link href={localePath(locale)} className="flex items-center gap-2.5 font-heading text-lg font-bold">
+          <BrandMark />
           {t.brand}
         </Link>
 

@@ -1,6 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="TokenSwitch">
-  <rect width="32" height="32" rx="8" fill="#8b5cf6"/>
-  <!-- T crossbar + stem (stem doubles as $ vertical) -->
+  <rect width="32" height="32" rx="8" fill="#1e293b"/>
   <path
     fill="none"
     stroke="#ffffff"
@@ -9,7 +8,6 @@
     stroke-linejoin="round"
     d="M8.5 8.25h15M16 8.25v15.5"
   />
-  <!-- Simplified S hanging on the T stem → TS / $ monogram -->
   <path
     fill="none"
     stroke="#ffffff"
