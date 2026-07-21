@@ -6,7 +6,7 @@ import { Card } from "./ui/Card";
 export function EcosystemCards({ locale }: { locale: Locale }) {
   const t = getDict(locale);
   const cards = [
-    { ...t.ecosystem.client, href: localePath(locale, "download"), color: "bg-accent/15 border-accent" },
+    { ...t.ecosystem.client, href: `${localePath(locale)}#install`, color: "bg-accent/15 border-accent" },
     { ...t.ecosystem.router, href: localePath(locale, "network"), color: "bg-secondary/15 border-secondary" },
     { ...t.ecosystem.tokenMarket, href: localePath(locale, "markets"), color: "bg-tertiary/20 border-tertiary" },
     { ...t.ecosystem.shareMarket, href: localePath(locale, "markets"), color: "bg-quaternary/15 border-quaternary" },

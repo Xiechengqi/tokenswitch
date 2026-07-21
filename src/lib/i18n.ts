@@ -11,7 +11,7 @@ const dict = {
       markets: "Markets",
       earn: "Earn",
       docs: "Docs",
-      getStarted: "Get Started",
+      getStarted: "Start earning",
       github: "GitHub",
       telegram: "Telegram",
       x: "X",
@@ -19,9 +19,25 @@ const dict = {
     hero: {
       title: "Share your AI. Power the network.",
       subtitle:
-        "Connect Claude, Codex & Gemini to a global network — use it yourself, share with friends, or monetize idle subscriptions.",
-      ctaClient: "Get the client",
-      ctaMarkets: "Browse markets",
+        "Run the TokenSwitch client on a Linux server, open a share, and monetize idle Claude, Codex & Gemini access — or buy routed usage on the markets.",
+      linuxNote: "Providers need a Linux host (amd64 or arm64).",
+      ctaJoin: "Join the network",
+      ctaMarkets: "I'm a user — browse markets",
+    },
+    install: {
+      badge: "install",
+      linuxNote: "One-line install on Linux (amd64 / arm64).",
+      region: "Region",
+      email: "Owner email",
+      emailPlaceholder: "you@example.com",
+      password: "Web UI password",
+      passwordPlaceholder: "Choose a password",
+      passwordHint: "Used for your provider node Web UI login. Never sent to this website.",
+      copy: "Copy install command",
+      copied: "Copied",
+      pasteHint: "Paste and run it on your Linux server.",
+      unavailable: "This region is currently unreachable. Pick another region to install.",
+      moreWays: "More install options",
     },
     stats: {
       regions: "Regions",
@@ -33,11 +49,12 @@ const dict = {
     },
     ecosystem: {
       title: "Four pieces, one network",
-      subtitle: "TokenSwitch is the ecosystem brand. cc-switch is the open-source client at its core.",
+      subtitle:
+        "TokenSwitch is the ecosystem brand. The open-source client runtime is cc-switch-server.",
       client: {
         title: "Client",
-        desc: "Manage providers, run shares, hold keys locally.",
-        cta: "Download",
+        desc: "Linux provider runtime with Web UI — manage providers, shares, and tunnels.",
+        cta: "Install",
       },
       router: {
         title: "Router",
@@ -58,11 +75,20 @@ const dict = {
     howItWorks: {
       title: "How the network works",
       subtitle:
-        "Providers run cc-switch locally. Routers route traffic. Markets connect consumers — keys never leave the provider machine.",
+        "Providers run the client on a server they control. Routers route traffic. Markets connect consumers — upstream keys stay on your provider node.",
       steps: [
-        { bold: "Share.", text: "Run cc-switch and open an outbound SSH tunnel to the nearest router." },
-        { bold: "Route.", text: "Public requests hit a subdomain on the router and proxy back through the tunnel." },
-        { bold: "Earn.", text: "List on Token Market (usage) or Share Market (period) and collect revenue." },
+        {
+          bold: "Share.",
+          text: "Install the client, register to a router, and open an outbound SSH tunnel.",
+        },
+        {
+          bold: "Route.",
+          text: "Public requests hit a subdomain on the router and proxy back through the tunnel.",
+        },
+        {
+          bold: "Earn.",
+          text: "List on Token Market (usage) or Share Market (period) and collect revenue.",
+        },
       ],
       labels: {
         tunnel: "SSH tunnel",
@@ -70,8 +96,8 @@ const dict = {
         response: "Response",
       },
       nodes: {
-        client: "cc-switch",
-        clientCap: "your machine",
+        client: "client",
+        clientCap: "your provider node",
         router: "router",
         routerCap: "global edge",
         market: "market",
@@ -93,7 +119,7 @@ const dict = {
     },
     network: {
       title: "Network",
-      subtitle: "Real-time edge nodes where cc-switch tunnels connect and shares go live.",
+      subtitle: "Real-time edge nodes where provider tunnels connect and shares go live.",
       healthy: "Healthy",
       down: "Down",
       latency: "Latency",
@@ -107,19 +133,21 @@ const dict = {
       loading: "Loading regions…",
     },
     download: {
-      title: "Get the client",
-      subtitle: "cc-switch is the desktop & Docker client that powers TokenSwitch shares.",
-      tabs: { desktop: "Desktop", docker: "Docker", web: "Web UI" },
-      desktopDesc: "Native app for macOS, Windows, and Linux. Based on the open-source cc-switch project.",
-      dockerDesc: "One command to run the web UI locally on port 8008.",
-      webDesc: "Docker mode exposes a browser UI at :8008 — same experience, no desktop install.",
+      title: "Install the client",
+      subtitle:
+        "The TokenSwitch client is cc-switch-server — a Linux provider runtime with an embedded Web UI. Desktop builds are discontinued.",
+      scriptTitle: "Recommended: one-line install",
+      scriptDesc: "Use the homepage install card, or copy the same flow here after picking a region.",
+      goInstall: "Open install card",
+      binaryTitle: "Linux binary",
+      binaryDesc:
+        "Download the amd64 or arm64 binary from GitHub Releases when you cannot run the install script.",
       version: "Version",
       downloadBtn: "Download",
       allReleases: "All releases on GitHub",
-      webLoginHint: "Change the default password after first login.",
       afterDownload: "What next?",
       paths: [
-        { title: "Personal use", desc: "Manage your own Claude, Codex & Gemini CLIs." },
+        { title: "Personal use", desc: "Point Claude, Codex & Gemini CLIs at your provider node." },
         { title: "Share with friends", desc: "Free or private shares via email whitelist." },
         { title: "Monetize", desc: "List on Token Market or Share Market.", href: "earn" },
       ],
@@ -132,15 +160,19 @@ const dict = {
       shareMarket: "Share Market",
       rows: {
         billing: { label: "Billing", token: "Per-token usage, auto-deducted", share: "Fixed period / carpool price" },
-        payout: { label: "Payout", token: "Platform settlement, Gate.io auto-withdraw", share: "Buyer pays you directly" },
+        payout: {
+          label: "Payout",
+          token: "Platform settlement, Gate.io auto-withdraw",
+          share: "Buyer pays you directly",
+        },
         fee: { label: "Platform fee", token: "10% market + 5% router", share: "Zero custody — no platform cut" },
         fit: { label: "Best for", token: "Passive income, no negotiation", share: "Custom pricing, community trades" },
       },
       steps: {
         title: "Get started in four steps",
         items: [
-          "Install cc-switch (desktop or Docker).",
-          "Sign in with your email on the router.",
+          "Install the client (cc-switch-server) on a Linux host.",
+          "Complete setup and bind your owner email on the router.",
           "Create a share and pick Token Market or Share Market.",
           "Track earnings on the market dashboard.",
         ],
@@ -155,6 +187,7 @@ const dict = {
       shareDesc: "Buy fixed-period share access or join a carpool. Pay the owner directly in chat.",
       pickRegion: "Pick a region",
       open: "Open",
+      comingSoon: "Coming soon",
       stats: {
         onlineShares: "Online shares",
         listings: "Active listings",
@@ -167,7 +200,7 @@ const dict = {
       provider: {
         title: "Provider",
         items: [
-          "Upstream API keys never leave your device.",
+          "Upstream API keys stay on your provider node — never sent to markets or this website.",
           "Shares sync metadata only — router stores subdomain & ACL, not secrets.",
           "Token Market revenue is ledgered; withdrawals are auditable.",
         ],
@@ -194,7 +227,7 @@ const dict = {
       items: [
         {
           q: "How is this different from official Claude / Codex APIs?",
-          a: "Consumers buy routed access through provider shares. Providers keep their own subscriptions and keys locally; the network handles routing and (on Token Market) billing.",
+          a: "Consumers buy routed access through provider shares. Providers keep subscriptions and keys on their own node; the network handles routing and (on Token Market) billing.",
         },
         {
           q: "Can I get banned for sharing?",
@@ -217,12 +250,12 @@ const dict = {
           a: "No. Buyers pay owners directly in the order chat. The platform only triggers router ACL grants after owner confirmation.",
         },
         {
-          q: "What is cc-switch vs TokenSwitch?",
-          a: "TokenSwitch is the network/ecosystem brand. cc-switch (based on the open-source project) is the client software.",
+          q: "What is the client vs TokenSwitch?",
+          a: "TokenSwitch is the network/ecosystem brand. The provider client runtime is cc-switch-server (desktop cc-switch is discontinued).",
         },
         {
           q: "Do I need a public IP?",
-          a: "No. cc-switch uses SSH reverse tunnels to connect to routers.",
+          a: "No. The client uses SSH reverse tunnels to connect to routers.",
         },
         {
           q: "Can I self-host a router?",
@@ -230,7 +263,7 @@ const dict = {
         },
         {
           q: "Where is live network data from?",
-          a: "The site loads a baked snapshot at build time and refreshes from public router endpoints when available.",
+          a: "The site loads a baked snapshot at build time and refreshes from public router endpoints and the regions file when available.",
         },
       ],
     },
@@ -242,6 +275,7 @@ const dict = {
       faq: "FAQ",
       telegram: "Telegram",
       x: "X",
+      clientRepo: "cc-switch-server (client)",
     },
     lang: { en: "EN", zh: "中文", ja: "日本語" },
     notFound: { title: "Page not found", back: "Back home" },
@@ -255,7 +289,7 @@ const dict = {
       markets: "市场",
       earn: "变现",
       docs: "文档",
-      getStarted: "开始使用",
+      getStarted: "开始变现",
       github: "GitHub",
       telegram: "Telegram",
       x: "X",
@@ -263,9 +297,25 @@ const dict = {
     hero: {
       title: "分享你的 AI，驱动全球网络",
       subtitle:
-        "把 Claude、Codex、Gemini 接入全球网络——自己用、分享给朋友，或将闲置订阅变现。",
-      ctaClient: "获取客户端",
-      ctaMarkets: "浏览市场",
+        "在 Linux 服务器上运行 TokenSwitch 客户端、开启 Share，把闲置的 Claude / Codex / Gemini 变现——或在市场购买路由用量。",
+      linuxNote: "Provider 需要一台 Linux 主机（amd64 或 arm64）。",
+      ctaJoin: "接入网络，开始变现",
+      ctaMarkets: "我是使用者，去市场",
+    },
+    install: {
+      badge: "install",
+      linuxNote: "Linux（amd64 / arm64）一键安装。",
+      region: "区域",
+      email: "Owner 邮箱",
+      emailPlaceholder: "you@example.com",
+      password: "Web UI 密码",
+      passwordPlaceholder: "设置登录密码",
+      passwordHint: "用于你的 Provider 节点 Web UI 登录，不会发送给本网站。",
+      copy: "复制安装命令",
+      copied: "已复制",
+      pasteHint: "到你的 Linux 服务器上粘贴运行。",
+      unavailable: "该区域当前不可达，请换一个区域再安装。",
+      moreWays: "更多安装方式",
     },
     stats: {
       regions: "区域",
@@ -277,11 +327,11 @@ const dict = {
     },
     ecosystem: {
       title: "四组件，一张网",
-      subtitle: "TokenSwitch 是生态品牌；cc-switch 是其开源客户端核心。",
+      subtitle: "TokenSwitch 是生态品牌；开源客户端运行时是 cc-switch-server。",
       client: {
         title: "Client",
-        desc: "管理供应商、运行 Share，密钥留在本机。",
-        cta: "下载",
+        desc: "Linux Provider 运行时 + Web UI：管理供应商、Share 与隧道。",
+        cta: "安装",
       },
       router: {
         title: "Router",
@@ -302,10 +352,10 @@ const dict = {
     howItWorks: {
       title: "网络如何运作",
       subtitle:
-        "Provider 在本机运行 cc-switch；Router 路由流量；Market 连接消费者——密钥永不出本机。",
+        "Provider 在自己控制的服务器上运行客户端；Router 路由流量；Market 连接消费者——上游密钥只留在你的 Provider 节点。",
       steps: [
-        { bold: "分享。", text: "运行 cc-switch，通过 SSH 反向隧道连接最近的 Router。" },
-        { bold: "路由。", text: "公网请求命中 Router 子域，经隧道回传到本机。" },
+        { bold: "分享。", text: "安装客户端，注册到 Router，并打开出站 SSH 隧道。" },
+        { bold: "路由。", text: "公网请求命中 Router 子域，经隧道回传到你的节点。" },
         { bold: "变现。", text: "上架 Token Market（按量）或 Share Market（包周期）获取收益。" },
       ],
       labels: {
@@ -314,8 +364,8 @@ const dict = {
         response: "响应",
       },
       nodes: {
-        client: "cc-switch",
-        clientCap: "你的机器",
+        client: "client",
+        clientCap: "你的 Provider 节点",
         router: "router",
         routerCap: "全球边缘",
         market: "market",
@@ -337,7 +387,7 @@ const dict = {
     },
     network: {
       title: "网络",
-      subtitle: "cc-switch 隧道接入的全球边缘节点，Share 在此上线。",
+      subtitle: "Provider 隧道接入的全球边缘节点，Share 在此上线。",
       healthy: "正常",
       down: "离线",
       latency: "延迟",
@@ -351,19 +401,20 @@ const dict = {
       loading: "加载区域中…",
     },
     download: {
-      title: "获取客户端",
-      subtitle: "cc-switch 是驱动 TokenSwitch 分享的桌面与 Docker 客户端。",
-      tabs: { desktop: "桌面版", docker: "Docker", web: "Web UI" },
-      desktopDesc: "支持 macOS、Windows、Linux。基于开源 cc-switch 项目。",
-      dockerDesc: "一行命令在本地 :8008 运行 Web UI。",
-      webDesc: "Docker 模式在 :8008 暴露浏览器 UI——无需安装桌面版。",
+      title: "安装客户端",
+      subtitle:
+        "TokenSwitch 客户端即 cc-switch-server——带内嵌 Web UI 的 Linux Provider 运行时。桌面版已停用。",
+      scriptTitle: "推荐：一键安装",
+      scriptDesc: "请使用首页安装卡；或选好区域后按同样流程复制命令。",
+      goInstall: "打开安装卡",
+      binaryTitle: "Linux 二进制",
+      binaryDesc: "无法使用安装脚本时，从 GitHub Releases 下载 amd64 / arm64 二进制。",
       version: "版本",
       downloadBtn: "下载",
       allReleases: "GitHub 全部版本",
-      webLoginHint: "首次登录后请修改默认密码。",
-      afterDownload: "下载后做什么？",
+      afterDownload: "安装后做什么？",
       paths: [
-        { title: "自己用", desc: "管理 Claude、Codex、Gemini 等 CLI。" },
+        { title: "自己用", desc: "把 Claude、Codex、Gemini CLI 指向你的 Provider 节点。" },
         { title: "分享给朋友", desc: "Free 或私有 Share，邮箱白名单控制。" },
         { title: "变现", desc: "上架 Token Market 或 Share Market。", href: "earn" },
       ],
@@ -383,8 +434,8 @@ const dict = {
       steps: {
         title: "四步上手",
         items: [
-          "安装 cc-switch（桌面版或 Docker）。",
-          "在 Router 上用邮箱登录。",
+          "在 Linux 主机上安装客户端（cc-switch-server）。",
+          "完成 setup，并在 Router 绑定 Owner 邮箱。",
           "创建 Share 并选择 Token Market 或 Share Market。",
           "在市场 Dashboard 查看收益。",
         ],
@@ -399,6 +450,7 @@ const dict = {
       shareDesc: "购买固定周期 Share 或拼车席位。在订单群聊中直接向 Owner 付款。",
       pickRegion: "选择区域",
       open: "打开",
+      comingSoon: "即将开放",
       stats: {
         onlineShares: "在线 Share",
         listings: "活跃挂牌",
@@ -411,7 +463,7 @@ const dict = {
       provider: {
         title: "Provider",
         items: [
-          "上游 API Key 永不出设备。",
+          "上游 API Key 只留在你的 Provider 节点——不会发给市场或本网站。",
           "Share 仅同步元数据——Router 存子域与 ACL，不存密钥。",
           "Token Market 收益写入 ledger，提现可审计。",
         ],
@@ -438,7 +490,7 @@ const dict = {
       items: [
         {
           q: "和直接用官方 API 有什么区别？",
-          a: "消费者通过 Provider Share 购买路由访问。Provider 在本机持有订阅与密钥；网络负责路由，Token Market 负责计费。",
+          a: "消费者通过 Provider Share 购买路由访问。Provider 在自己的节点持有订阅与密钥；网络负责路由，Token Market 负责计费。",
         },
         {
           q: "分享会被封号吗？",
@@ -461,12 +513,12 @@ const dict = {
           a: "不会。买家在订单群聊直接向 Owner 转账。平台仅在 Owner 确认后触发 Router ACL grant。",
         },
         {
-          q: "cc-switch 和 TokenSwitch 是什么关系？",
-          a: "TokenSwitch 是网络/生态品牌。cc-switch（基于开源项目）是客户端软件。",
+          q: "客户端和 TokenSwitch 是什么关系？",
+          a: "TokenSwitch 是网络/生态品牌。Provider 客户端运行时是 cc-switch-server（桌面版 cc-switch 已停用）。",
         },
         {
           q: "需要公网 IP 吗？",
-          a: "不需要。cc-switch 通过 SSH 反向隧道连接 Router。",
+          a: "不需要。客户端通过 SSH 反向隧道连接 Router。",
         },
         {
           q: "可以自建 Router 吗？",
@@ -474,7 +526,7 @@ const dict = {
         },
         {
           q: "官网的网络数据从哪来？",
-          a: "构建时烘焙快照保底；浏览器在可用时从 Router 公共端点刷新。",
+          a: "构建时烘焙快照保底；浏览器在可用时从 Router 公共端点与 regions 文件刷新。",
         },
       ],
     },
@@ -486,6 +538,7 @@ const dict = {
       faq: "FAQ",
       telegram: "Telegram",
       x: "X",
+      clientRepo: "cc-switch-server（客户端）",
     },
     lang: { en: "EN", zh: "中文", ja: "日本語" },
     notFound: { title: "页面未找到", back: "返回首页" },
@@ -499,7 +552,7 @@ const dict = {
       markets: "マーケット",
       earn: "収益化",
       docs: "ドキュメント",
-      getStarted: "はじめる",
+      getStarted: "収益化を始める",
       github: "GitHub",
       telegram: "Telegram",
       x: "X",
@@ -507,9 +560,25 @@ const dict = {
     hero: {
       title: "AI を共有し、ネットワークを動かす",
       subtitle:
-        "Claude、Codex、Gemini をグローバルネットワークに接続——自分で使う、友人と共有する、または遊休サブスクを収益化。",
-      ctaClient: "クライアントを入手",
-      ctaMarkets: "マーケットを見る",
+        "Linux サーバーで TokenSwitch クライアントを動かし Share を開いて、遊休の Claude / Codex / Gemini を収益化——またはマーケットでルーティング利用量を購入。",
+      linuxNote: "プロバイダーには Linux ホスト（amd64 または arm64）が必要です。",
+      ctaJoin: "ネットワークに参加",
+      ctaMarkets: "利用者です — マーケットへ",
+    },
+    install: {
+      badge: "install",
+      linuxNote: "Linux（amd64 / arm64）ワンラインインストール。",
+      region: "リージョン",
+      email: "オーナーメール",
+      emailPlaceholder: "you@example.com",
+      password: "Web UI パスワード",
+      passwordPlaceholder: "パスワードを設定",
+      passwordHint: "プロバイダーノードの Web UI ログイン用。このサイトには送信されません。",
+      copy: "インストールコマンドをコピー",
+      copied: "コピー済み",
+      pasteHint: "Linux サーバーに貼り付けて実行してください。",
+      unavailable: "このリージョンは現在到達できません。別のリージョンを選んでください。",
+      moreWays: "その他のインストール方法",
     },
     stats: {
       regions: "リージョン",
@@ -521,11 +590,11 @@ const dict = {
     },
     ecosystem: {
       title: "4 つのコンポーネント、1 つのネットワーク",
-      subtitle: "TokenSwitch はエコシステムブランド。cc-switch はその中核のオープンソースクライアントです。",
+      subtitle: "TokenSwitch はエコシステムブランド。オープンソースのクライアントランタイムは cc-switch-server です。",
       client: {
         title: "Client",
-        desc: "プロバイダー管理、Share 実行、キーはローカル保持。",
-        cta: "ダウンロード",
+        desc: "Linux プロバイダーランタイム + Web UI。プロバイダー、Share、トンネルを管理。",
+        cta: "インストール",
       },
       router: {
         title: "Router",
@@ -534,23 +603,32 @@ const dict = {
       },
       tokenMarket: {
         title: "Token Market",
-        desc: "トークン従量課金 API、プラットフォーム決済。",
-        cta: "従量購入",
+        desc: "トークン従量 API、プラットフォーム決済。",
+        cta: "利用量を購入",
       },
       shareMarket: {
         title: "Share Market",
-        desc: "固定期間アクセス・相乗り、プラットフォーム非保管。",
+        desc: "固定期間アクセス＆相乗り——非保管。",
         cta: "リスティングを見る",
       },
     },
     howItWorks: {
       title: "ネットワークの仕組み",
       subtitle:
-        "プロバイダーはローカルで cc-switch を実行。Router がトラフィックをルーティング。Market が利用者と接続——キーはプロバイダー端末から出ません。",
+        "プロバイダーは自分が制御するサーバーでクライアントを実行。Router がトラフィックをルーティング。Market が利用者と接続——上流キーはプロバイダーノードに留まります。",
       steps: [
-        { bold: "共有。", text: "cc-switch を実行し、最寄りの Router へ SSH リバーストンネルで接続。" },
-        { bold: "ルーティング。", text: "公開リクエストは Router のサブドメインに到達し、トンネル経由でプロキシ。" },
-        { bold: "収益化。", text: "Token Market（従量）または Share Market（期間）に出品して収益を得る。" },
+        {
+          bold: "共有。",
+          text: "クライアントをインストールし、Router に登録して出方向 SSH トンネルを開く。",
+        },
+        {
+          bold: "ルート。",
+          text: "公開リクエストは Router サブドメインに当たり、トンネル経由でノードへプロキシ。",
+        },
+        {
+          bold: "収益。",
+          text: "Token Market（従量）または Share Market（期間）に出品して収益を得る。",
+        },
       ],
       labels: {
         tunnel: "SSH トンネル",
@@ -558,30 +636,30 @@ const dict = {
         response: "レスポンス",
       },
       nodes: {
-        client: "cc-switch",
-        clientCap: "あなたのマシン",
+        client: "client",
+        clientCap: "プロバイダーノード",
         router: "router",
         routerCap: "グローバルエッジ",
         market: "market",
-        marketCap: "課金レイヤー",
+        marketCap: "課金レイヤ",
         consumer: "利用者",
-        consumerCap: "どこからでも",
+        consumerCap: "どこでも",
       },
     },
     earn: {
       title: "プロバイダー収益フロー",
-      subtitle: "Token Market では $1.00 の利用でプラットフォーム手数料後に約 $0.85 がプロバイダーに。",
-      breakdown: "Market 10% · Router 5% · 全額 ledger 記録",
+      subtitle: "Token Market では $1.00 の利用のうち約 $0.85 が手数料控除後にプロバイダーへ。",
+      breakdown: "Market 10% · Router 5% · すべて ledger 記録",
       cta: "収益化を始める",
     },
     map: {
       title: "ライブネットワーク",
       subtitle: "リージョンノードをクリックしてダッシュボードを開く。",
-      clients: (n: number) => (n === 1 ? "1 クライアント" : `${n} クライアント`),
+      clients: (n: number) => `${n} クライアント`,
     },
     network: {
       title: "ネットワーク",
-      subtitle: "cc-switch トンネルが接続し Share が稼働するリアルタイムエッジノード。",
+      subtitle: "プロバイダートンネルが接続し Share が稼働するリアルタイムエッジノード。",
       healthy: "正常",
       down: "ダウン",
       latency: "レイテンシ",
@@ -595,19 +673,20 @@ const dict = {
       loading: "リージョン読み込み中…",
     },
     download: {
-      title: "クライアントを入手",
-      subtitle: "cc-switch は TokenSwitch Share を動かすデスクトップ＆ Docker クライアントです。",
-      tabs: { desktop: "デスクトップ", docker: "Docker", web: "Web UI" },
-      desktopDesc: "macOS、Windows、Linux 向けネイティブアプリ。オープンソース cc-switch プロジェクトベース。",
-      dockerDesc: "1 コマンドでローカル :8008 に Web UI を起動。",
-      webDesc: "Docker モードは :8008 でブラウザ UI を公開——デスクトップインストール不要。",
+      title: "クライアントをインストール",
+      subtitle:
+        "TokenSwitch クライアントは cc-switch-server——組み込み Web UI 付き Linux プロバイダーランタイムです。デスクトップ版は終了しました。",
+      scriptTitle: "推奨：ワンラインインストール",
+      scriptDesc: "ホームページのインストールカードを使うか、同じ手順でコマンドをコピー。",
+      goInstall: "インストールカードを開く",
+      binaryTitle: "Linux バイナリ",
+      binaryDesc: "インストールスクリプトを使えない場合は GitHub Releases から amd64 / arm64 バイナリを取得。",
       version: "バージョン",
       downloadBtn: "ダウンロード",
       allReleases: "GitHub の全リリース",
-      webLoginHint: "初回ログイン後にデフォルトパスワードを変更してください。",
       afterDownload: "次は？",
       paths: [
-        { title: "個人利用", desc: "Claude、Codex、Gemini などの CLI を自分で管理。" },
+        { title: "個人利用", desc: "Claude、Codex、Gemini CLI をプロバイダーノードに向ける。" },
         { title: "友人と共有", desc: "Free またはプライベート Share、メールホワイトリスト。" },
         { title: "収益化", desc: "Token Market または Share Market に出品。", href: "earn" },
       ],
@@ -627,8 +706,8 @@ const dict = {
       steps: {
         title: "4 ステップで開始",
         items: [
-          "cc-switch をインストール（デスクトップまたは Docker）。",
-          "Router でメールログイン。",
+          "Linux ホストにクライアント（cc-switch-server）をインストール。",
+          "セットアップを完了し、Router でオーナーメールを紐付け。",
           "Share を作成し Token Market または Share Market を選択。",
           "マーケットダッシュボードで収益を確認。",
         ],
@@ -643,6 +722,7 @@ const dict = {
       shareDesc: "固定期間 Share アクセスまたは相乗りを購入。チャットでオーナーに直接支払い。",
       pickRegion: "リージョンを選択",
       open: "開く",
+      comingSoon: "近日公開",
       stats: {
         onlineShares: "オンライン Share",
         listings: "アクティブリスティング",
@@ -655,7 +735,7 @@ const dict = {
       provider: {
         title: "プロバイダー",
         items: [
-          "上流 API キーは端末から出ません。",
+          "上流 API キーはプロバイダーノードに留まり、マーケットや本サイトには送られません。",
           "Share はメタデータのみ同期——Router はサブドメインと ACL のみ保存。",
           "Token Market 収益は ledger 記録、出金は監査可能。",
         ],
@@ -682,7 +762,7 @@ const dict = {
       items: [
         {
           q: "公式 Claude / Codex API との違いは？",
-          a: "利用者はプロバイダー Share 経由でルーティングアクセスを購入。プロバイダーはサブスクとキーをローカル保持。ネットワークがルーティングと（Token Market では）課金を担当。",
+          a: "利用者はプロバイダー Share 経由でルーティングアクセスを購入。プロバイダーはノード上にサブスクとキーを保持。ネットワークがルーティングと（Token Market では）課金を担当。",
         },
         {
           q: "共有で BAN される？",
@@ -705,12 +785,12 @@ const dict = {
           a: "いいえ。購入者はオーダーチャットでオーナーに直接支払い。プラットフォームはオーナー確認後に Router ACL grant をトリガーするのみ。",
         },
         {
-          q: "cc-switch と TokenSwitch の関係は？",
-          a: "TokenSwitch はネットワーク/エコシステムブランド。cc-switch（オープンソースプロジェクトベース）はクライアントソフトウェア。",
+          q: "クライアントと TokenSwitch の関係は？",
+          a: "TokenSwitch はネットワーク/エコシステムブランド。プロバイダークライアントランタイムは cc-switch-server（デスクトップ版 cc-switch は終了）。",
         },
         {
           q: "パブリック IP は必要？",
-          a: "不要。cc-switch は SSH リバーストンネルで Router に接続。",
+          a: "不要。クライアントは SSH リバーストンネルで Router に接続。",
         },
         {
           q: "Router を自前ホストできる？",
@@ -718,7 +798,7 @@ const dict = {
         },
         {
           q: "ライブネットワークデータの出所は？",
-          a: "ビルド時にスナップショットをベイクし、利用可能なら Router 公開エンドポイントからブラウザが更新。",
+          a: "ビルド時にスナップショットをベイクし、利用可能なら Router 公開エンドポイントと regions ファイルから更新。",
         },
       ],
     },
@@ -730,6 +810,7 @@ const dict = {
       faq: "FAQ",
       telegram: "Telegram",
       x: "X",
+      clientRepo: "cc-switch-server（クライアント）",
     },
     lang: { en: "EN", zh: "中文", ja: "日本語" },
     notFound: { title: "ページが見つかりません", back: "ホームに戻る" },

@@ -1,25 +1,26 @@
 {
-  "bakedAt": "2026-07-06T09:46:47.610Z",
+  "bakedAt": "2026-07-21T06:13:38.318Z",
   "source": "live",
-  "sharesOnline": null,
-  "tokenMarketShares": 6,
+  "sharesOnline": 6,
+  "tokenMarketShares": null,
   "shareListings": null,
-  "publicModels": [
-    "claude-fable-5",
-    "claude-haiku-4-5-20251001",
-    "claude-opus-4-7",
-    "gpt-5.5"
-  ],
+  "publicModels": [],
   "byRegion": [
     {
       "region": "japan",
       "sharesOnline": null,
-      "tokenMarketShares": 6,
+      "tokenMarketShares": null,
       "shareListings": null
     },
     {
       "region": "singapore",
-      "sharesOnline": null,
+      "sharesOnline": 0,
+      "tokenMarketShares": null,
+      "shareListings": null
+    },
+    {
+      "region": "hongkong",
+      "sharesOnline": 6,
       "tokenMarketShares": null,
       "shareListings": null
     }

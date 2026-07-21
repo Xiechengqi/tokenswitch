@@ -21,7 +21,7 @@ export function EarnStrip({ locale }: { locale: Locale }) {
           </div>
           <p className="mt-4 text-sm text-muted-foreground">{t.earn.breakdown}</p>
           <div className="mt-6">
-            <Button href={localePath(locale, "earn")}>{t.earn.cta} →</Button>
+            <Button href={`${localePath(locale)}#install`}>{t.earn.cta} →</Button>
           </div>
         </div>
       </div>

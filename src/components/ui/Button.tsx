@@ -26,7 +26,7 @@ export function Button({
   children: React.ReactNode;
 }) {
   const classes = cn(
-    "inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent",
+    "inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:pointer-events-none disabled:opacity-40",
     variants[variant],
     className,
   );

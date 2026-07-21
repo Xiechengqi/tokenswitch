@@ -20,15 +20,18 @@ export function formatUsd(value: number, locale: Locale): string {
   }).format(value);
 }
 
-export const DOCKER_COMMAND =
-  "docker run -itd -p 8008:8008 -v $HOME/.token-switch:/root/.cc-switch --name cc-switch ghcr.io/xiechengqi/cc-switch:latest";
-
 export const GITHUB_REPO = "https://github.com/Xiechengqi/tokenswitch";
 export const TELEGRAM_URL = "https://t.me/tokenswitchorg";
 export const X_URL = "https://x.com/TokenSwitch";
-export const CLIENT_REPO = "https://github.com/xiechengqi/cc-switch";
+/** Provider runtime (server). Desktop cc-switch is deprecated and must not be linked from the site. */
+export const CLIENT_REPO = "https://github.com/xiechengqi/cc-switch-server";
 export const ROUTER_REPO = "https://github.com/xiechengqi/cc-switch-router";
 export const MARKET_REPO = "https://github.com/xiechengqi/cc-switch-market";
 export const SHARE_MARKET_REPO = "https://github.com/xiechengqi/cc-switch-share-market";
 export const DOCS_URL = "https://docs.tokenswitch.org";
-export const UPSTREAM_CC_SWITCH = "https://ccswitch.io";
+
+/** Region membership source of truth (router repo). */
+export const REGIONS_RAW_URL =
+  "https://raw.githubusercontent.com/Xiechengqi/cc-switch-router/refs/heads/master/regions";
+
+export const SERVER_WEB_PORT = 15721;

@@ -1,5 +1,5 @@
 {
-  "bakedAt": "2026-07-06T09:46:43.049Z",
+  "bakedAt": "2026-07-21T06:13:32.377Z",
   "regions": [
     {
       "name": "japan",
@@ -10,6 +10,11 @@
       "name": "singapore",
       "domain": "sgptokenswitch.cc",
       "url": "https://sgptokenswitch.cc"
+    },
+    {
+      "name": "hongkong",
+      "domain": "hktokenswitch.cc",
+      "url": "https://hktokenswitch.cc"
     }
   ]
 }

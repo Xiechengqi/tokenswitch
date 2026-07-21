@@ -1,7 +1,7 @@
 import type { Locale } from "@/lib/types";
 import { getDict, localePath } from "@/lib/i18n";
 import { Button } from "./ui/Button";
-import { TerminalCard } from "./TerminalCard";
+import { InstallCard } from "./InstallCard";
 
 export function Hero({ locale }: { locale: Locale }) {
   const t = getDict(locale);
@@ -23,14 +23,15 @@ export function Hero({ locale }: { locale: Locale }) {
             {t.hero.title}
           </h1>
           <p className="mt-5 max-w-xl text-lg text-muted-foreground">{t.hero.subtitle}</p>
+          <p className="mt-3 text-sm font-medium text-foreground/80">{t.hero.linuxNote}</p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <Button href={localePath(locale, "download")}>{t.hero.ctaClient} →</Button>
+            <Button href="#install">{t.hero.ctaJoin} →</Button>
             <Button href={localePath(locale, "markets")} variant="secondary">
               {t.hero.ctaMarkets}
             </Button>
           </div>
         </div>
-        <TerminalCard locale={locale} />
+        <InstallCard locale={locale} />
       </div>
     </section>
   );

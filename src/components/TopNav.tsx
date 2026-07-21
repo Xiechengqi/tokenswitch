@@ -77,7 +77,7 @@ export function TopNav({ locale }: { locale: Locale }) {
             labels={{ telegram: t.nav.telegram, x: t.nav.x, github: t.nav.github }}
             className="hidden sm:flex"
           />
-          <Button href={localePath(locale, "download")} className="hidden sm:inline-flex">
+          <Button href={localePath(locale, "earn")} className="hidden sm:inline-flex">
             {t.nav.getStarted}
           </Button>
         </div>

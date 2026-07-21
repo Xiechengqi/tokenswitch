@@ -14,11 +14,12 @@ const OUT_DIR = join(ROOT, "src", "data", "baked");
 const LOCAL_REGIONS = join(ROOT, "..", "cc-switch-router", "regions");
 
 const REGIONS_RAW_URLS = [
+  "https://raw.githubusercontent.com/Xiechengqi/cc-switch-router/refs/heads/master/regions",
   "https://raw.githubusercontent.com/Xiechengqi/cc-switch-router/master/regions",
   "https://raw.githubusercontent.com/Xiechengqi/cc-switch-router/main/regions",
 ];
 const RELEASES_URL =
-  "https://api.github.com/repos/xiechengqi/cc-switch/releases/latest";
+  "https://api.github.com/repos/xiechengqi/cc-switch-server/releases/latest";
 
 const FALLBACK_REGIONS = [
   { name: "japan", domain: "jptokenswitch.cc", url: "https://jptokenswitch.cc" },
@@ -27,14 +28,19 @@ const FALLBACK_REGIONS = [
     domain: "sgptokenswitch.cc",
     url: "https://sgptokenswitch.cc",
   },
+  {
+    name: "hongkong",
+    domain: "hktokenswitch.cc",
+    url: "https://hktokenswitch.cc",
+  },
 ];
 
 const FALLBACK_RELEASE = {
   tagName: "latest",
-  name: "cc-switch",
+  name: "cc-switch-server",
   publishedAt: new Date().toISOString(),
   assets: [],
-  repo: "xiechengqi/cc-switch",
+  repo: "xiechengqi/cc-switch-server",
 };
 
 const FALLBACK_MAP_POINTS = {
@@ -296,7 +302,7 @@ async function bakeRelease(previous) {
       tagName: release.tag_name,
       name: release.name,
       publishedAt: release.published_at,
-      repo: "xiechengqi/cc-switch",
+      repo: "xiechengqi/cc-switch-server",
       assets: (release.assets ?? []).map((a) => ({
         name: a.name,
         downloadUrl: a.browser_download_url,

@@ -2,14 +2,20 @@
 
 import type { Locale } from "@/lib/types";
 import { getDict } from "@/lib/i18n";
-import { getBakedRegions, regionLabel, shareMarketUrl, tokenMarketUrl } from "@/lib/regions";
+import {
+  isMarketReady,
+  regionLabel,
+  shareMarketUrl,
+  tokenMarketUrl,
+} from "@/lib/regions";
 import { useNetworkStats } from "@/hooks/useNetworkStats";
+import { useRegions } from "@/hooks/useRegions";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 
 export function MarketsPage({ locale }: { locale: Locale }) {
   const t = getDict(locale);
-  const { regions } = getBakedRegions();
+  const regions = useRegions();
   const stats = useNetworkStats();
 
   const showStats =
@@ -66,7 +72,15 @@ export function MarketsPage({ locale }: { locale: Locale }) {
             <p className="mt-6 text-sm font-semibold">{t.marketsPage.pickRegion}</p>
             <div className="mt-3 flex flex-wrap gap-2">
               {regions.map((region) => {
+                const ready = isMarketReady(region.name);
                 const regionStats = stats.byRegion.find((r) => r.region === region.name);
+                if (!ready) {
+                  return (
+                    <Button key={region.name} type="button" variant="secondary" disabled>
+                      {regionLabel(region.name, locale)} · {t.marketsPage.comingSoon}
+                    </Button>
+                  );
+                }
                 return (
                   <Button
                     key={region.name}
@@ -91,7 +105,15 @@ export function MarketsPage({ locale }: { locale: Locale }) {
             <p className="mt-6 text-sm font-semibold">{t.marketsPage.pickRegion}</p>
             <div className="mt-3 flex flex-wrap gap-2">
               {regions.map((region) => {
+                const ready = isMarketReady(region.name);
                 const regionStats = stats.byRegion.find((r) => r.region === region.name);
+                if (!ready) {
+                  return (
+                    <Button key={region.name} type="button" variant="secondary" disabled>
+                      {regionLabel(region.name, locale)} · {t.marketsPage.comingSoon}
+                    </Button>
+                  );
+                }
                 return (
                   <Button
                     key={region.name}

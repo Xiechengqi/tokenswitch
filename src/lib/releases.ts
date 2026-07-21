@@ -2,7 +2,7 @@ import releaseData from "@/data/baked/release.json";
 import type { BakedRelease } from "./types";
 
 const RELEASES_API =
-  "https://api.github.com/repos/xiechengqi/cc-switch/releases/latest";
+  "https://api.github.com/repos/xiechengqi/cc-switch-server/releases/latest";
 
 export function getBakedRelease(): BakedRelease {
   return releaseData as BakedRelease;
@@ -20,7 +20,7 @@ export async function fetchLatestRelease(): Promise<BakedRelease | null> {
       tagName: release.tag_name,
       name: release.name,
       publishedAt: release.published_at,
-      repo: "xiechengqi/cc-switch",
+      repo: "xiechengqi/cc-switch-server",
       assets: (release.assets ?? []).map(
         (a: {
           name: string;
@@ -40,32 +40,48 @@ export async function fetchLatestRelease(): Promise<BakedRelease | null> {
   }
 }
 
-export function detectPlatform(): "macos-arm" | "macos-x64" | "windows" | "linux" | "unknown" {
+export type ServerArch = "linux-amd64" | "linux-arm64" | "unknown";
+
+export function detectServerArch(): ServerArch {
   if (typeof navigator === "undefined") return "unknown";
   const ua = navigator.userAgent.toLowerCase();
   const platform = (navigator.platform ?? "").toLowerCase();
-  if (ua.includes("win")) return "windows";
-  if (ua.includes("mac") || platform.includes("mac")) {
-    return ua.includes("arm") || platform.includes("arm") ? "macos-arm" : "macos-x64";
+  if (ua.includes("aarch64") || ua.includes("arm64") || platform.includes("arm")) {
+    return "linux-arm64";
   }
-  if (ua.includes("linux") || platform.includes("linux")) return "linux";
+  if (ua.includes("linux") || platform.includes("linux") || ua.includes("x86_64") || ua.includes("amd64")) {
+    return "linux-amd64";
+  }
   return "unknown";
 }
 
-export function pickAssetForPlatform(
+export function pickServerAsset(
   assets: BakedRelease["assets"],
-  platform: ReturnType<typeof detectPlatform>,
+  arch: ServerArch,
 ): BakedRelease["assets"][number] | null {
-  const patterns: Record<string, RegExp[]> = {
-    "macos-arm": [/aarch64.*\.dmg$/i, /arm64.*\.dmg$/i, /aarch64/i],
-    "macos-x64": [/x64.*\.dmg$/i, /x86_64.*\.dmg$/i, /\.dmg$/i],
-    windows: [/\.msi$/i, /\.exe$/i],
-    linux: [/\.AppImage$/i, /\.deb$/i, /linux/i],
+  const patterns: Record<Exclude<ServerArch, "unknown">, RegExp[]> = {
+    "linux-amd64": [/linux-amd64/i, /x86_64/i, /amd64/i],
+    "linux-arm64": [/linux-arm64/i, /aarch64/i, /arm64/i],
   };
-  if (platform === "unknown") return assets[0] ?? null;
-  for (const pattern of patterns[platform] ?? []) {
+  if (arch === "unknown") {
+    return (
+      assets.find((a) => /linux-amd64/i.test(a.name)) ??
+      assets.find((a) => /linux/i.test(a.name)) ??
+      assets[0] ??
+      null
+    );
+  }
+  for (const pattern of patterns[arch]) {
     const hit = assets.find((a) => pattern.test(a.name));
     if (hit) return hit;
   }
   return assets[0] ?? null;
+}
+
+/** Prefer binary assets; skip checksum sidecar files in the primary button. */
+export function listBinaryAssets(assets: BakedRelease["assets"]): BakedRelease["assets"] {
+  return assets.filter(
+    (a) =>
+      /cc-switch-server-linux-(amd64|arm64)/i.test(a.name) && !/\.sha256$/i.test(a.name),
+  );
 }

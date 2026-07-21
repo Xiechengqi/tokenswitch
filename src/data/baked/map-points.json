@@ -1,5 +1,5 @@
 {
-  "bakedAt": "2026-07-06T09:46:45.060Z",
+  "bakedAt": "2026-07-21T06:13:36.663Z",
   "source": "live",
   "regions": [
     {
@@ -9,12 +9,16 @@
     {
       "region": "singapore",
       "url": "https://sgptokenswitch.cc"
+    },
+    {
+      "region": "hongkong",
+      "url": "https://hktokenswitch.cc"
     }
   ],
   "servers": [
     {
-      "lat": 35.6895,
-      "lon": 139.692,
+      "lat": 35.6893,
+      "lon": 139.6899,
       "region": "japan",
       "url": "https://jptokenswitch.cc"
     },
@@ -23,15 +27,33 @@
       "lon": 103.851,
       "region": "singapore",
       "url": "https://sgptokenswitch.cc"
+    },
+    {
+      "lat": 22.3193,
+      "lon": 114.169,
+      "region": "hongkong",
+      "url": "https://hktokenswitch.cc"
     }
   ],
-  "clientCount": 4,
+  "clientCount": 3,
   "clients": [
+    {
+      "lat": 1.35,
+      "lon": 103.82,
+      "region": "hongkong",
+      "count": 1
+    },
+    {
+      "lat": 36.2,
+      "lon": 138.25,
+      "region": "hongkong",
+      "count": 1
+    },
     {
       "lat": 39.83,
       "lon": -98.58,
-      "region": "japan",
-      "count": 4
+      "region": "hongkong",
+      "count": 1
     }
   ]
 }

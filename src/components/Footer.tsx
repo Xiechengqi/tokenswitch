@@ -34,7 +34,7 @@ export function Footer({ locale }: { locale: Locale }) {
           <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
             <li>
               <a href={CLIENT_REPO} target="_blank" rel="noopener noreferrer">
-                cc-switch (client)
+                {t.footer.clientRepo}
               </a>
             </li>
             <li>

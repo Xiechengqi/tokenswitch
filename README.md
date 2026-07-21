@@ -24,10 +24,10 @@ pnpm typecheck
 
 | File | Source |
 |------|--------|
-| `regions.json` | Router `/v1/regions` |
+| `regions.json` | Router repo `regions` file (local checkout or GitHub raw) |
 | `map-points.json` | Router `/v1/public/map-points` |
 | `network-stats.json` | Router `/v1/public/network-stats` + market KPIs + share-market listings |
-| `release.json` | GitHub releases API (cc-switch client) |
+| `release.json` | GitHub releases API (`cc-switch-server`) |
 
 Failed fetches keep the previous baked file.
 
@@ -35,6 +35,7 @@ Failed fetches keep the previous baked file.
 
 At runtime, client components poll public endpoints every 60s (paused when tab is hidden):
 
+- Region membership → GitHub raw `cc-switch-router` `regions` file
 - Map points & region health → router `/v1/public/map-points`, `/v1/healthz`
 - Network stats → router `/v1/public/network-stats`, market `/v1/public/dashboard/kpis`, share-market `/v1/listings`
 
@@ -86,7 +87,7 @@ public/CNAME        # tokenswitch.org
 
 | Component | Repository |
 |-----------|------------|
-| Client (cc-switch) | [xiechengqi/cc-switch](https://github.com/xiechengqi/cc-switch) |
+| Client (`cc-switch-server`) | [xiechengqi/cc-switch-server](https://github.com/xiechengqi/cc-switch-server) |
 | Router | [xiechengqi/cc-switch-router](https://github.com/xiechengqi/cc-switch-router) |
 | Token Market | [xiechengqi/cc-switch-market](https://github.com/xiechengqi/cc-switch-market) |
 | Share Market | [xiechengqi/cc-switch-share-market](https://github.com/xiechengqi/cc-switch-share-market) |

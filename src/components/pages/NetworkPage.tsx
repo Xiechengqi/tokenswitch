@@ -3,8 +3,8 @@
 import { useCallback, useState } from "react";
 import type { Locale } from "@/lib/types";
 import { getDict } from "@/lib/i18n";
-import { getBakedRegions } from "@/lib/regions";
 import { useMapPoints } from "@/hooks/useMapPoints";
+import { useRegions } from "@/hooks/useRegions";
 import { RegionCard } from "@/components/RegionCard";
 import { DOCS_URL } from "@/lib/constants";
 import { Button } from "@/components/ui/Button";
@@ -12,7 +12,7 @@ import { WorldMapLazy } from "@/components/WorldMapLazy";
 
 export function NetworkPage({ locale }: { locale: Locale }) {
   const t = getDict(locale);
-  const { regions } = getBakedRegions();
+  const regions = useRegions();
   const [data, setData] = useState({ servers: [] as { region: string; lat: number; lon: number }[], clientCountByRegion: new Map<string, number>() });
 
   const handleUpdate = useCallback(
