@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import type { Locale } from "@/lib/types";
+import type { MapMode } from "./WorldMap";
 
 const WorldMap = dynamic(() => import("./WorldMap").then((m) => ({ default: m.WorldMap })), {
   ssr: false,
@@ -19,9 +20,26 @@ const WorldMap = dynamic(() => import("./WorldMap").then((m) => ({ default: m.Wo
 export function WorldMapLazy({
   locale,
   className,
+  mode = "explore",
+  selectedRegion = null,
+  onSelectRegion,
+  showLegend = false,
 }: {
   locale: Locale;
   className?: string;
+  mode?: MapMode;
+  selectedRegion?: string | null;
+  onSelectRegion?: (region: string) => void;
+  showLegend?: boolean;
 }) {
-  return <WorldMap locale={locale} className={className} />;
+  return (
+    <WorldMap
+      locale={locale}
+      className={className}
+      mode={mode}
+      selectedRegion={selectedRegion}
+      onSelectRegion={onSelectRegion}
+      showLegend={showLegend}
+    />
+  );
 }

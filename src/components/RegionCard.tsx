@@ -14,17 +14,23 @@ import { probeRegionHealth } from "@/lib/map-points";
 import { cn } from "@/lib/cn";
 
 export function RegionCard({
+  id,
   locale,
   region,
   lat,
   lon,
   clientsOnline,
+  selected,
+  onSelect,
 }: {
+  id?: string;
   locale: Locale;
   region: Region;
   lat?: number;
   lon?: number;
   clientsOnline?: number;
+  selected?: boolean;
+  onSelect?: () => void;
 }) {
   const t = getDict(locale);
   const [health, setHealth] = useState<{ healthy: boolean; latencyMs: number } | null>(null);
@@ -51,14 +57,38 @@ export function RegionCard({
   ];
 
   return (
-    <div className="rounded-2xl bg-card p-6 shadow-sm">
+    <div
+      id={id}
+      role={onSelect ? "button" : undefined}
+      tabIndex={onSelect ? 0 : undefined}
+      onClick={onSelect}
+      onKeyDown={
+        onSelect
+          ? (e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onSelect();
+              }
+            }
+          : undefined
+      }
+      className={cn(
+        "rounded-2xl bg-card p-6 shadow-sm transition-shadow",
+        selected && "ring-2 ring-accent shadow-md",
+        onSelect && "cursor-pointer hover:shadow-md",
+      )}
+    >
       <div className="flex items-start justify-between gap-3">
         <div>
           <div className="flex items-center gap-2">
             <span
               className={cn(
                 "h-2.5 w-2.5 rounded-full",
-                health == null ? "bg-muted-foreground/40" : health.healthy ? "bg-quaternary" : "bg-secondary",
+                health == null
+                  ? "bg-muted-foreground/40"
+                  : health.healthy
+                    ? "bg-quaternary"
+                    : "bg-secondary",
               )}
             />
             <span className="text-xs font-medium text-muted-foreground">
@@ -77,7 +107,7 @@ export function RegionCard({
         </div>
       </div>
 
-      <div className="mt-5 flex flex-wrap gap-2">
+      <div className="mt-5 flex flex-wrap gap-2" onClick={(e) => e.stopPropagation()}>
         {links.map((link) => (
           <a
             key={link.href}

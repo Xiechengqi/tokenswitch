@@ -1,6 +1,7 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import type { Locale } from "@/lib/types";
 import { getDict } from "@/lib/i18n";
 import { useMapPoints } from "@/hooks/useMapPoints";
@@ -13,7 +14,51 @@ import { WorldMapLazy } from "@/components/WorldMapLazy";
 export function NetworkPage({ locale }: { locale: Locale }) {
   const t = getDict(locale);
   const regions = useRegions();
-  const [data, setData] = useState({ servers: [] as { region: string; lat: number; lon: number }[], clientCountByRegion: new Map<string, number>() });
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const didInitialUrlScroll = useRef(false);
+  const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
+  const [data, setData] = useState({
+    servers: [] as { region: string; lat: number; lon: number }[],
+    clientCountByRegion: new Map<string, number>(),
+  });
+
+  useEffect(() => {
+    const fromUrl = searchParams.get("region");
+    if (!fromUrl || !regions.length) return;
+    if (!regions.some((r) => r.name === fromUrl)) return;
+    setSelectedRegion(fromUrl);
+    if (!didInitialUrlScroll.current) {
+      didInitialUrlScroll.current = true;
+      requestAnimationFrame(() => {
+        document.getElementById(`region-${fromUrl}`)?.scrollIntoView({
+          behavior: "smooth",
+          block: "nearest",
+        });
+      });
+    }
+  }, [searchParams, regions]);
+
+  const selectRegion = useCallback(
+    (region: string, opts?: { scrollToCard?: boolean; syncUrl?: boolean }) => {
+      setSelectedRegion(region);
+      if (opts?.syncUrl !== false) {
+        const params = new URLSearchParams(searchParams.toString());
+        params.set("region", region);
+        router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+      }
+      if (opts?.scrollToCard) {
+        requestAnimationFrame(() => {
+          document.getElementById(`region-${region}`)?.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest",
+          });
+        });
+      }
+    },
+    [pathname, router, searchParams],
+  );
 
   const handleUpdate = useCallback(
     (payload: {
@@ -22,7 +67,10 @@ export function NetworkPage({ locale }: { locale: Locale }) {
     }) => {
       const clientCountByRegion = new Map<string, number>();
       for (const c of payload.clients) {
-        clientCountByRegion.set(c.region, (clientCountByRegion.get(c.region) || 0) + (c.count || 1));
+        clientCountByRegion.set(
+          c.region,
+          (clientCountByRegion.get(c.region) || 0) + (c.count || 1),
+        );
       }
       setData({ servers: payload.servers, clientCountByRegion });
     },
@@ -38,7 +86,14 @@ export function NetworkPage({ locale }: { locale: Locale }) {
       <section className="bg-background py-8">
         <div className="mx-auto max-w-[var(--container)] px-4 sm:px-6">
           <div className="overflow-hidden rounded-2xl bg-card shadow-sm">
-            <WorldMapLazy locale={locale} className="relative h-[320px] w-full sm:h-[420px]" />
+            <WorldMapLazy
+              locale={locale}
+              mode="explore"
+              showLegend
+              selectedRegion={selectedRegion}
+              onSelectRegion={(region) => selectRegion(region, { scrollToCard: true })}
+              className="relative h-[320px] w-full sm:h-[420px]"
+            />
           </div>
         </div>
       </section>
@@ -54,11 +109,14 @@ export function NetworkPage({ locale }: { locale: Locale }) {
               return (
                 <RegionCard
                   key={region.name}
+                  id={`region-${region.name}`}
                   locale={locale}
                   region={region}
                   lat={server?.lat}
                   lon={server?.lon}
                   clientsOnline={data.clientCountByRegion.get(region.name)}
+                  selected={selectedRegion === region.name}
+                  onSelect={() => selectRegion(region.name, { scrollToCard: false })}
                 />
               );
             })}

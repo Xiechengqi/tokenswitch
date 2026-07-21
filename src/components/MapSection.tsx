@@ -1,3 +1,6 @@
+"use client";
+
+import { useRouter } from "next/navigation";
 import type { Locale } from "@/lib/types";
 import { getDict, localePath } from "@/lib/i18n";
 import { WorldMapLazy } from "./WorldMapLazy";
@@ -5,6 +8,7 @@ import { Button } from "./ui/Button";
 
 export function MapSection({ locale }: { locale: Locale }) {
   const t = getDict(locale);
+  const router = useRouter();
 
   return (
     <section className="bg-background py-16">
@@ -19,7 +23,14 @@ export function MapSection({ locale }: { locale: Locale }) {
           </Button>
         </div>
         <div className="mt-8 overflow-hidden rounded-2xl bg-card shadow-sm">
-          <WorldMapLazy locale={locale} className="relative h-[360px] w-full sm:h-[480px]" />
+          <WorldMapLazy
+            locale={locale}
+            mode="showcase"
+            className="relative h-[360px] w-full sm:h-[480px]"
+            onSelectRegion={(region) => {
+              router.push(`${localePath(locale, "network")}?region=${encodeURIComponent(region)}`);
+            }}
+          />
         </div>
       </div>
     </section>

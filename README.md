@@ -35,9 +35,11 @@ Failed fetches keep the previous baked file.
 
 At runtime, client components poll public endpoints every 60s (paused when tab is hidden):
 
-- Region membership → GitHub raw `cc-switch-router` `regions` file
+- Region membership → GitHub raw `cc-switch-router` `regions` file (shared by install card, map, and stats)
 - Map points & region health → router `/v1/public/map-points`, `/v1/healthz`
 - Network stats → router `/v1/public/network-stats`, market `/v1/public/dashboard/kpis`, share-market `/v1/listings`
+
+Map `clients[]` are country-centroid aggregates from the router; `clientCount` is the true active installation count.
 
 Requires CORS on router public routes (deployed in `cc-switch-router`).
 

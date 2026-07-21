@@ -1,16 +1,17 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   fetchLiveNetworkStats,
   getBakedNetworkStats,
   POLL_INTERVAL_MS,
 } from "@/lib/network-stats";
+import { useRegions } from "@/hooks/useRegions";
 import type { NetworkStats } from "@/lib/types";
 
 export function useNetworkStats() {
+  const regions = useRegions();
   const [stats, setStats] = useState<NetworkStats>(() => getBakedNetworkStats());
-  const liveEnabledRef = useRef(true);
 
   const apply = useCallback((next: NetworkStats) => {
     setStats(next);
@@ -23,19 +24,13 @@ export function useNetworkStats() {
     let cancelled = false;
 
     const refresh = async () => {
-      if (!liveEnabledRef.current || document.visibilityState === "hidden") return;
+      if (document.visibilityState === "hidden") return;
       try {
-        const live = await fetchLiveNetworkStats();
-        if (cancelled) return;
-        if (live) {
-          apply(live);
-        } else {
-          liveEnabledRef.current = false;
-          if (timer) clearInterval(timer);
-        }
+        const live = await fetchLiveNetworkStats(regions);
+        if (cancelled || !live) return;
+        apply(live);
       } catch {
-        liveEnabledRef.current = false;
-        if (timer) clearInterval(timer);
+        /* keep last stats */
       }
     };
 
@@ -43,7 +38,7 @@ export function useNetworkStats() {
     void refresh();
 
     const onVisibility = () => {
-      if (document.visibilityState === "visible" && liveEnabledRef.current) void refresh();
+      if (document.visibilityState === "visible") void refresh();
     };
     document.addEventListener("visibilitychange", onVisibility);
 
@@ -52,7 +47,7 @@ export function useNetworkStats() {
       if (timer) clearInterval(timer);
       document.removeEventListener("visibilitychange", onVisibility);
     };
-  }, [apply]);
+  }, [apply, regions]);
 
   return stats;
 }

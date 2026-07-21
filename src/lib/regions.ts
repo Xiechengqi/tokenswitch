@@ -71,3 +71,11 @@ export async function fetchLiveRegions(): Promise<Region[] | null> {
     return null;
   }
 }
+
+/** Prefer an explicit list, else live GitHub `regions`, else baked snapshot. */
+export async function resolveRegions(preferred?: Region[]): Promise<Region[]> {
+  if (preferred?.length) return preferred;
+  const live = await fetchLiveRegions();
+  if (live?.length) return live;
+  return getBakedRegions().regions;
+}

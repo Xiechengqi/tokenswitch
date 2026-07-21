@@ -1,6 +1,6 @@
 import networkStatsData from "@/data/baked/network-stats.json";
-import type { NetworkStats } from "./types";
-import { getBakedRegions, shareMarketUrl, tokenMarketUrl } from "./regions";
+import type { NetworkStats, Region } from "./types";
+import { resolveRegions, shareMarketUrl, tokenMarketUrl } from "./regions";
 import { safeFetch } from "./safe-fetch";
 
 const POLL_INTERVAL_MS = 60_000;
@@ -17,6 +17,8 @@ async function fetchRegionRouterStats(baseUrl: string) {
   if (!res?.ok) return null;
   try {
     const data = await res.json();
+    // Ignore non-JSON / proxy error bodies (e.g. "unregistered-subdomain").
+    if (data == null || typeof data !== "object") return null;
     return {
       activeShares: Number(data.activeShares ?? 0),
       activeClients: Number(data.activeClients ?? 0),
@@ -66,11 +68,16 @@ async function fetchRegionTopModels(regionDomain: string) {
   }
 }
 
-export async function fetchLiveNetworkStats(): Promise<NetworkStats | null> {
+/** Pass `regions` from `useRegions()` when available so stats track the same membership list. */
+export async function fetchLiveNetworkStats(
+  regions?: Region[],
+): Promise<NetworkStats | null> {
   try {
-    const { regions } = getBakedRegions();
+    const list = await resolveRegions(regions);
+    if (!list.length) return null;
+
     const results = await Promise.all(
-      regions.map(async (region) => {
+      list.map(async (region) => {
         const [router, market, shareMarket, models] = await Promise.all([
           fetchRegionRouterStats(region.url),
           fetchRegionMarketStats(region.domain),

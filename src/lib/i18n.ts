@@ -114,8 +114,10 @@ const dict = {
     },
     map: {
       title: "Live network",
-      subtitle: "Click a region node to open its dashboard.",
+      subtitle: "Click a region node to explore the network.",
       clients: (n: number) => (n === 1 ? "1 client" : `${n} clients`),
+      legendServer: "Router",
+      legendClient: "Provider (by country)",
     },
     network: {
       title: "Network",
@@ -382,8 +384,10 @@ const dict = {
     },
     map: {
       title: "实时网络",
-      subtitle: "点击区域节点打开 Dashboard。",
+      subtitle: "点击区域节点，进入网络页探索。",
       clients: (n: number) => `${n} 个客户端`,
+      legendServer: "Router",
+      legendClient: "Provider（按国家聚合）",
     },
     network: {
       title: "网络",
@@ -654,8 +658,10 @@ const dict = {
     },
     map: {
       title: "ライブネットワーク",
-      subtitle: "リージョンノードをクリックしてダッシュボードを開く。",
+      subtitle: "リージョンノードをクリックしてネットワークを探索。",
       clients: (n: number) => `${n} クライアント`,
+      legendServer: "Router",
+      legendClient: "Provider（国別集計）",
     },
     network: {
       title: "ネットワーク",

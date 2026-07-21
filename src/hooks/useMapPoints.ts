@@ -7,13 +7,8 @@ import {
   POLL_INTERVAL_MS,
 } from "@/lib/map-points";
 import { createClientState, type ClientAnimState } from "@/lib/animation";
+import { useRegions } from "@/hooks/useRegions";
 import type { AggregatedMapData, ClientPoint, ServerPoint } from "@/lib/types";
-
-interface MapRenderData {
-  regions: AggregatedMapData["regions"];
-  servers: ServerPoint[];
-  clients: ClientAnimState[];
-}
 
 interface MapPointsState extends AggregatedMapData {
   clients: ClientAnimState[];
@@ -47,6 +42,7 @@ function mergeClientPoints(
 }
 
 export function useMapPoints(onUpdate: (data: MapPointsState) => void) {
+  const regions = useRegions();
   const stateRef = useRef({
     regions: [] as AggregatedMapData["regions"],
     servers: [] as AggregatedMapData["servers"],
@@ -55,7 +51,6 @@ export function useMapPoints(onUpdate: (data: MapPointsState) => void) {
     clientKeys: new Set<string>(),
     isSnapshot: true,
   });
-  const liveEnabledRef = useRef(true);
 
   const applyPayload = useCallback(
     (payload: AggregatedMapData) => {
@@ -83,19 +78,14 @@ export function useMapPoints(onUpdate: (data: MapPointsState) => void) {
     let cancelled = false;
 
     const refresh = async () => {
-      if (!liveEnabledRef.current || document.visibilityState === "hidden") return;
+      if (document.visibilityState === "hidden") return;
       try {
-        const live = await fetchLiveMapPoints();
-        if (cancelled) return;
-        if (live) {
-          applyPayload(live);
-        } else {
-          liveEnabledRef.current = false;
-          if (timer) clearInterval(timer);
-        }
+        // Keep polling on transient total failure; retain last good / baked data.
+        const live = await fetchLiveMapPoints(regions);
+        if (cancelled || !live) return;
+        applyPayload(live);
       } catch {
-        liveEnabledRef.current = false;
-        if (timer) clearInterval(timer);
+        /* keep last payload */
       }
     };
 
@@ -103,7 +93,7 @@ export function useMapPoints(onUpdate: (data: MapPointsState) => void) {
     void refresh();
 
     const onVisibility = () => {
-      if (document.visibilityState === "visible" && liveEnabledRef.current) void refresh();
+      if (document.visibilityState === "visible") void refresh();
     };
     document.addEventListener("visibilitychange", onVisibility);
 
@@ -112,7 +102,7 @@ export function useMapPoints(onUpdate: (data: MapPointsState) => void) {
       if (timer) clearInterval(timer);
       document.removeEventListener("visibilitychange", onVisibility);
     };
-  }, [applyPayload]);
+  }, [applyPayload, regions]);
 
   return stateRef;
 }

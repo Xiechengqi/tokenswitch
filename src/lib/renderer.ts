@@ -25,16 +25,45 @@ export function renderBaseMap(
   ctx.stroke();
 }
 
-export function renderServer(ctx: CanvasRenderingContext2D, x: number, y: number) {
-  ctx.beginPath();
-  ctx.arc(x, y, 8, 0, Math.PI * 2);
-  ctx.fillStyle = "rgba(37, 99, 235, 0.18)";
-  ctx.fill();
+export function renderServer(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  opts?: {
+    selected?: boolean;
+    dimmed?: boolean;
+    /** 0..1 breathing pulse for showcase mode */
+    breath?: number;
+  },
+) {
+  const dimmed = opts?.dimmed ?? false;
+  const selected = opts?.selected ?? false;
+  const breath = opts?.breath ?? 0;
+  const alpha = dimmed ? 0.28 : 1;
+  const glowR = selected ? 14 : 8 + breath * 6;
+  const coreR = selected ? 7 : 5;
+
+  ctx.save();
+  ctx.globalAlpha = alpha;
 
   ctx.beginPath();
-  ctx.arc(x, y, 5, 0, Math.PI * 2);
+  ctx.arc(x, y, glowR, 0, Math.PI * 2);
+  ctx.fillStyle = selected ? "rgba(37, 99, 235, 0.32)" : `rgba(37, 99, 235, ${0.18 + breath * 0.2})`;
+  ctx.fill();
+
+  if (selected) {
+    ctx.beginPath();
+    ctx.arc(x, y, coreR + 2.5, 0, Math.PI * 2);
+    ctx.strokeStyle = "#1d4ed8";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+  }
+
+  ctx.beginPath();
+  ctx.arc(x, y, coreR, 0, Math.PI * 2);
   ctx.fillStyle = "#2563eb";
   ctx.fill();
+  ctx.restore();
 }
 
 export function renderClient(
@@ -42,10 +71,12 @@ export function renderClient(
   x: number,
   y: number,
   client: ClientAnimState,
+  opts?: { dimmed?: boolean; alphaScale?: number },
 ) {
   const enterEase = easeOutCubic(client.enterProgress);
   const exitAlpha = client.exiting ? 1 - easeOutCubic(client.exitProgress) : 1;
-  const alpha = enterEase * exitAlpha;
+  const dim = opts?.dimmed ? 0.28 : 1;
+  const alpha = enterEase * exitAlpha * dim * (opts?.alphaScale ?? 1);
   const scale = enterEase;
   if (alpha <= 0) return;
 
@@ -58,31 +89,6 @@ export function renderClient(
   ctx.restore();
 }
 
-export function renderRipple(
-  ctx: CanvasRenderingContext2D,
-  x: number,
-  y: number,
-  client: ClientAnimState,
-) {
-  const enterEase = easeOutCubic(client.enterProgress);
-  const exitAlpha = client.exiting ? 1 - easeOutCubic(client.exitProgress) : 1;
-  if (enterEase < 1 || exitAlpha <= 0) return;
-
-  const phase = client.ripplePhase;
-  const rippleR = 5 + phase * 20;
-  const rippleAlpha = (1 - phase) * 0.35 * exitAlpha;
-  if (rippleAlpha <= 0) return;
-
-  ctx.save();
-  ctx.globalAlpha = rippleAlpha;
-  ctx.beginPath();
-  ctx.arc(x, y, rippleR, 0, Math.PI * 2);
-  ctx.strokeStyle = client.color;
-  ctx.lineWidth = 1.5;
-  ctx.stroke();
-  ctx.restore();
-}
-
 export function renderArc(
   ctx: CanvasRenderingContext2D,
   cx: number,
@@ -90,14 +96,16 @@ export function renderArc(
   sx: number,
   sy: number,
   client: ClientAnimState,
+  opts?: { emphasis?: boolean; alphaScale?: number },
 ) {
   const progress = client.arcProgress;
   const exitAlpha = client.exiting ? 1 - easeOutCubic(client.exitProgress) : 1;
   if (progress <= 0 || exitAlpha <= 0) return;
 
+  const emphasis = opts?.emphasis ?? false;
   const cp = getControlPoint(cx, cy, sx, sy);
   ctx.save();
-  ctx.globalAlpha = exitAlpha;
+  ctx.globalAlpha = exitAlpha * (opts?.alphaScale ?? 1);
   ctx.beginPath();
   ctx.moveTo(cx, cy);
 
@@ -111,8 +119,8 @@ export function renderArc(
     ctx.quadraticCurveTo(cp[0], cp[1], sx, sy);
   }
 
-  ctx.strokeStyle = "rgba(34, 197, 94, 0.24)";
-  ctx.lineWidth = 1;
+  ctx.strokeStyle = emphasis ? "rgba(34, 197, 94, 0.55)" : "rgba(34, 197, 94, 0.24)";
+  ctx.lineWidth = emphasis ? 2 : 1;
   ctx.stroke();
   ctx.restore();
 }
@@ -124,10 +132,12 @@ export function renderFlowDot(
   sx: number,
   sy: number,
   client: ClientAnimState,
+  opts?: { alphaScale?: number },
 ) {
   if (client.arcProgress < 1) return;
   const exitAlpha = client.exiting ? 1 - easeOutCubic(client.exitProgress) : 1;
-  if (exitAlpha <= 0) return;
+  const scale = opts?.alphaScale ?? 1;
+  if (exitAlpha <= 0 || scale <= 0) return;
 
   const cp = getControlPoint(cx, cy, sx, sy);
   const t = client.flowPhase;
@@ -138,20 +148,20 @@ export function renderFlowDot(
   const ty = quadBezier(cy, cp[1], sy, tTrail);
 
   ctx.save();
-  ctx.globalAlpha = 0.12 * exitAlpha;
+  ctx.globalAlpha = 0.08 * exitAlpha * scale;
   ctx.beginPath();
   ctx.moveTo(tx, ty);
   ctx.lineTo(x, y);
   ctx.strokeStyle = "#22c55e";
-  ctx.lineWidth = 2.5;
+  ctx.lineWidth = 2;
   ctx.lineCap = "round";
   ctx.stroke();
   ctx.restore();
 
   ctx.save();
-  ctx.globalAlpha = 0.3 * exitAlpha;
+  ctx.globalAlpha = 0.22 * exitAlpha * scale;
   ctx.beginPath();
-  ctx.arc(x, y, 2, 0, Math.PI * 2);
+  ctx.arc(x, y, 1.75, 0, Math.PI * 2);
   ctx.fillStyle = "#22c55e";
   ctx.fill();
   ctx.restore();
