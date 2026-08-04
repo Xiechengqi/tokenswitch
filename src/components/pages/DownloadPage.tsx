@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { ArrowDown, ArrowRight } from "lucide-react";
 import type { Locale } from "@/lib/types";
 import { getDict, localePath } from "@/lib/i18n";
 import { CLIENT_REPO } from "@/lib/constants";
@@ -43,7 +44,10 @@ export function DownloadPage({ locale }: { locale: Locale }) {
           <h2 className="font-heading text-2xl font-bold">{t.download.scriptTitle}</h2>
           <p className="mt-3 text-sm text-muted-foreground">{t.download.scriptDesc}</p>
           <div className="mt-5">
-            <Button href={localePath(locale) + "#install"}>{t.download.goInstall} →</Button>
+            <Button href={localePath(locale) + "#install"}>
+              {t.download.goInstall}
+              <ArrowRight className="h-4 w-4" aria-hidden />
+            </Button>
           </div>
         </Card>
 
@@ -53,25 +57,46 @@ export function DownloadPage({ locale }: { locale: Locale }) {
           <p className="mt-4 text-sm">
             {t.download.version}: <b className="font-mono">{release.tagName}</b>
           </p>
-          <div className="mt-4 flex flex-wrap gap-2">
-            {preferred && (
+          {/* Asset filenames run ~28 mono chars — too long to sit inside a pill
+           * without wrapping the label at 320px. The button label stays short;
+           * the filename goes underneath where it is allowed to break. */}
+          {preferred && (
+            <div className="mt-4">
               <Button href={preferred.downloadUrl} external>
-                {t.download.downloadBtn} ({preferred.name})
+                {t.download.downloadBtn}
+                <ArrowDown className="h-4 w-4" aria-hidden />
               </Button>
-            )}
-            {binaries
-              .filter((a) => a.name !== preferred?.name)
-              .map((asset) => (
-                <Button key={asset.name} href={asset.downloadUrl} external variant="secondary">
-                  {asset.name}
-                </Button>
-              ))}
-            {!preferred && binaries.length === 0 && (
+              <p className="mt-2 break-all font-mono text-xs text-muted-foreground">
+                {preferred.name}
+              </p>
+            </div>
+          )}
+          {binaries.filter((a) => a.name !== preferred?.name).length > 0 && (
+            <ul className="mt-4 space-y-1.5">
+              {binaries
+                .filter((a) => a.name !== preferred?.name)
+                .map((asset) => (
+                  <li key={asset.name}>
+                    <a
+                      href={asset.downloadUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-start gap-1.5 break-all font-mono text-xs text-muted-foreground underline-offset-4 transition-colors duration-[var(--dur-fast)] ease-out hover:text-foreground hover:underline"
+                    >
+                      <ArrowDown className="mt-0.5 h-3 w-3 shrink-0" aria-hidden />
+                      {asset.name}
+                    </a>
+                  </li>
+                ))}
+            </ul>
+          )}
+          {!preferred && binaries.length === 0 && (
+            <div className="mt-4">
               <Button href={`${CLIENT_REPO}/releases`} external>
                 {t.download.allReleases}
               </Button>
-            )}
-          </div>
+            </div>
+          )}
           <p className="mt-4 text-sm text-muted-foreground">
             <a
               href={`${CLIENT_REPO}/releases`}
@@ -94,9 +119,10 @@ export function DownloadPage({ locale }: { locale: Locale }) {
                 {"href" in path && path.href && (
                   <Link
                     href={localePath(locale, path.href)}
-                    className="mt-4 inline-block text-sm font-semibold text-accent"
+                    className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-foreground underline-offset-4 hover:underline"
                   >
-                    →
+                    {path.title}
+                    <ArrowRight className="h-4 w-4" aria-hidden />
                   </Link>
                 )}
               </Card>

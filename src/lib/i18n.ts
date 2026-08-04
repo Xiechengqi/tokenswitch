@@ -37,6 +37,8 @@ const dict = {
       copied: "Copied",
       pasteHint: "Paste and run it on your Linux server.",
       unavailable: "This region is currently unreachable. Pick another region to install.",
+      incomplete: "Enter your email and a Web UI password to build the command.",
+      copyFailed: "Couldn't copy — select the command above and copy it by hand.",
       moreWays: "More install options",
     },
     stats: {
@@ -281,7 +283,7 @@ const dict = {
     },
     lang: { en: "EN", zh: "中文", ja: "日本語" },
     notFound: { title: "Page not found", back: "Back home" },
-    a11y: { skipToContent: "Skip to content" },
+    a11y: { skipToContent: "Skip to content", menu: "Open menu", closeMenu: "Close menu" },
   },
   zh: {
     brand: "TokenSwitch",
@@ -317,6 +319,8 @@ const dict = {
       copied: "已复制",
       pasteHint: "到你的 Linux 服务器上粘贴运行。",
       unavailable: "该区域当前不可达，请换一个区域再安装。",
+      incomplete: "填写邮箱与 Web UI 密码后即可生成命令。",
+      copyFailed: "复制失败 —— 请手动选中上面的命令复制。",
       moreWays: "更多安装方式",
     },
     stats: {
@@ -546,7 +550,7 @@ const dict = {
     },
     lang: { en: "EN", zh: "中文", ja: "日本語" },
     notFound: { title: "页面未找到", back: "返回首页" },
-    a11y: { skipToContent: "跳到主要内容" },
+    a11y: { skipToContent: "跳到主要内容", menu: "打开菜单", closeMenu: "关闭菜单" },
   },
   ja: {
     brand: "TokenSwitch",
@@ -582,6 +586,8 @@ const dict = {
       copied: "コピー済み",
       pasteHint: "Linux サーバーに貼り付けて実行してください。",
       unavailable: "このリージョンは現在到達できません。別のリージョンを選んでください。",
+      incomplete: "メールアドレスと Web UI パスワードを入力するとコマンドが生成されます。",
+      copyFailed: "コピーできませんでした。上のコマンドを選択して手動でコピーしてください。",
       moreWays: "その他のインストール方法",
     },
     stats: {
@@ -820,7 +826,7 @@ const dict = {
     },
     lang: { en: "EN", zh: "中文", ja: "日本語" },
     notFound: { title: "ページが見つかりません", back: "ホームに戻る" },
-    a11y: { skipToContent: "本文へスキップ" },
+    a11y: { skipToContent: "本文へスキップ", menu: "メニューを開く", closeMenu: "メニューを閉じる" },
   },
 } as const;
 

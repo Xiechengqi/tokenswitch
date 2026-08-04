@@ -33,8 +33,19 @@ export function tokenMarketUrl(region: Region): string {
   return `https://market.${region.domain}`;
 }
 
+/** Share Market is no longer a standalone service — it is a module inside the
+ * router (cc-switch-router `src/share_market.rs`), and its UI is a route on the
+ * router's own dashboard rather than a `share-market.` subdomain. */
 export function shareMarketUrl(region: Region): string {
-  return `https://share-market.${region.domain}`;
+  return `${region.url.replace(/\/$/, "")}/share-market`;
+}
+
+/** Public catalog endpoint for the same module. Anonymous reads are allowed
+ * (`resolve_router_session` yields an Option), but the route is merged outside
+ * the router's `public_cors_layer`, so a cross-origin browser fetch is still
+ * blocked until CORS is extended to it. Callers degrade to the snapshot. */
+export function shareMarketListingsUrl(region: Pick<Region, "url">): string {
+  return `${region.url.replace(/\/$/, "")}/v1/share-market/listings`;
 }
 
 export function routerDashboardUrl(region: Region): string {

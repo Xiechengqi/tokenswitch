@@ -1,5 +1,6 @@
 "use client";
 
+import { ArrowRight } from "lucide-react";
 import type { Locale } from "@/lib/types";
 import { getDict } from "@/lib/i18n";
 import {
@@ -91,8 +92,8 @@ export function MarketsPage({ locale }: { locale: Locale }) {
                     {regionLabel(region.name, locale)}
                     {regionStats?.tokenMarketShares != null
                       ? ` (${regionStats.tokenMarketShares})`
-                      : ""}{" "}
-                    →
+                      : ""}
+                    <ArrowRight className="h-4 w-4" aria-hidden />
                   </Button>
                 );
               })}
@@ -124,8 +125,8 @@ export function MarketsPage({ locale }: { locale: Locale }) {
                     {regionLabel(region.name, locale)}
                     {regionStats?.shareListings != null
                       ? ` (${regionStats.shareListings})`
-                      : ""}{" "}
-                    →
+                      : ""}
+                    <ArrowRight className="h-4 w-4" aria-hidden />
                   </Button>
                 );
               })}

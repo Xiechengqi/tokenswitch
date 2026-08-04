@@ -2,6 +2,7 @@ import * as topojson from "topojson-client";
 import type { Topology } from "topojson-specification";
 import type { GeoPath } from "d3-geo";
 import type { ClientAnimState } from "./animation";
+import { mapPalette, withAlpha } from "./map-palette";
 
 export function renderBaseMap(
   canvas: HTMLCanvasElement,
@@ -11,16 +12,17 @@ export function renderBaseMap(
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
   const land = topojson.feature(topology, topology.objects.land);
+  const palette = mapPalette();
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.beginPath();
   path.context(ctx)(land);
-  ctx.fillStyle = "#e8e8ed";
+  ctx.fillStyle = palette.land;
   ctx.fill();
 
   ctx.beginPath();
   path.context(ctx)(land);
-  ctx.strokeStyle = "#d2d2d7";
+  ctx.strokeStyle = palette.landEdge;
   ctx.lineWidth = 0.5;
   ctx.stroke();
 }
@@ -42,26 +44,27 @@ export function renderServer(
   const alpha = dimmed ? 0.28 : 1;
   const glowR = selected ? 14 : 8 + breath * 6;
   const coreR = selected ? 7 : 5;
+  const palette = mapPalette();
 
   ctx.save();
   ctx.globalAlpha = alpha;
 
   ctx.beginPath();
   ctx.arc(x, y, glowR, 0, Math.PI * 2);
-  ctx.fillStyle = selected ? "rgba(37, 99, 235, 0.32)" : `rgba(37, 99, 235, ${0.18 + breath * 0.2})`;
+  ctx.fillStyle = withAlpha(palette.server, selected ? 0.32 : 0.18 + breath * 0.2);
   ctx.fill();
 
   if (selected) {
     ctx.beginPath();
     ctx.arc(x, y, coreR + 2.5, 0, Math.PI * 2);
-    ctx.strokeStyle = "#1d4ed8";
+    ctx.strokeStyle = palette.serverRing;
     ctx.lineWidth = 2;
     ctx.stroke();
   }
 
   ctx.beginPath();
   ctx.arc(x, y, coreR, 0, Math.PI * 2);
-  ctx.fillStyle = "#2563eb";
+  ctx.fillStyle = palette.server;
   ctx.fill();
   ctx.restore();
 }
@@ -119,7 +122,7 @@ export function renderArc(
     ctx.quadraticCurveTo(cp[0], cp[1], sx, sy);
   }
 
-  ctx.strokeStyle = emphasis ? "rgba(34, 197, 94, 0.55)" : "rgba(34, 197, 94, 0.24)";
+  ctx.strokeStyle = withAlpha(mapPalette().client, emphasis ? 0.55 : 0.24);
   ctx.lineWidth = emphasis ? 2 : 1;
   ctx.stroke();
   ctx.restore();
@@ -147,12 +150,14 @@ export function renderFlowDot(
   const tx = quadBezier(cx, cp[0], sx, tTrail);
   const ty = quadBezier(cy, cp[1], sy, tTrail);
 
+  const palette = mapPalette();
+
   ctx.save();
   ctx.globalAlpha = 0.08 * exitAlpha * scale;
   ctx.beginPath();
   ctx.moveTo(tx, ty);
   ctx.lineTo(x, y);
-  ctx.strokeStyle = "#22c55e";
+  ctx.strokeStyle = palette.client;
   ctx.lineWidth = 2;
   ctx.lineCap = "round";
   ctx.stroke();
@@ -162,7 +167,7 @@ export function renderFlowDot(
   ctx.globalAlpha = 0.22 * exitAlpha * scale;
   ctx.beginPath();
   ctx.arc(x, y, 1.75, 0, Math.PI * 2);
-  ctx.fillStyle = "#22c55e";
+  ctx.fillStyle = palette.client;
   ctx.fill();
   ctx.restore();
 }

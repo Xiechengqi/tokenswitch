@@ -1,3 +1,26 @@
+/* Hallmark · macrostructure: Stat-Led · genre: modern-minimal
+ * theme: Playful Geometric (locked — shared with cc-switch-market /
+ *        cc-switch-share-market; see cc-switch-market/CLAUDE.md)
+ * paper: #FFFDF5 warm cream · accent: #7C3AED violet-600 · ink: #1E293B
+ * display: Outfit 700/800 · body: Plus Jakarta Sans · mono: JetBrains Mono
+ * depth: 2px borders + colour blocking only — no blur, no offset shadow
+ * nav: N1b + mobile sheet · footer: Ft4 dense colophon · enrichment: none
+ * pre-emit critique: P4 H4 E5 S4 R4 V4
+ * mobile: pass (34, 49, 50–57 — verified 320/375/414/768/1280/1920)
+ * chrome: pass (47) · honest: pass (46) · responsive: pass (49) · icons: pass (30)
+ * contrast: pass (40–41) — two tokens moved one step down the shared ramp.
+ *   --accent Violet 500 → 600 (#8B5CF6 → #7C3AED): white on the old value was
+ *   4.235:1, so every primary button failed AA; the new value carries white at
+ *   5.70:1. --muted-foreground Slate 500 → 600 (#64748B → #475569): Slate 500
+ *   passes on bare paper (4.67:1) and white cards (4.76:1) but falls to
+ *   4.03–4.37:1 on this system's tinted colour-blocked surfaces.
+ *   Disabled controls are exempt per WCAG 2.1 SC 1.4.3.
+ *   cc-switch-market and cc-switch-share-market still carry the Slate 500 /
+ *   Violet 500 pair and need the same two-token edit to stay in sync.
+ * tokens: pass (48) — the network map's blue/green live in tokens.css as
+ *   --map-* and are read by both the canvas (lib/map-palette.ts) and the DOM
+ *   legend, so the two can no longer drift.
+ */
 @import url("https://fonts.googleapis.com/css2?family=Outfit:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap");
 @import "tailwindcss";
 @import "./tokens.css";
@@ -13,18 +36,37 @@
   --color-quaternary: var(--quaternary);
   --color-accent-foreground: var(--accent-foreground);
   --color-border: var(--border);
+  /* Playful Geometric's signature 2px ink border. Without this mapping the
+   * `border-border-strong` utility compiles to nothing and every bordered
+   * surface silently falls back to `currentColor`. */
+  --color-border-strong: var(--border-strong);
+  --color-ring: var(--ring);
   --color-card: var(--card);
   --color-terminal: var(--terminal);
+  /* Exposed so the map legend swatches read the same values the canvas paints
+   * with, instead of restating them as inline hex. */
+  --color-map-server: var(--map-server);
+  --color-map-client: var(--map-client);
   --font-heading: "Outfit", system-ui, sans-serif;
   --font-body: "Plus Jakarta Sans", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
   --radius-sm: 8px;
   --radius-md: 16px;
   --radius-lg: 24px;
+  --radius-full: 9999px;
+}
+
+/* Three named easings — these also replace Tailwind's default `ease-*`
+ * utilities, so no component can reach for the browser default `ease`. */
+@theme {
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
 }
 
 html {
   scroll-behavior: smooth;
+  overflow-x: clip;
 }
 
 [id] {
@@ -36,6 +78,9 @@ body {
   color: var(--foreground);
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
+  /* `clip`, never `hidden` — `hidden` on the root kills `position: sticky`
+   * on the nav. */
+  overflow-x: clip;
 }
 
 h1,
@@ -43,6 +88,41 @@ h2,
 h3,
 h4 {
   font-family: var(--font-heading);
+}
+
+/* Display type must be able to break inside a long unbroken token — long
+ * hyphenated brand strings are otherwise unbreakable and blow past 320px. */
+h1,
+h2,
+h3 {
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+
+/* Focus rings appear instantly and are never transitioned — a keyboard user
+ * must never wait for their indicator. */
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+  transition: none !important;
+}
+
+/* The one looping animation on the site: the "live data" heartbeat. Driven by
+ * CSS rather than a React interval so it costs zero re-renders. */
+@keyframes ts-heartbeat {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.ts-heartbeat {
+  animation: ts-heartbeat 1.6s var(--ease-in-out) infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -55,5 +135,10 @@ h4 {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+  .ts-heartbeat {
+    animation: none;
+    opacity: 1;
+    transform: none;
   }
 }

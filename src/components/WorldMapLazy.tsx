@@ -8,7 +8,7 @@ const WorldMap = dynamic(() => import("./WorldMap").then((m) => ({ default: m.Wo
   ssr: false,
   loading: () => (
     <div
-      className="flex h-full min-h-[200px] items-center justify-center bg-muted text-sm text-muted-foreground"
+      className="flex h-full min-h-[200px] items-center justify-center bg-muted/40 text-sm text-muted-foreground"
       aria-busy="true"
       aria-label="Loading map"
     >

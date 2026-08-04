@@ -273,6 +273,8 @@ export function WorldMap({
     <div ref={containerRef} className={className ?? "relative h-[420px] w-full sm:h-[520px]"}>
       <canvas
         ref={canvasRef}
+        role="img"
+        aria-label={t.map.title}
         className="h-full w-full touch-none"
         onPointerMove={(e) => {
           const { mapX, mapY } = mapCoords(e);
@@ -309,20 +311,20 @@ export function WorldMap({
         }}
       />
       {showLegend && (
-        <div className="pointer-events-none absolute bottom-3 left-3 flex flex-wrap items-center gap-3 rounded-lg border border-border-strong/40 bg-card/90 px-2.5 py-1.5 text-[11px] text-muted-foreground shadow-sm backdrop-blur-sm">
+        <div className="pointer-events-none absolute bottom-3 left-3 flex flex-wrap items-center gap-3 rounded-lg border-2 border-border-strong/40 bg-card/90 px-2.5 py-1.5 text-[11px] text-muted-foreground backdrop-blur-sm">
           <span className="inline-flex items-center gap-1.5">
-            <i className="h-2.5 w-2.5 rounded-full bg-[#2563eb]" aria-hidden />
+            <i className="h-2.5 w-2.5 rounded-full bg-map-server" aria-hidden />
             {t.map.legendServer}
           </span>
           <span className="inline-flex items-center gap-1.5">
-            <i className="h-2.5 w-2.5 rounded-full bg-[#22c55e]" aria-hidden />
+            <i className="h-2.5 w-2.5 rounded-full bg-map-client" aria-hidden />
             {t.map.legendClient}
           </span>
         </div>
       )}
       {hoveredClient && mode === "explore" && (
         <div
-          className="pointer-events-none fixed z-50 rounded-lg border-2 border-border-strong bg-card px-2 py-1 text-xs font-medium shadow-sm"
+          className="pointer-events-none fixed z-50 rounded-lg border-2 border-border-strong bg-card px-2 py-1 text-xs font-medium"
           style={{ left: hoveredClient.x, top: hoveredClient.y }}
         >
           {t.map.clients(hoveredClient.count)}

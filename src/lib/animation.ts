@@ -1,4 +1,4 @@
-const CLIENT_COLOR = "#22c55e";
+import { mapPalette } from "./map-palette";
 
 export interface ClientAnimState {
   key: string;
@@ -29,7 +29,7 @@ export function createClientState(
     lon,
     region,
     count,
-    color: CLIENT_COLOR,
+    color: mapPalette().client,
     createdAt: performance.now(),
     enterProgress: 0,
     ripplePhase: Math.random() * Math.PI * 2,

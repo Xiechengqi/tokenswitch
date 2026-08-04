@@ -12,7 +12,7 @@ export function BrandMark({ className }: { className?: string }) {
       <rect width="32" height="32" rx="8" fill="currentColor" />
       <path
         fill="none"
-        stroke="#ffffff"
+        stroke="var(--accent-foreground)"
         strokeWidth="2.75"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -20,7 +20,7 @@ export function BrandMark({ className }: { className?: string }) {
       />
       <path
         fill="none"
-        stroke="#ffffff"
+        stroke="var(--accent-foreground)"
         strokeWidth="2.45"
         strokeLinecap="round"
         strokeLinejoin="round"

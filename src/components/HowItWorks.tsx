@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import type { Locale } from "@/lib/types";
 import { getDict } from "@/lib/i18n";
+import { cn } from "@/lib/cn";
 
 /* Geometry — viewBox 0 0 960 212. Four evenly spaced nodes on one baseline. */
 const NODE_W = 150;
@@ -170,14 +171,47 @@ export function HowItWorks({ locale }: { locale: Locale }) {
   const tunnelMid = (LINKS[0][0] + LINKS[0][1]) / 2;
 
   return (
-    <section className="py-16 sm:py-20" id="how-it-works">
+    <section className="pb-16 pt-20 sm:pb-20 sm:pt-24" id="how-it-works">
       <div className="mx-auto max-w-[var(--container)] px-4 sm:px-6">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="font-heading text-3xl font-bold sm:text-4xl">{t.howItWorks.title}</h2>
           <p className="mt-4 text-muted-foreground">{t.howItWorks.subtitle}</p>
         </div>
 
-        <div className="mt-10 overflow-x-auto">
+        {/* Below md the horizontal diagram would be a 720px scroll region, so
+         * the same four hops render as a vertical chain instead. */}
+        <ol className="mt-10 space-y-0 md:hidden" aria-label={t.howItWorks.title}>
+          {[
+            { label: t.howItWorks.nodes.consumer, caption: t.howItWorks.nodes.consumerCap },
+            { label: t.howItWorks.nodes.market, caption: t.howItWorks.nodes.marketCap },
+            { label: t.howItWorks.nodes.router, caption: t.howItWorks.nodes.routerCap },
+            { label: t.howItWorks.nodes.client, caption: t.howItWorks.nodes.clientCap },
+          ].map((node, i, all) => (
+            <li key={node.label}>
+              <div className="rounded-2xl border-2 border-border-strong bg-card px-4 py-3">
+                <p className="font-heading text-base font-bold">{node.label}</p>
+                <p className="mt-0.5 text-sm text-muted-foreground">{node.caption}</p>
+              </div>
+              {i < all.length - 1 && (
+                <div className="flex items-center gap-2 py-2 pl-5" aria-hidden>
+                  <span
+                    className={cn(
+                      "h-6 w-0 border-l-2",
+                      i === all.length - 2 ? "border-dashed border-accent" : "border-border-strong/30",
+                    )}
+                  />
+                  {i === all.length - 2 && (
+                    <span className="font-mono text-[10px] font-semibold text-accent">
+                      {t.howItWorks.labels.tunnel}
+                    </span>
+                  )}
+                </div>
+              )}
+            </li>
+          ))}
+        </ol>
+
+        <div className="mt-10 hidden overflow-x-auto md:block">
           <svg
             ref={svgRef}
             className="mx-auto block w-full max-w-[950px] min-w-[720px]"
@@ -282,11 +316,11 @@ export function HowItWorks({ locale }: { locale: Locale }) {
 
         <ol className="mx-auto mt-10 grid max-w-3xl gap-4">
           {t.howItWorks.steps.map((step, i) => (
-            <li key={step.bold} className="flex gap-4 rounded-2xl bg-card p-4 shadow-sm">
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 border-[var(--border-strong)] bg-accent text-sm font-bold text-white">
+            <li key={step.bold} className="flex gap-4 rounded-2xl border-2 border-border bg-card p-4">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 border-border-strong bg-accent text-sm font-bold text-accent-foreground">
                 {i + 1}
               </span>
-              <p className="text-sm leading-relaxed sm:text-base">
+              <p className="min-w-0 text-sm leading-relaxed sm:text-base">
                 <b>{step.bold}</b> {step.text}
               </p>
             </li>

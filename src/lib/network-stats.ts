@@ -1,6 +1,6 @@
 import networkStatsData from "@/data/baked/network-stats.json";
 import type { NetworkStats, Region } from "./types";
-import { resolveRegions, shareMarketUrl, tokenMarketUrl } from "./regions";
+import { resolveRegions, shareMarketListingsUrl, tokenMarketUrl } from "./regions";
 import { safeFetch } from "./safe-fetch";
 
 const POLL_INTERVAL_MS = 60_000;
@@ -40,8 +40,8 @@ async function fetchRegionMarketStats(regionDomain: string) {
   }
 }
 
-async function fetchRegionShareMarketStats(regionDomain: string) {
-  const url = `${shareMarketUrl({ name: "", domain: regionDomain, url: "" })}/v1/listings`;
+async function fetchRegionShareMarketStats(regionUrl: string) {
+  const url = shareMarketListingsUrl({ url: regionUrl });
   const res = await safeFetch(url, { mode: "cors", cache: "no-store" });
   if (!res?.ok) return null;
   try {
@@ -81,7 +81,7 @@ export async function fetchLiveNetworkStats(
         const [router, market, shareMarket, models] = await Promise.all([
           fetchRegionRouterStats(region.url),
           fetchRegionMarketStats(region.domain),
-          fetchRegionShareMarketStats(region.domain),
+          fetchRegionShareMarketStats(region.url),
           fetchRegionTopModels(region.domain),
         ]);
         return { region: region.name, router, market, shareMarket, models };

@@ -33,3 +33,6 @@ pnpm-debug.log*
 /target
 frontend/node_modules
 frontend/dist
+
+/.agents
+/.hallmark

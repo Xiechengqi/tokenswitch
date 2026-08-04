@@ -2,8 +2,16 @@
   --background: #fffdf5;
   --foreground: #1e293b;
   --muted: #f1f5f9;
-  --muted-foreground: #64748b;
-  --accent: #8b5cf6;
+  /* Slate 600, not the system's Slate 500 (#64748b). Slate 500 is fine on bare
+   * paper (4.67:1) and on white cards (4.76:1), but Playful Geometric blocks
+   * colour — and on the tinted card surfaces (accent/10, secondary/10,
+   * tertiary/15, quaternary/10) it drops to 4.03–4.37:1, under the 4.5:1 AA
+   * floor. Slate 600 clears every surface on the site at ≥ 6.2:1. */
+  --muted-foreground: #475569;
+  /* Violet 600, not Violet 500 (#8b5cf6). White on #8b5cf6 is 4.23:1 — every
+   * primary button on the site failed AA. #7c3aed carries white at 5.7:1 and
+   * reads 5.6:1 as ink on cream. */
+  --accent: #7c3aed;
   --accent-foreground: #ffffff;
   --secondary: #f472b6;
   --tertiary: #fbbf24;
@@ -14,7 +22,27 @@
   --terminal: #0f172a;
   --nav-h: 64px;
   --container: 1200px;
-  --ring: #8b5cf6;
+  --ring: #7c3aed;
+
+  /* Motion — Playful Geometric expresses tactility through scale/translate,
+   * never elevation. Named easings live in globals.css `@theme` so they also
+   * override Tailwind's `ease-*` utilities. */
+  --dur-fast: 120ms;
+  --dur-base: 180ms;
+  --dur-slow: 320ms;
+}
+
+/* Network map palette. Deliberately outside the brand ramp: blue = server,
+ * green = client is the convention the map trades on, and the violet/pink/
+ * amber/mint confetti would read as decoration rather than data. Canvas
+ * (src/lib/renderer.ts) and the DOM legend (src/components/WorldMap.tsx) both
+ * read these, so the two can no longer drift apart. */
+:root {
+  --map-land: #e8e8ed;
+  --map-land-edge: #d2d2d7;
+  --map-server: #2563eb;
+  --map-server-ring: #1d4ed8;
+  --map-client: #22c55e;
 }
 
 /* Commission bps — keep in sync with cc-switch-market config defaults */

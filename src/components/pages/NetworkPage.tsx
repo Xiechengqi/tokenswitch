@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { ArrowRight } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import type { Locale } from "@/lib/types";
 import { getDict } from "@/lib/i18n";
@@ -85,7 +86,7 @@ export function NetworkPage({ locale }: { locale: Locale }) {
     <>
       <section className="bg-background py-8">
         <div className="mx-auto max-w-[var(--container)] px-4 sm:px-6">
-          <div className="overflow-hidden rounded-2xl bg-card shadow-sm">
+          <div className="overflow-hidden rounded-2xl border-2 border-border-strong bg-card">
             <WorldMapLazy
               locale={locale}
               mode="explore"
@@ -127,7 +128,8 @@ export function NetworkPage({ locale }: { locale: Locale }) {
             <p className="mx-auto mt-3 max-w-xl text-muted-foreground">{t.network.selfHostDesc}</p>
             <div className="mt-6">
               <Button href={`${DOCS_URL}/#/self-host/router-deploy`} external variant="secondary">
-                {t.network.selfHostCta} →
+                {t.network.selfHostCta}
+                <ArrowRight className="h-4 w-4" aria-hidden />
               </Button>
             </div>
           </div>

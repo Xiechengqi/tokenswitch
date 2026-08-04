@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { ArrowRight } from "lucide-react";
 import type { Locale } from "@/lib/types";
 import { getDict, localePath } from "@/lib/i18n";
 import { WorldMapLazy } from "./WorldMapLazy";
@@ -11,18 +12,19 @@ export function MapSection({ locale }: { locale: Locale }) {
   const router = useRouter();
 
   return (
-    <section className="bg-background py-16">
+    <section className="bg-background pb-20 pt-12 sm:pb-24">
       <div className="mx-auto max-w-[var(--container)] px-4 sm:px-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <div>
+          <div className="min-w-0">
             <h2 className="font-heading text-3xl font-bold">{t.map.title}</h2>
             <p className="mt-2 text-muted-foreground">{t.map.subtitle}</p>
           </div>
           <Button href={localePath(locale, "network")} variant="secondary">
-            {t.nav.network} →
+            {t.nav.network}
+            <ArrowRight className="h-4 w-4" aria-hidden />
           </Button>
         </div>
-        <div className="mt-8 overflow-hidden rounded-2xl bg-card shadow-sm">
+        <div className="mt-8 overflow-hidden rounded-2xl border-2 border-border-strong bg-card">
           <WorldMapLazy
             locale={locale}
             mode="showcase"

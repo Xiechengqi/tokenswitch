@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { ArrowRight, Check } from "lucide-react";
 import type { Locale } from "@/lib/types";
 import { getDict, localePath } from "@/lib/i18n";
 import { regionLabel } from "@/lib/regions";
@@ -11,6 +12,11 @@ import { cn } from "@/lib/cn";
 import { Button } from "./ui/Button";
 
 type HealthMap = Record<string, { healthy: boolean; latencyMs: number } | null>;
+type CopyState = "idle" | "copied" | "error";
+
+const field =
+  "w-full rounded-xl border-2 border-border bg-background px-3 py-2.5 text-sm text-foreground " +
+  "transition-colors duration-[var(--dur-fast)] ease-out placeholder:text-muted-foreground/60 focus:border-accent";
 
 export function InstallCard({ locale }: { locale: Locale }) {
   const t = getDict(locale);
@@ -18,7 +24,7 @@ export function InstallCard({ locale }: { locale: Locale }) {
   const [selected, setSelected] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [copied, setCopied] = useState(false);
+  const [copyState, setCopyState] = useState<CopyState>("idle");
   const [health, setHealth] = useState<HealthMap>({});
 
   useEffect(() => {
@@ -49,44 +55,55 @@ export function InstallCard({ locale }: { locale: Locale }) {
 
   const regionHealth = region ? health[region.name] : null;
   const unhealthy = regionHealth?.healthy === false;
-  const canCopy = !!region && !unhealthy && installCommandComplete(email, password);
+  const incomplete = !installCommandComplete(email, password);
+  const canCopy = !!region && !unhealthy && !incomplete;
   const command = region ? buildInstallCommand(region, email, password) : "";
 
   const handleCopy = async () => {
     if (!canCopy) return;
     try {
       await navigator.clipboard.writeText(command);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      setCopyState("copied");
+      setTimeout(() => setCopyState("idle"), 2000);
     } catch {
-      /* ignore */
+      setCopyState("error");
     }
   };
 
   return (
     <div
       id="install"
-      className="overflow-hidden rounded-2xl border-2 border-border-strong bg-card text-foreground shadow-[8px_8px_0_0_#1e293b]"
+      className="overflow-hidden rounded-2xl border-2 border-border-strong bg-card text-foreground"
     >
-      <div className="flex items-center justify-between border-b border-border px-4 py-3">
-        <div className="flex items-center gap-2">
-          <span className="flex gap-1.5" aria-hidden>
-            <i className="h-3 w-3 rounded-full bg-[#ff5f57]" />
-            <i className="h-3 w-3 rounded-full bg-[#febc2e]" />
-            <i className="h-3 w-3 rounded-full bg-[#28c840]" />
-          </span>
-          <span className="font-mono text-xs text-muted-foreground">{t.install.badge}</span>
-        </div>
+      {/* A typographic label, not a re-drawn terminal window — the reader
+       * already owns a terminal; the page's job is the command. */}
+      <div className="flex items-center justify-between gap-3 border-b-2 border-border-strong bg-muted/50 px-4 py-2.5">
+        <span className="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+          {t.install.badge}
+        </span>
         <span
           className={cn(
-            "rounded-full px-2 py-0.5 text-[11px] font-medium",
+            "inline-flex items-center gap-1.5 rounded-full border-2 px-2.5 py-0.5 text-[11px] font-medium",
+            // Mint on cream is 1.9:1 and hot pink 2.6:1 — the hue lives on
+            // the border and the dot; the label stays ink.
             regionHealth == null
-              ? "bg-muted text-muted-foreground"
+              ? "border-border text-muted-foreground"
               : regionHealth.healthy
-                ? "bg-quaternary/15 text-quaternary"
-                : "bg-secondary/20 text-secondary",
+                ? "border-quaternary text-foreground"
+                : "border-secondary text-foreground",
           )}
         >
+          <span
+            className={cn(
+              "h-1.5 w-1.5 rounded-full",
+              regionHealth == null
+                ? "bg-muted-foreground/50"
+                : regionHealth.healthy
+                  ? "ts-heartbeat bg-quaternary"
+                  : "bg-secondary",
+            )}
+            aria-hidden
+          />
           {regionHealth == null
             ? "…"
             : regionHealth.healthy
@@ -95,7 +112,7 @@ export function InstallCard({ locale }: { locale: Locale }) {
         </span>
       </div>
 
-      <div className="space-y-4 p-4">
+      <div className="space-y-4 p-4 sm:p-5">
         <p className="text-sm text-muted-foreground">{t.install.linuxNote}</p>
 
         <label className="block space-y-1.5">
@@ -103,7 +120,7 @@ export function InstallCard({ locale }: { locale: Locale }) {
           <select
             value={region?.name ?? ""}
             onChange={(e) => setSelected(e.target.value)}
-            className="w-full rounded-xl border-2 border-border bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-accent"
+            className={field}
           >
             {regions.map((r) => {
               const h = health[r.name];
@@ -127,7 +144,7 @@ export function InstallCard({ locale }: { locale: Locale }) {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder={t.install.emailPlaceholder}
-              className="w-full rounded-xl border-2 border-border bg-background px-3 py-2 text-sm text-foreground outline-none placeholder:text-muted-foreground/60 focus:border-accent"
+              className={field}
             />
           </label>
           <label className="block space-y-1.5">
@@ -135,42 +152,53 @@ export function InstallCard({ locale }: { locale: Locale }) {
             <input
               type="password"
               autoComplete="new-password"
+              aria-describedby="install-password-hint"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder={t.install.passwordPlaceholder}
-              className="w-full rounded-xl border-2 border-border bg-background px-3 py-2 text-sm text-foreground outline-none placeholder:text-muted-foreground/60 focus:border-accent"
+              className={field}
             />
           </label>
         </div>
-        <p className="text-[11px] text-muted-foreground">{t.install.passwordHint}</p>
+        <p id="install-password-hint" className="text-[11px] text-muted-foreground">
+          {t.install.passwordHint}
+        </p>
 
-        <div className="rounded-xl border border-border bg-muted/40 p-3">
+        <div className="rounded-xl border-2 border-border bg-muted/40 p-3">
           <div className="flex gap-2 font-mono text-[11px] leading-relaxed sm:text-xs">
-            <span className="shrink-0 text-accent">$</span>
-            <code className="break-all text-foreground/90">{command}</code>
+            <span className="shrink-0 select-none text-accent" aria-hidden>
+              $
+            </span>
+            <code className="min-w-0 break-all text-foreground/90">{command}</code>
           </div>
         </div>
 
-        {unhealthy && <p className="text-xs text-secondary">{t.install.unavailable}</p>}
-
-        <div className="flex flex-wrap items-center gap-3">
-          <Button
-            type="button"
-            onClick={handleCopy}
-            disabled={!canCopy}
-            className={cn(!canCopy && "pointer-events-none opacity-40")}
-          >
-            {copied ? t.install.copied : t.install.copy}
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
+          <Button type="button" onClick={handleCopy} disabled={!canCopy}>
+            {copyState === "copied" && <Check className="h-4 w-4" aria-hidden />}
+            {copyState === "copied" ? t.install.copied : t.install.copy}
           </Button>
           <a
             href={localePath(locale, "download")}
-            className="text-xs font-medium text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
+            className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground underline-offset-4 transition-colors duration-[var(--dur-fast)] ease-out hover:text-foreground hover:underline"
           >
-            {t.install.moreWays} →
+            {t.install.moreWays}
+            <ArrowRight className="h-3 w-3" aria-hidden />
           </a>
         </div>
 
-        {copied && <p className="text-xs text-quaternary">{t.install.pasteHint}</p>}
+        {/* Never leave a disabled control unexplained. */}
+        <p aria-live="polite" className="min-h-[1lh] text-xs">
+          {unhealthy ? (
+            <span className="font-medium text-foreground">{t.install.unavailable}</span>
+          ) : copyState === "error" ? (
+            <span className="font-medium text-foreground">{t.install.copyFailed}</span>
+          ) : incomplete ? (
+            <span className="text-muted-foreground">{t.install.incomplete}</span>
+          ) : copyState === "copied" ? (
+            <span className="font-medium text-foreground">{t.install.pasteHint}</span>
+          ) : null}
+        </p>
       </div>
     </div>
   );

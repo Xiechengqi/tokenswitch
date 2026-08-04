@@ -27,7 +27,9 @@ export const X_URL = "https://x.com/TokenSwitch";
 export const CLIENT_REPO = "https://github.com/xiechengqi/cc-switch-server";
 export const ROUTER_REPO = "https://github.com/xiechengqi/cc-switch-router";
 export const MARKET_REPO = "https://github.com/xiechengqi/cc-switch-market";
-export const SHARE_MARKET_REPO = "https://github.com/xiechengqi/cc-switch-share-market";
+/* Share Market has no repo of its own — it lives in cc-switch-router as
+ * `src/share_market.rs`. The former cc-switch-share-market repo is retired;
+ * do not link it from the site. */
 export const DOCS_URL = "https://docs.tokenswitch.org";
 
 /** Region membership source of truth (router repo). */

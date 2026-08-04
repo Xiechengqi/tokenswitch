@@ -18,7 +18,7 @@ export function EarnPage({ locale }: { locale: Locale }) {
         <p className="mt-3 max-w-2xl text-muted-foreground">{t.earnPage.subtitle}</p>
 
         <h2 className="mt-12 font-heading text-2xl font-bold">{t.earnPage.compareTitle}</h2>
-        <div className="mt-6 overflow-x-auto rounded-2xl bg-card shadow-sm">
+        <div className="mt-6 overflow-x-auto rounded-2xl border-2 border-border bg-card">
           <table className="min-w-full text-left text-sm">
             <thead className="bg-muted/50">
               <tr>
@@ -43,7 +43,7 @@ export function EarnPage({ locale }: { locale: Locale }) {
           <h2 className="font-heading text-2xl font-bold">{t.earnPage.steps.title}</h2>
           <ol className="mt-6 space-y-3">
             {t.earnPage.steps.items.map((step, i) => (
-              <li key={step} className="flex gap-3 rounded-xl bg-card p-4 text-sm shadow-sm">
+              <li key={step} className="flex gap-3 rounded-xl border-2 border-border bg-card p-4 text-sm">
                 <span className="font-bold text-accent">{i + 1}.</span>
                 <span>{step}</span>
               </li>
