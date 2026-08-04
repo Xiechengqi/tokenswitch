@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "node scripts/bake-data.mjs && next build",
     "bake": "node scripts/bake-data.mjs",
+    "og": "node scripts/make-og.mjs",
     "lint": "next lint",
     "typecheck": "tsc --noEmit"
   },
