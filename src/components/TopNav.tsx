@@ -41,7 +41,7 @@ export function TopNav({ locale }: { locale: Locale }) {
     "whitespace-nowrap text-sm font-medium text-muted-foreground transition-colors duration-[var(--dur-fast)] ease-out hover:text-foreground";
 
   return (
-    <header className="sticky top-0 z-50 border-b-2 border-border-strong bg-background/90 backdrop-blur-md">
+    <header className="sticky top-0 z-50 bg-background/90 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-[var(--container)] items-center justify-between gap-4 px-4 sm:px-6">
         <Link
           href={localePath(locale)}
@@ -102,7 +102,7 @@ export function TopNav({ locale }: { locale: Locale }) {
       <div
         id="mobile-nav"
         hidden={!open}
-        className="border-t-2 border-border-strong bg-background md:hidden"
+        className="bg-muted/30 md:hidden"
       >
         <nav className="mx-auto flex max-w-[var(--container)] flex-col px-4 py-2 sm:px-6">
           {links.map((link) =>

@@ -21,7 +21,8 @@ const LINKS = [0, 1, 2].map((i) => [LEFTS[i] + NODE_W, LEFTS[i + 1]] as const);
  * thinks a beat longer, then the response returns along the same links. */
 const HOP = 650;
 const DWELL = 320;
-const CYCLE = 7200;
+/** Request-only path — one motion primitive; response return was noise. */
+const CYCLE = 4200;
 
 type Hop = { t0: number; t1: number; x0: number; x1: number };
 const hop = (t0: number, link: readonly [number, number], toLeft: boolean): Hop => ({
@@ -32,26 +33,17 @@ const hop = (t0: number, link: readonly [number, number], toLeft: boolean): Hop 
 });
 
 const REQ: Hop[] = [
-  hop(300, LINKS[2], true),
-  hop(300 + (HOP + DWELL), LINKS[1], true),
-  hop(300 + 2 * (HOP + DWELL), LINKS[0], true),
-];
-const RES_START = REQ[2].t1 + 810;
-const RES: Hop[] = [
-  hop(RES_START, LINKS[0], false),
-  hop(RES_START + (HOP + DWELL), LINKS[1], false),
-  hop(RES_START + 2 * (HOP + DWELL), LINKS[2], false),
+  hop(200, LINKS[2], true),
+  hop(200 + (HOP + DWELL), LINKS[1], true),
+  hop(200 + 2 * (HOP + DWELL), LINKS[0], true),
 ];
 
-/** Ring pulses: when a dot reaches a node (plus the initial "request born"). */
+/** Ring pulses only on the outbound request hops. */
 const PULSES = [
-  { node: 3, t: 80, dur: 520 },
-  { node: 2, t: REQ[0].t1, dur: 520 },
-  { node: 1, t: REQ[1].t1, dur: 520 },
-  { node: 0, t: REQ[2].t1, dur: 760 },
-  { node: 1, t: RES[0].t1, dur: 420 },
-  { node: 2, t: RES[1].t1, dur: 420 },
-  { node: 3, t: RES[2].t1, dur: 640 },
+  { node: 3, t: 40, dur: 420 },
+  { node: 2, t: REQ[0].t1, dur: 420 },
+  { node: 1, t: REQ[1].t1, dur: 420 },
+  { node: 0, t: REQ[2].t1, dur: 560 },
 ] as const;
 
 const easeInOut = (p: number) => (p < 0.5 ? 4 * p ** 3 : 1 - (-2 * p + 2) ** 3 / 2);
@@ -63,10 +55,7 @@ export function HowItWorks({ locale }: { locale: Locale }) {
   const tunnelRef = useRef<SVGLineElement>(null);
   const dotReq = useRef<SVGCircleElement>(null);
   const trailReq = useRef<SVGCircleElement>(null);
-  const dotRes = useRef<SVGCircleElement>(null);
-  const trailRes = useRef<SVGCircleElement>(null);
   const pillReq = useRef<SVGTextElement>(null);
-  const pillRes = useRef<SVGTextElement>(null);
   const ringRefs = useRef<Array<SVGRectElement | null>>([]);
 
   useEffect(() => {
@@ -113,7 +102,6 @@ export function HowItWorks({ locale }: { locale: Locale }) {
       const elapsed = total % CYCLE;
 
       placeDot(dotReq.current, trailReq.current, REQ, elapsed);
-      placeDot(dotRes.current, trailRes.current, RES, elapsed);
 
       for (let i = 0; i < 4; i++) {
         const ring = ringRefs.current[i];
@@ -139,9 +127,6 @@ export function HowItWorks({ locale }: { locale: Locale }) {
       }
 
       pillReq.current?.setAttribute("opacity", String(phaseOpacity(elapsed, REQ[0].t0, REQ[2].t1)));
-      pillRes.current?.setAttribute("opacity", String(phaseOpacity(elapsed, RES[0].t0, RES[2].t1)));
-
-      // Slow dash drift on the persistent tunnel link (client → router).
       tunnelRef.current?.setAttribute("stroke-dashoffset", String(-((total * 0.02) % 14)));
 
       raf = requestAnimationFrame(loop);
@@ -171,7 +156,7 @@ export function HowItWorks({ locale }: { locale: Locale }) {
   const tunnelMid = (LINKS[0][0] + LINKS[0][1]) / 2;
 
   return (
-    <section className="pb-16 pt-20 sm:pb-20 sm:pt-24" id="how-it-works">
+    <section className="bg-muted/30 pb-16 pt-20 sm:pb-20 sm:pt-24" id="how-it-works">
       <div className="mx-auto max-w-[var(--container)] px-4 sm:px-6">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="font-heading text-3xl font-bold sm:text-4xl">{t.howItWorks.title}</h2>
@@ -188,7 +173,7 @@ export function HowItWorks({ locale }: { locale: Locale }) {
             { label: t.howItWorks.nodes.client, caption: t.howItWorks.nodes.clientCap },
           ].map((node, i, all) => (
             <li key={node.label}>
-              <div className="rounded-2xl border-2 border-border-strong bg-card px-4 py-3">
+              <div className="rounded-2xl border-2 border-border bg-card px-4 py-3">
                 <p className="font-heading text-base font-bold">{node.label}</p>
                 <p className="mt-0.5 text-sm text-muted-foreground">{node.caption}</p>
               </div>
@@ -197,7 +182,7 @@ export function HowItWorks({ locale }: { locale: Locale }) {
                   <span
                     className={cn(
                       "h-6 w-0 border-l-2",
-                      i === all.length - 2 ? "border-dashed border-accent" : "border-border-strong/30",
+                      i === all.length - 2 ? "border-dashed border-accent" : "border-border",
                     )}
                   />
                   {i === all.length - 2 && (
@@ -228,10 +213,10 @@ export function HowItWorks({ locale }: { locale: Locale }) {
                 y1={LINK_Y}
                 x2={x1}
                 y2={LINK_Y}
-                stroke="var(--border-strong)"
+                stroke="var(--border)"
                 strokeWidth="2"
                 strokeLinecap="round"
-                opacity="0.25"
+                opacity="0.7"
               />
             ))}
             <line
@@ -254,7 +239,7 @@ export function HowItWorks({ locale }: { locale: Locale }) {
               {t.howItWorks.labels.tunnel}
             </text>
 
-            {/* Phase captions (at most one visible at a time). */}
+            {/* Phase caption — outbound request only. */}
             <g aria-hidden="true">
               <text
                 ref={pillReq}
@@ -265,16 +250,6 @@ export function HowItWorks({ locale }: { locale: Locale }) {
                 className="fill-secondary text-[12px] font-bold uppercase tracking-widest"
               >
                 {t.howItWorks.labels.request}
-              </text>
-              <text
-                ref={pillRes}
-                x={480}
-                y={40}
-                textAnchor="middle"
-                opacity="0"
-                className="fill-quaternary text-[12px] font-bold uppercase tracking-widest"
-              >
-                {t.howItWorks.labels.response}
               </text>
             </g>
 
@@ -304,12 +279,10 @@ export function HowItWorks({ locale }: { locale: Locale }) {
             <Node left={LEFTS[2]} kind="market" label={t.howItWorks.nodes.market} caption={t.howItWorks.nodes.marketCap} accent />
             <Node left={LEFTS[3]} kind="consumer" label={t.howItWorks.nodes.consumer} caption={t.howItWorks.nodes.consumerCap} />
 
-            {/* Traveling dots with comet trails. */}
+            {/* Traveling request dot with comet trail. */}
             <g aria-hidden="true">
               <circle ref={trailReq} cy={LINK_Y} r="4" fill="var(--secondary)" opacity="0" />
               <circle ref={dotReq} cy={LINK_Y} r="6" fill="var(--secondary)" opacity="0" />
-              <circle ref={trailRes} cy={LINK_Y} r="4" fill="var(--quaternary)" opacity="0" />
-              <circle ref={dotRes} cy={LINK_Y} r="6" fill="var(--quaternary)" opacity="0" />
             </g>
           </svg>
         </div>
@@ -317,7 +290,7 @@ export function HowItWorks({ locale }: { locale: Locale }) {
         <ol className="mx-auto mt-10 grid max-w-3xl gap-4">
           {t.howItWorks.steps.map((step, i) => (
             <li key={step.bold} className="flex gap-4 rounded-2xl border-2 border-border bg-card p-4">
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 border-border-strong bg-accent text-sm font-bold text-accent-foreground">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent text-sm font-bold text-accent-foreground">
                 {i + 1}
               </span>
               <p className="min-w-0 text-sm leading-relaxed sm:text-base">
@@ -353,7 +326,7 @@ function Node({
         height={NODE_H}
         rx={RX}
         fill={accent ? "color-mix(in srgb, var(--accent) 10%, var(--card))" : "var(--card)"}
-        stroke={accent ? "var(--accent)" : "var(--border-strong)"}
+        stroke={accent ? "var(--accent)" : "var(--border)"}
         strokeWidth="2"
       />
       <g transform={`translate(${NODE_W / 2}, 38)`} className="text-foreground">

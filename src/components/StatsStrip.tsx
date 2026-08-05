@@ -53,12 +53,9 @@ export function StatsStrip({ locale }: { locale: Locale }) {
   ];
 
   return (
-    <Link
-      href={localePath(locale, "network")}
-      className="group block border-y-2 border-border-strong bg-card transition-colors duration-[var(--dur-base)] ease-out hover:bg-muted/40"
-    >
+    <section className="bg-card" aria-label={t.stats.live}>
       <div className="mx-auto max-w-[var(--container)] px-4 py-6 sm:px-6">
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <span className="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
             <span
               className={cn(
@@ -69,14 +66,13 @@ export function StatsStrip({ locale }: { locale: Locale }) {
             />
             {isSnapshot ? t.stats.snapshot : t.stats.live}
           </span>
-          {/* The whole band is clickable; say so rather than relying on hover. */}
-          <span className="inline-flex items-center gap-1 whitespace-nowrap text-xs font-medium text-muted-foreground underline-offset-4 group-hover:text-foreground group-hover:underline">
-            {t.nav.network}
-            <ArrowRight
-              className="h-3.5 w-3.5 transition-transform duration-[var(--dur-fast)] ease-out group-hover:translate-x-0.5"
-              aria-hidden
-            />
-          </span>
+          <Link
+            href={localePath(locale, "network")}
+            className="inline-flex items-center gap-1 whitespace-nowrap rounded-full border-2 border-border bg-background px-3 py-1.5 text-xs font-semibold text-foreground transition-[border-color,background-color] duration-[var(--dur-fast)] ease-out hover:border-accent hover:bg-accent/5"
+          >
+            {t.stats.explore}
+            <ArrowRight className="h-3.5 w-3.5" aria-hidden />
+          </Link>
         </div>
 
         <div
@@ -94,6 +90,6 @@ export function StatsStrip({ locale }: { locale: Locale }) {
           ))}
         </div>
       </div>
-    </Link>
+    </section>
   );
 }

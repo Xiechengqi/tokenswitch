@@ -311,7 +311,7 @@ export function WorldMap({
         }}
       />
       {showLegend && (
-        <div className="pointer-events-none absolute bottom-3 left-3 flex flex-wrap items-center gap-3 rounded-lg border-2 border-border-strong/40 bg-card/90 px-2.5 py-1.5 text-[11px] text-muted-foreground backdrop-blur-sm">
+        <div className="pointer-events-none absolute bottom-3 left-3 flex flex-wrap items-center gap-3 rounded-lg border border-border bg-card/90 px-2.5 py-1.5 text-[11px] text-muted-foreground backdrop-blur-sm">
           <span className="inline-flex items-center gap-1.5">
             <i className="h-2.5 w-2.5 rounded-full bg-map-server" aria-hidden />
             {t.map.legendServer}
@@ -324,7 +324,7 @@ export function WorldMap({
       )}
       {hoveredClient && mode === "explore" && (
         <div
-          className="pointer-events-none fixed z-50 rounded-lg border-2 border-border-strong bg-card px-2 py-1 text-xs font-medium"
+          className="pointer-events-none fixed z-50 rounded-lg border border-border bg-card px-2 py-1 text-xs font-medium"
           style={{ left: hoveredClient.x, top: hoveredClient.y }}
         >
           {t.map.clients(hoveredClient.count)}

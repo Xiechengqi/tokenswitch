@@ -37,7 +37,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: L
           "@type": "SoftwareApplication",
           name: t.brand,
           applicationCategory: "DeveloperApplication",
-          operatingSystem: "macOS, Windows, Linux",
+          operatingSystem: "Linux",
           offers: {
             "@type": "Offer",
             url: `${SITE_URL}/${locale}/download/`,

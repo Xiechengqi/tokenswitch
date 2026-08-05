@@ -12,7 +12,7 @@ export function MapSection({ locale }: { locale: Locale }) {
   const router = useRouter();
 
   return (
-    <section className="bg-background pb-20 pt-12 sm:pb-24">
+    <section className="bg-card pb-20 pt-12 sm:pb-24">
       <div className="mx-auto max-w-[var(--container)] px-4 sm:px-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div className="min-w-0">
@@ -24,7 +24,7 @@ export function MapSection({ locale }: { locale: Locale }) {
             <ArrowRight className="h-4 w-4" aria-hidden />
           </Button>
         </div>
-        <div className="mt-8 overflow-hidden rounded-2xl border-2 border-border-strong bg-card">
+        <div className="mt-8 overflow-hidden rounded-2xl bg-muted/40">
           <WorldMapLazy
             locale={locale}
             mode="showcase"

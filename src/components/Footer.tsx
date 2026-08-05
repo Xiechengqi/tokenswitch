@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import type { Locale } from "@/lib/types";
 import { getDict, localePath } from "@/lib/i18n";
@@ -8,16 +10,18 @@ import {
   MARKET_REPO,
   ROUTER_REPO,
 } from "@/lib/constants";
-import { getBakedRegions, regionLabel } from "@/lib/regions";
+import { regionLabel } from "@/lib/regions";
+import { useRegions } from "@/hooks/useRegions";
 import { SocialTextLinks } from "@/components/SocialLinks";
 import { BrandMark } from "@/components/BrandMark";
 
 /* Ft4 dense colophon — the ecosystem is four repos and a handful of regions,
  * which is a colophon's worth of metadata, not a four-column sitemap. Runs wrap
- * inline instead of stacking into columns nobody reads. */
+ * inline instead of stacking into columns nobody reads. Regions follow the same
+ * bake+live source as the map and install card. */
 export function Footer({ locale }: { locale: Locale }) {
   const t = getDict(locale);
-  const { regions } = getBakedRegions();
+  const regions = useRegions();
 
   const components = [
     { label: t.footer.clientRepo, href: CLIENT_REPO },
@@ -27,23 +31,17 @@ export function Footer({ locale }: { locale: Locale }) {
   ];
 
   return (
-    <footer className="border-t-2 border-border-strong bg-muted/40">
+    <footer className="bg-card">
       <div className="mx-auto max-w-[var(--container)] px-4 py-12 sm:px-6 sm:py-14">
-        <div className="flex flex-wrap items-end justify-between gap-6">
-          <div>
-            <p className="flex items-center gap-2.5 font-heading text-2xl font-extrabold">
-              <BrandMark className="h-8 w-8" />
-              {t.brand}
-            </p>
-            <p className="mt-2 max-w-md text-sm text-muted-foreground">{t.tagline}</p>
-          </div>
-          <span
-            className="hidden h-10 w-10 rotate-12 rounded-tl-2xl rounded-tr-2xl rounded-br-2xl border-2 border-tertiary bg-tertiary/25 sm:block"
-            aria-hidden
-          />
+        <div>
+          <p className="flex items-center gap-2.5 font-heading text-2xl font-extrabold">
+            <BrandMark className="h-8 w-8" />
+            {t.brand}
+          </p>
+          <p className="mt-2 max-w-md text-sm text-muted-foreground">{t.tagline}</p>
         </div>
 
-        <div className="mt-10 space-y-6 border-t-2 border-border-strong pt-8">
+        <div className="mt-10 space-y-6 pt-2">
           <Run label={t.footer.components}>
             {components.map((c) => (
               <ColophonLink key={c.href} href={c.href} external>
@@ -61,7 +59,7 @@ export function Footer({ locale }: { locale: Locale }) {
           </Run>
         </div>
 
-        <div className="mt-8 flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-t border-border pt-6 text-sm">
+        <div className="mt-10 flex flex-wrap items-center justify-between gap-x-6 gap-y-3 pt-2 text-sm">
           <p className="text-muted-foreground">{t.footer.copyright}</p>
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
             <ColophonLink href={`${localePath(locale)}#trust`}>{t.footer.security}</ColophonLink>

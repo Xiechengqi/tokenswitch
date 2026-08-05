@@ -1,8 +1,8 @@
 import { cn } from "@/lib/cn";
 
-/* Border-only depth (Playful Geometric): a 2px hairline-ink edge on a white
- * surface, sat on cream paper. No shadow — if a card reads flat, the fix is
- * contrast and spacing, not elevation. */
+/* Border-only depth (Playful Geometric): a soft edge on a white surface, sat
+ * on cream paper. Hover lifts to accent — not ink — so interaction doesn't
+ * reintroduce page-slicing black rules. */
 export function Card({
   className,
   children,
@@ -17,7 +17,7 @@ export function Card({
       className={cn(
         "rounded-2xl border-2 border-border bg-card p-6",
         hover &&
-          "transition-[border-color] duration-[var(--dur-base)] ease-out hover:border-border-strong",
+          "transition-[border-color,background-color] duration-[var(--dur-base)] ease-out hover:border-accent hover:bg-accent/5",
         className,
       )}
     >

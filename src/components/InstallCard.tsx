@@ -73,11 +73,11 @@ export function InstallCard({ locale }: { locale: Locale }) {
   return (
     <div
       id="install"
-      className="overflow-hidden rounded-2xl border-2 border-border-strong bg-card text-foreground"
+      className="overflow-hidden rounded-2xl bg-card text-foreground"
     >
       {/* A typographic label, not a re-drawn terminal window — the reader
        * already owns a terminal; the page's job is the command. */}
-      <div className="flex items-center justify-between gap-3 border-b-2 border-border-strong bg-muted/50 px-4 py-2.5">
+      <div className="flex items-center justify-between gap-3 bg-muted/50 px-4 py-2.5">
         <span className="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
           {t.install.badge}
         </span>

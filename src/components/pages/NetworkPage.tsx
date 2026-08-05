@@ -86,7 +86,7 @@ export function NetworkPage({ locale }: { locale: Locale }) {
     <>
       <section className="bg-background py-8">
         <div className="mx-auto max-w-[var(--container)] px-4 sm:px-6">
-          <div className="overflow-hidden rounded-2xl border-2 border-border-strong bg-card">
+          <div className="overflow-hidden rounded-2xl bg-card">
             <WorldMapLazy
               locale={locale}
               mode="explore"

@@ -48,6 +48,7 @@ const dict = {
       shares: "Shares",
       live: "Live",
       snapshot: "Snapshot",
+      explore: "Explore the network",
     },
     ecosystem: {
       title: "Four pieces, one network",
@@ -330,6 +331,7 @@ const dict = {
       shares: "在线 Share",
       live: "实时",
       snapshot: "快照",
+      explore: "查看网络",
     },
     ecosystem: {
       title: "四组件，一张网",
@@ -597,6 +599,7 @@ const dict = {
       shares: "Share",
       live: "ライブ",
       snapshot: "スナップショット",
+      explore: "ネットワークを見る",
     },
     ecosystem: {
       title: "4 つのコンポーネント、1 つのネットワーク",
