@@ -1,111 +1,165 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
 <url>
-<loc>https://tokenswitch.org/en/</loc>
-<lastmod>2026-08-20T07:06:54.724Z</lastmod>
-<changefreq>weekly</changefreq>
+<loc>https://tokenswitch.org/</loc>
+<xhtml:link rel="alternate" hreflang="x-default" href="https://tokenswitch.org/" />
+<xhtml:link rel="alternate" hreflang="en" href="https://tokenswitch.org/" />
+<xhtml:link rel="alternate" hreflang="zh" href="https://tokenswitch.org/zh/" />
+<xhtml:link rel="alternate" hreflang="ja" href="https://tokenswitch.org/ja/" />
+<lastmod>2026-08-20T11:16:18Z</lastmod>
 <priority>1</priority>
 </url>
 <url>
 <loc>https://tokenswitch.org/en/network/</loc>
-<lastmod>2026-08-20T07:06:54.724Z</lastmod>
-<changefreq>monthly</changefreq>
+<xhtml:link rel="alternate" hreflang="x-default" href="https://tokenswitch.org/en/network/" />
+<xhtml:link rel="alternate" hreflang="en" href="https://tokenswitch.org/en/network/" />
+<xhtml:link rel="alternate" hreflang="zh" href="https://tokenswitch.org/zh/network/" />
+<xhtml:link rel="alternate" hreflang="ja" href="https://tokenswitch.org/ja/network/" />
+<lastmod>2026-08-20T11:16:18Z</lastmod>
 <priority>0.8</priority>
 </url>
 <url>
 <loc>https://tokenswitch.org/en/download/</loc>
-<lastmod>2026-08-20T07:06:54.724Z</lastmod>
-<changefreq>monthly</changefreq>
+<xhtml:link rel="alternate" hreflang="x-default" href="https://tokenswitch.org/en/download/" />
+<xhtml:link rel="alternate" hreflang="en" href="https://tokenswitch.org/en/download/" />
+<xhtml:link rel="alternate" hreflang="zh" href="https://tokenswitch.org/zh/download/" />
+<xhtml:link rel="alternate" hreflang="ja" href="https://tokenswitch.org/ja/download/" />
+<lastmod>2026-08-20T11:16:18Z</lastmod>
 <priority>0.8</priority>
 </url>
 <url>
 <loc>https://tokenswitch.org/en/earn/</loc>
-<lastmod>2026-08-20T07:06:54.724Z</lastmod>
-<changefreq>monthly</changefreq>
+<xhtml:link rel="alternate" hreflang="x-default" href="https://tokenswitch.org/en/earn/" />
+<xhtml:link rel="alternate" hreflang="en" href="https://tokenswitch.org/en/earn/" />
+<xhtml:link rel="alternate" hreflang="zh" href="https://tokenswitch.org/zh/earn/" />
+<xhtml:link rel="alternate" hreflang="ja" href="https://tokenswitch.org/ja/earn/" />
+<lastmod>2026-08-20T11:16:18Z</lastmod>
 <priority>0.8</priority>
 </url>
 <url>
 <loc>https://tokenswitch.org/en/markets/</loc>
-<lastmod>2026-08-20T07:06:54.724Z</lastmod>
-<changefreq>monthly</changefreq>
+<xhtml:link rel="alternate" hreflang="x-default" href="https://tokenswitch.org/en/markets/" />
+<xhtml:link rel="alternate" hreflang="en" href="https://tokenswitch.org/en/markets/" />
+<xhtml:link rel="alternate" hreflang="zh" href="https://tokenswitch.org/zh/markets/" />
+<xhtml:link rel="alternate" hreflang="ja" href="https://tokenswitch.org/ja/markets/" />
+<lastmod>2026-08-20T11:16:18Z</lastmod>
 <priority>0.8</priority>
 </url>
 <url>
 <loc>https://tokenswitch.org/en/faq/</loc>
-<lastmod>2026-08-20T07:06:54.724Z</lastmod>
-<changefreq>monthly</changefreq>
+<xhtml:link rel="alternate" hreflang="x-default" href="https://tokenswitch.org/en/faq/" />
+<xhtml:link rel="alternate" hreflang="en" href="https://tokenswitch.org/en/faq/" />
+<xhtml:link rel="alternate" hreflang="zh" href="https://tokenswitch.org/zh/faq/" />
+<xhtml:link rel="alternate" hreflang="ja" href="https://tokenswitch.org/ja/faq/" />
+<lastmod>2026-08-20T11:16:18Z</lastmod>
 <priority>0.8</priority>
 </url>
 <url>
 <loc>https://tokenswitch.org/zh/</loc>
-<lastmod>2026-08-20T07:06:54.725Z</lastmod>
-<changefreq>weekly</changefreq>
+<xhtml:link rel="alternate" hreflang="x-default" href="https://tokenswitch.org/" />
+<xhtml:link rel="alternate" hreflang="en" href="https://tokenswitch.org/" />
+<xhtml:link rel="alternate" hreflang="zh" href="https://tokenswitch.org/zh/" />
+<xhtml:link rel="alternate" hreflang="ja" href="https://tokenswitch.org/ja/" />
+<lastmod>2026-08-20T11:16:18Z</lastmod>
 <priority>1</priority>
 </url>
 <url>
 <loc>https://tokenswitch.org/zh/network/</loc>
-<lastmod>2026-08-20T07:06:54.725Z</lastmod>
-<changefreq>monthly</changefreq>
+<xhtml:link rel="alternate" hreflang="x-default" href="https://tokenswitch.org/en/network/" />
+<xhtml:link rel="alternate" hreflang="en" href="https://tokenswitch.org/en/network/" />
+<xhtml:link rel="alternate" hreflang="zh" href="https://tokenswitch.org/zh/network/" />
+<xhtml:link rel="alternate" hreflang="ja" href="https://tokenswitch.org/ja/network/" />
+<lastmod>2026-08-20T11:16:18Z</lastmod>
 <priority>0.8</priority>
 </url>
 <url>
 <loc>https://tokenswitch.org/zh/download/</loc>
-<lastmod>2026-08-20T07:06:54.725Z</lastmod>
-<changefreq>monthly</changefreq>
+<xhtml:link rel="alternate" hreflang="x-default" href="https://tokenswitch.org/en/download/" />
+<xhtml:link rel="alternate" hreflang="en" href="https://tokenswitch.org/en/download/" />
+<xhtml:link rel="alternate" hreflang="zh" href="https://tokenswitch.org/zh/download/" />
+<xhtml:link rel="alternate" hreflang="ja" href="https://tokenswitch.org/ja/download/" />
+<lastmod>2026-08-20T11:16:18Z</lastmod>
 <priority>0.8</priority>
 </url>
 <url>
 <loc>https://tokenswitch.org/zh/earn/</loc>
-<lastmod>2026-08-20T07:06:54.725Z</lastmod>
-<changefreq>monthly</changefreq>
+<xhtml:link rel="alternate" hreflang="x-default" href="https://tokenswitch.org/en/earn/" />
+<xhtml:link rel="alternate" hreflang="en" href="https://tokenswitch.org/en/earn/" />
+<xhtml:link rel="alternate" hreflang="zh" href="https://tokenswitch.org/zh/earn/" />
+<xhtml:link rel="alternate" hreflang="ja" href="https://tokenswitch.org/ja/earn/" />
+<lastmod>2026-08-20T11:16:18Z</lastmod>
 <priority>0.8</priority>
 </url>
 <url>
 <loc>https://tokenswitch.org/zh/markets/</loc>
-<lastmod>2026-08-20T07:06:54.725Z</lastmod>
-<changefreq>monthly</changefreq>
+<xhtml:link rel="alternate" hreflang="x-default" href="https://tokenswitch.org/en/markets/" />
+<xhtml:link rel="alternate" hreflang="en" href="https://tokenswitch.org/en/markets/" />
+<xhtml:link rel="alternate" hreflang="zh" href="https://tokenswitch.org/zh/markets/" />
+<xhtml:link rel="alternate" hreflang="ja" href="https://tokenswitch.org/ja/markets/" />
+<lastmod>2026-08-20T11:16:18Z</lastmod>
 <priority>0.8</priority>
 </url>
 <url>
 <loc>https://tokenswitch.org/zh/faq/</loc>
-<lastmod>2026-08-20T07:06:54.725Z</lastmod>
-<changefreq>monthly</changefreq>
+<xhtml:link rel="alternate" hreflang="x-default" href="https://tokenswitch.org/en/faq/" />
+<xhtml:link rel="alternate" hreflang="en" href="https://tokenswitch.org/en/faq/" />
+<xhtml:link rel="alternate" hreflang="zh" href="https://tokenswitch.org/zh/faq/" />
+<xhtml:link rel="alternate" hreflang="ja" href="https://tokenswitch.org/ja/faq/" />
+<lastmod>2026-08-20T11:16:18Z</lastmod>
 <priority>0.8</priority>
 </url>
 <url>
 <loc>https://tokenswitch.org/ja/</loc>
-<lastmod>2026-08-20T07:06:54.725Z</lastmod>
-<changefreq>weekly</changefreq>
+<xhtml:link rel="alternate" hreflang="x-default" href="https://tokenswitch.org/" />
+<xhtml:link rel="alternate" hreflang="en" href="https://tokenswitch.org/" />
+<xhtml:link rel="alternate" hreflang="zh" href="https://tokenswitch.org/zh/" />
+<xhtml:link rel="alternate" hreflang="ja" href="https://tokenswitch.org/ja/" />
+<lastmod>2026-08-20T11:16:18Z</lastmod>
 <priority>1</priority>
 </url>
 <url>
 <loc>https://tokenswitch.org/ja/network/</loc>
-<lastmod>2026-08-20T07:06:54.725Z</lastmod>
-<changefreq>monthly</changefreq>
+<xhtml:link rel="alternate" hreflang="x-default" href="https://tokenswitch.org/en/network/" />
+<xhtml:link rel="alternate" hreflang="en" href="https://tokenswitch.org/en/network/" />
+<xhtml:link rel="alternate" hreflang="zh" href="https://tokenswitch.org/zh/network/" />
+<xhtml:link rel="alternate" hreflang="ja" href="https://tokenswitch.org/ja/network/" />
+<lastmod>2026-08-20T11:16:18Z</lastmod>
 <priority>0.8</priority>
 </url>
 <url>
 <loc>https://tokenswitch.org/ja/download/</loc>
-<lastmod>2026-08-20T07:06:54.725Z</lastmod>
-<changefreq>monthly</changefreq>
+<xhtml:link rel="alternate" hreflang="x-default" href="https://tokenswitch.org/en/download/" />
+<xhtml:link rel="alternate" hreflang="en" href="https://tokenswitch.org/en/download/" />
+<xhtml:link rel="alternate" hreflang="zh" href="https://tokenswitch.org/zh/download/" />
+<xhtml:link rel="alternate" hreflang="ja" href="https://tokenswitch.org/ja/download/" />
+<lastmod>2026-08-20T11:16:18Z</lastmod>
 <priority>0.8</priority>
 </url>
 <url>
 <loc>https://tokenswitch.org/ja/earn/</loc>
-<lastmod>2026-08-20T07:06:54.725Z</lastmod>
-<changefreq>monthly</changefreq>
+<xhtml:link rel="alternate" hreflang="x-default" href="https://tokenswitch.org/en/earn/" />
+<xhtml:link rel="alternate" hreflang="en" href="https://tokenswitch.org/en/earn/" />
+<xhtml:link rel="alternate" hreflang="zh" href="https://tokenswitch.org/zh/earn/" />
+<xhtml:link rel="alternate" hreflang="ja" href="https://tokenswitch.org/ja/earn/" />
+<lastmod>2026-08-20T11:16:18Z</lastmod>
 <priority>0.8</priority>
 </url>
 <url>
 <loc>https://tokenswitch.org/ja/markets/</loc>
-<lastmod>2026-08-20T07:06:54.725Z</lastmod>
-<changefreq>monthly</changefreq>
+<xhtml:link rel="alternate" hreflang="x-default" href="https://tokenswitch.org/en/markets/" />
+<xhtml:link rel="alternate" hreflang="en" href="https://tokenswitch.org/en/markets/" />
+<xhtml:link rel="alternate" hreflang="zh" href="https://tokenswitch.org/zh/markets/" />
+<xhtml:link rel="alternate" hreflang="ja" href="https://tokenswitch.org/ja/markets/" />
+<lastmod>2026-08-20T11:16:18Z</lastmod>
 <priority>0.8</priority>
 </url>
 <url>
 <loc>https://tokenswitch.org/ja/faq/</loc>
-<lastmod>2026-08-20T07:06:54.725Z</lastmod>
-<changefreq>monthly</changefreq>
+<xhtml:link rel="alternate" hreflang="x-default" href="https://tokenswitch.org/en/faq/" />
+<xhtml:link rel="alternate" hreflang="en" href="https://tokenswitch.org/en/faq/" />
+<xhtml:link rel="alternate" hreflang="zh" href="https://tokenswitch.org/zh/faq/" />
+<xhtml:link rel="alternate" hreflang="ja" href="https://tokenswitch.org/ja/faq/" />
+<lastmod>2026-08-20T11:16:18Z</lastmod>
 <priority>0.8</priority>
 </url>
 </urlset>
