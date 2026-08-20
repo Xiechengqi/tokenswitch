@@ -19,6 +19,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # `scripts/bake-data.mjs` reads per-page `git log -1` times for
+          # sitemap `lastmod`; a shallow clone has no per-file history.
+          fetch-depth: 0
 
       - uses: pnpm/action-setup@v4
         with:

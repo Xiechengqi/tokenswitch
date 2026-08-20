@@ -1,4 +1,3 @@
-import { Suspense } from "react";
 import type { Metadata } from "next";
 import type { Locale } from "@/lib/types";
 import { getDict } from "@/lib/i18n";
@@ -19,17 +18,10 @@ export async function generateMetadata({
   });
 }
 
+/* No Suspense boundary: `NetworkPage` no longer reads `useSearchParams`, so the
+ * whole page prerenders from the baked region and usage snapshots and the live
+ * poller only replaces numbers that are already in the HTML. */
 export default async function Page({ params }: { params: Promise<{ locale: Locale }> }) {
   const { locale } = await params;
-  return (
-    <Suspense
-      fallback={
-        <div className="flex min-h-[40vh] items-center justify-center text-sm text-muted-foreground">
-          …
-        </div>
-      }
-    >
-      <NetworkPage locale={locale} />
-    </Suspense>
-  );
+  return <NetworkPage locale={locale} />;
 }

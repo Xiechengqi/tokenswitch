@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowRight } from "lucide-react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import type { Locale } from "@/lib/types";
 import { getDict } from "@/lib/i18n";
 import { useMapPoints } from "@/hooks/useMapPoints";
@@ -12,15 +11,13 @@ import { RegionCard } from "@/components/RegionCard";
 import { UsagePanel } from "@/components/UsagePanel";
 import { DOCS_URL } from "@/lib/constants";
 import { Button } from "@/components/ui/Button";
+import { Explainer } from "@/components/Explainer";
 import { WorldMapLazy } from "@/components/WorldMapLazy";
 
 export function NetworkPage({ locale }: { locale: Locale }) {
   const t = getDict(locale);
   const regions = useRegions();
   const usage = useNetworkUsage();
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
   const didInitialUrlScroll = useRef(false);
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
   const [data, setData] = useState({
@@ -28,8 +25,17 @@ export function NetworkPage({ locale }: { locale: Locale }) {
     clientCountByRegion: new Map<string, number>(),
   });
 
+  /* `?region=` is read from `location` and written with `history.replaceState`
+   * rather than through `useSearchParams` / `router.replace`.
+   *
+   * `useSearchParams` opts the whole subtree out of prerendering, and under
+   * `output: "export"` that meant this page shipped as a Suspense fallback: the
+   * static HTML of /en/network/ contained one ellipsis and nothing else. Every
+   * region, the live token totals and the model breakdown were invisible to
+   * anything that does not run JavaScript. A deep-link convenience is not worth
+   * the entire page. */
   useEffect(() => {
-    const fromUrl = searchParams.get("region");
+    const fromUrl = new URLSearchParams(window.location.search).get("region");
     if (!fromUrl || !regions.length) return;
     if (!regions.some((r) => r.name === fromUrl)) return;
     setSelectedRegion(fromUrl);
@@ -42,15 +48,15 @@ export function NetworkPage({ locale }: { locale: Locale }) {
         });
       });
     }
-  }, [searchParams, regions]);
+  }, [regions]);
 
   const selectRegion = useCallback(
     (region: string, opts?: { scrollToCard?: boolean; syncUrl?: boolean }) => {
       setSelectedRegion(region);
       if (opts?.syncUrl !== false) {
-        const params = new URLSearchParams(searchParams.toString());
+        const params = new URLSearchParams(window.location.search);
         params.set("region", region);
-        router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+        window.history.replaceState(null, "", `${window.location.pathname}?${params}`);
       }
       if (opts?.scrollToCard) {
         requestAnimationFrame(() => {
@@ -61,7 +67,7 @@ export function NetworkPage({ locale }: { locale: Locale }) {
         });
       }
     },
-    [pathname, router, searchParams],
+    [],
   );
 
   const handleUpdate = useCallback(
@@ -107,7 +113,7 @@ export function NetworkPage({ locale }: { locale: Locale }) {
 
       <section className="py-12 sm:py-16">
         <div className="mx-auto max-w-[var(--container)] px-4 sm:px-6">
-          <h1 className="font-heading text-4xl font-bold">{t.network.title}</h1>
+          <h1 className="font-heading text-4xl font-bold">{t.network.h1}</h1>
           <p className="mt-3 max-w-2xl text-muted-foreground">{t.network.subtitle}</p>
 
           <div className="mt-10">
@@ -134,11 +140,13 @@ export function NetworkPage({ locale }: { locale: Locale }) {
             })}
           </div>
 
+          <Explainer title={t.network.explainer.title} items={t.network.explainer.items} />
+
           <div className="mt-16 rounded-3xl bg-muted/30 p-8 text-center">
             <h2 className="font-heading text-2xl font-bold">{t.network.selfHost}</h2>
             <p className="mx-auto mt-3 max-w-xl text-muted-foreground">{t.network.selfHostDesc}</p>
             <div className="mt-6">
-              <Button href={`${DOCS_URL}/#/self-host/router-deploy`} external variant="secondary">
+              <Button href={`${DOCS_URL}/self-host/router-deploy`} external variant="secondary">
                 {t.network.selfHostCta}
                 <ArrowRight className="h-4 w-4" aria-hidden />
               </Button>

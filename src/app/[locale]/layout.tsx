@@ -1,13 +1,22 @@
-import { redirect } from "next/navigation";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import "@/styles/globals.css";
 import { LOCALES, type Locale } from "@/lib/types";
-import { getDict } from "@/lib/i18n";
-import { TopNav } from "@/components/TopNav";
-import { Footer } from "@/components/Footer";
+import { HTML_LANG, SITE_ICONS } from "@/lib/seo";
+import { SiteChrome } from "@/components/SiteChrome";
+
+export const metadata: Metadata = {
+  icons: SITE_ICONS,
+};
 
 export function generateStaticParams() {
   return LOCALES.map((locale) => ({ locale }));
 }
 
+/* One of two root layouts (the other is `app/(root)/layout.tsx`). It owns
+ * `<html>` so that `lang` can follow the segment: a single shared root could
+ * only hardcode one language, which is how `/zh/` and `/ja/` ended up declaring
+ * `lang="en"` while their own hreflang said otherwise. */
 export default async function LocaleLayout({
   children,
   params,
@@ -17,24 +26,15 @@ export default async function LocaleLayout({
 }) {
   const { locale: raw } = await params;
   if (!LOCALES.includes(raw as Locale)) {
-    redirect("/en/");
+    notFound();
   }
   const locale = raw as Locale;
-  const t = getDict(locale);
 
   return (
-    <div className="flex min-h-screen flex-col" data-locale={locale}>
-      <a
-        href="#main-content"
-        className="sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[60] focus:m-0 focus:h-auto focus:w-auto focus:overflow-visible focus:whitespace-normal focus:rounded-full focus:border-2 focus:border-border-strong focus:bg-card focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:[clip:auto]"
-      >
-        {t.a11y.skipToContent}
-      </a>
-      <TopNav locale={locale} />
-      <main id="main-content" className="flex-1">
-        {children}
-      </main>
-      <Footer locale={locale} />
-    </div>
+    <html lang={HTML_LANG[locale]} suppressHydrationWarning>
+      <body className="min-h-screen bg-background text-foreground">
+        <SiteChrome locale={locale}>{children}</SiteChrome>
+      </body>
+    </html>
   );
 }

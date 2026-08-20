@@ -1,15 +1,86 @@
 {
-  "bakedAt": "2026-08-20T06:36:25.662Z",
-  "source": "fallback",
+  "bakedAt": "2026-08-20T10:49:25.669Z",
+  "source": "live",
   "period": "24h",
-  "totalTokens": 0,
-  "inputTokens": 0,
-  "outputTokens": 0,
-  "cacheTokens": 0,
-  "models": [],
-  "byRegion": [],
-  "regionsReporting": 0,
-  "regionsTotal": 0,
-  "missingRegions": [],
+  "totalTokens": 4272,
+  "inputTokens": 962,
+  "outputTokens": 2158,
+  "cacheTokens": 1152,
+  "models": [
+    {
+      "model": "grok-4.6",
+      "inputTokens": 797,
+      "outputTokens": 2090,
+      "cacheTokens": 896,
+      "totalTokens": 3783
+    },
+    {
+      "model": "grok-4.5",
+      "inputTokens": 165,
+      "outputTokens": 68,
+      "cacheTokens": 256,
+      "totalTokens": 489
+    }
+  ],
+  "byRegion": [
+    {
+      "region": "japan",
+      "reporting": false,
+      "totalTokens": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "cacheTokens": 0,
+      "models": []
+    },
+    {
+      "region": "singapore",
+      "reporting": true,
+      "totalTokens": 4272,
+      "inputTokens": 962,
+      "outputTokens": 2158,
+      "cacheTokens": 1152,
+      "models": [
+        {
+          "model": "grok-4.6",
+          "inputTokens": 797,
+          "outputTokens": 2090,
+          "cacheTokens": 896,
+          "totalTokens": 3783
+        },
+        {
+          "model": "grok-4.5",
+          "inputTokens": 165,
+          "outputTokens": 68,
+          "cacheTokens": 256,
+          "totalTokens": 489
+        }
+      ]
+    },
+    {
+      "region": "hongkong",
+      "reporting": false,
+      "totalTokens": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "cacheTokens": 0,
+      "models": []
+    },
+    {
+      "region": "usa",
+      "reporting": false,
+      "totalTokens": 0,
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "cacheTokens": 0,
+      "models": []
+    }
+  ],
+  "regionsReporting": 1,
+  "regionsTotal": 4,
+  "missingRegions": [
+    "japan",
+    "hongkong",
+    "usa"
+  ],
   "partial": true
 }

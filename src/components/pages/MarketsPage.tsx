@@ -8,6 +8,7 @@ import { useNetworkStats } from "@/hooks/useNetworkStats";
 import { useRegions } from "@/hooks/useRegions";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
+import { Explainer } from "@/components/Explainer";
 
 /* Both markets are modules inside cc-switch-router, served from the router's
  * own host — so every region is reachable and there is no "coming soon" gate
@@ -23,7 +24,7 @@ export function MarketsPage({ locale }: { locale: Locale }) {
   return (
     <section className="py-12 sm:py-16">
       <div className="mx-auto max-w-[var(--container)] px-4 sm:px-6">
-        <h1 className="font-heading text-4xl font-bold">{t.marketsPage.title}</h1>
+        <h1 className="font-heading text-4xl font-bold">{t.marketsPage.h1}</h1>
         <p className="mt-3 max-w-2xl text-muted-foreground">{t.marketsPage.subtitle}</p>
 
         {showStats && (
@@ -72,6 +73,11 @@ export function MarketsPage({ locale }: { locale: Locale }) {
             count={() => null}
           />
         </div>
+
+        <Explainer
+          title={t.marketsPage.explainer.title}
+          items={t.marketsPage.explainer.items}
+        />
       </div>
     </section>
   );

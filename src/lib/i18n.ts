@@ -17,7 +17,7 @@ const dict = {
       x: "X",
     },
     hero: {
-      title: "Share your AI. Power the network.",
+      title: "TokenSwitch — share your AI. Power the network.",
       subtitle:
         "Run the TokenSwitch client on a Linux server, open a share, and monetize idle Claude, Codex & Gemini access — or buy routed usage on the markets.",
       linuxNote: "Providers need a Linux host (amd64 or arm64).",
@@ -142,7 +142,25 @@ const dict = {
     },
     network: {
       title: "Network",
+      h1: "The TokenSwitch network",
       subtitle: "Real-time edge nodes where provider tunnels connect and shares go live.",
+      explainer: {
+        title: "What a TokenSwitch region actually is",
+        items: [
+          {
+            title: "One router per region",
+            desc: "Each region runs a single cc-switch-router process. It terminates the public subdomain, holds the reverse SSH tunnels that provider clients dial out to, verifies the signature on every request, and injects the identity context the client trusts. There is no central control plane above it.",
+          },
+          {
+            title: "Providers keep the credentials",
+            desc: "Your Claude, Codex and Gemini credentials never leave the machine running cc-switch-server. The router forwards protocol traffic through the tunnel and stores no upstream API key in plaintext, so a compromised region cannot replay your subscription.",
+          },
+          {
+            title: "Usage is public, identities are not",
+            desc: "The 24h figures above come from each region's public usage endpoint and are pure aggregates: totals, the input/output/cache split, per-model rows, and active share and client counts. No email, share, account or amount is exposed.",
+          },
+        ],
+      },
       healthy: "Healthy",
       down: "Down",
       latency: "Latency",
@@ -158,6 +176,24 @@ const dict = {
     },
     download: {
       title: "Install the client",
+      h1: "Install the TokenSwitch client",
+      explainer: {
+        title: "Before you install",
+        items: [
+          {
+            title: "Linux only, amd64 or arm64",
+            desc: "cc-switch-server is a single Rust binary with an embedded Web UI. It runs on a VPS, a NAS or a spare box at home. Desktop builds are discontinued — there is nothing to install on macOS or Windows.",
+          },
+          {
+            title: "What setup asks for",
+            desc: "An owner email, a Web UI password and a region. The email binds your node to the router for invoices and share access. The password is only for your own Web UI login and is never sent to this website.",
+          },
+          {
+            title: "Once it is running",
+            desc: "Add your Claude, Codex and Gemini providers, point your local CLIs at the node's reverse proxy, then optionally open a share and list a seat. Nothing is published until you list it.",
+          },
+        ],
+      },
       subtitle:
         "The TokenSwitch client is cc-switch-server — a Linux provider runtime with an embedded Web UI. Desktop builds are discontinued.",
       scriptTitle: "Recommended: one-line install",
@@ -182,6 +218,7 @@ const dict = {
     },
     earnPage: {
       title: "Earn from your subscriptions",
+      h1: "Earn from your subscriptions with TokenSwitch",
       subtitle: "Two things you can rent out: spare subscription capacity, or a spare Linux host.",
       compareTitle: "Choose your model",
       shareMarket: "Share Market",
@@ -225,7 +262,25 @@ const dict = {
     },
     marketsPage: {
       title: "Markets",
+      h1: "TokenSwitch markets",
       subtitle: "Two markets, both hosted by the router in every region.",
+      explainer: {
+        title: "How the two markets differ",
+        items: [
+          {
+            title: "Share Market rents capacity",
+            desc: "A share is one subscription account with up to 20 carpool seats on it. Each seat carries its own daily price, token ceiling and concurrency limit, and the first 12 healthy service hours are free — so a buyer can verify a seat before paying for it.",
+          },
+          {
+            title: "Client Market rents hardware",
+            desc: "A listing is an idle Linux host. The router installs cc-switch-server on it and registers it for the renter, who then adds their own provider accounts. It is capacity you bring yourself, running on someone else's box.",
+          },
+          {
+            title: "No custody, no commission",
+            desc: "Buyers pay owners directly and confirm receipt. TokenSwitch never holds funds, never resells API keys and takes no platform fee — the markets only match, price and meter.",
+          },
+        ],
+      },
       shareTitle: "Share Market",
       shareDesc:
         "Rent a carpool seat on someone's Claude, Codex or Gemini subscription. Each seat has its own daily price, token limit and concurrency limit — and the first 12 healthy hours are free.",
@@ -269,6 +324,7 @@ const dict = {
     },
     faqPage: {
       title: "FAQ",
+      h1: "TokenSwitch FAQ",
       items: [
         {
           q: "How is this different from official Claude / Codex APIs?",
@@ -340,7 +396,7 @@ const dict = {
       x: "X",
     },
     hero: {
-      title: "分享你的 AI，驱动全球网络",
+      title: "TokenSwitch —— 分享你的 AI，驱动全球网络",
       subtitle:
         "在 Linux 服务器上运行 TokenSwitch 客户端、开启 Share，把闲置的 Claude / Codex / Gemini 变现——或在市场购买路由用量。",
       linuxNote: "Provider 需要一台 Linux 主机（amd64 或 arm64）。",
@@ -455,7 +511,25 @@ const dict = {
     },
     network: {
       title: "网络",
+      h1: "TokenSwitch 网络",
       subtitle: "Provider 隧道接入的全球边缘节点，Share 在此上线。",
+      explainer: {
+        title: "一个 TokenSwitch Region 到底是什么",
+        items: [
+          {
+            title: "每个 Region 一个 Router",
+            desc: "每个 Region 只跑一个 cc-switch-router 进程：它终结公网子域名、维持 Provider 客户端拨出的 SSH 反向隧道、校验每个请求的签名，并注入客户端信任的身份上下文。它之上没有中心控制面。",
+          },
+          {
+            title: "凭据始终留在 Provider 手里",
+            desc: "你的 Claude、Codex、Gemini 凭据永远不离开跑 cc-switch-server 的那台机器。Router 只通过隧道转发协议流量，不以明文保存任何上游 API key——因此单个 Region 被攻破也无法重放你的订阅。",
+          },
+          {
+            title: "用量公开，身份不公开",
+            desc: "上面的 24h 数据来自各 Region 的公开用量接口，是纯聚合量：总量、输入/输出/缓存分项、逐模型明细、活跃 Share 与 Client 数。不含邮箱、Share、账号或金额。",
+          },
+        ],
+      },
       healthy: "正常",
       down: "离线",
       latency: "延迟",
@@ -471,6 +545,24 @@ const dict = {
     },
     download: {
       title: "安装客户端",
+      h1: "安装 TokenSwitch 客户端",
+      explainer: {
+        title: "安装前先看这些",
+        items: [
+          {
+            title: "只支持 Linux，amd64 或 arm64",
+            desc: "cc-switch-server 是一个 Rust 单二进制，内嵌 Web UI，可以跑在 VPS、NAS 或家里的闲置机器上。桌面版已停用——macOS 和 Windows 上没有东西需要安装。",
+          },
+          {
+            title: "安装时会问什么",
+            desc: "Owner 邮箱、Web UI 密码和区域。邮箱用于把你的节点绑定到 Router，处理账单和 Share 访问；密码只用于你自己的 Web UI 登录，永远不会发送到本网站。",
+          },
+          {
+            title: "跑起来之后",
+            desc: "添加 Claude、Codex、Gemini 供应商，把本地 CLI 指向节点的反向代理，然后可以选择开一个 Share 并挂出拼车位。不挂牌就不会对外公开。",
+          },
+        ],
+      },
       subtitle:
         "TokenSwitch 客户端即 cc-switch-server——带内嵌 Web UI 的 Linux Provider 运行时。桌面版已停用。",
       scriptTitle: "推荐：一键安装",
@@ -494,6 +586,7 @@ const dict = {
     },
     earnPage: {
       title: "把订阅变成收入",
+      h1: "用 TokenSwitch 把订阅变成收入",
       subtitle: "两样东西可以租出去：闲置的订阅额度，或闲置的 Linux 主机。",
       compareTitle: "选择变现模式",
       shareMarket: "Share Market",
@@ -537,7 +630,25 @@ const dict = {
     },
     marketsPage: {
       title: "市场",
+      h1: "TokenSwitch 市场",
       subtitle: "两个市场，都由各区域的 Router 自己承载。",
+      explainer: {
+        title: "两个市场的区别",
+        items: [
+          {
+            title: "Share Market 租的是额度",
+            desc: "一个 Share 就是一个订阅账号，上面最多开 20 个拼车位。每个位子有各自的日价、Token 上限和并发上限，前 12 小时健康服务时间免费——买家可以先验证再付钱。",
+          },
+          {
+            title: "Client Market 租的是机器",
+            desc: "一条挂牌就是一台闲置 Linux 主机。Router 会在上面装好 cc-switch-server 并替租客完成注册，租客再添加自己的供应商账号。额度是你自己带的，只是跑在别人的机器上。",
+          },
+          {
+            title: "不托管资金，不抽成",
+            desc: "买家直接付给 Owner 并确认收款。TokenSwitch 不托管资金、不转卖 API key、不收平台费——市场只负责撮合、定价和计量。",
+          },
+        ],
+      },
       shareTitle: "Share Market",
       shareDesc:
         "在别人的 Claude、Codex、Gemini 订阅上租一个拼车位。每个位子有各自的日价、Token 上限和并发上限，前 12 小时健康服务时间免费。",
@@ -581,6 +692,7 @@ const dict = {
     },
     faqPage: {
       title: "常见问题",
+      h1: "TokenSwitch 常见问题",
       items: [
         {
           q: "和直接用官方 API 有什么区别？",
@@ -652,7 +764,7 @@ const dict = {
       x: "X",
     },
     hero: {
-      title: "AI を共有し、ネットワークを動かす",
+      title: "TokenSwitch — AI を共有し、ネットワークを動かす",
       subtitle:
         "Linux サーバーで TokenSwitch クライアントを動かし Share を開いて、遊休の Claude / Codex / Gemini を収益化——またはマーケットでルーティング利用量を購入。",
       linuxNote: "プロバイダーには Linux ホスト（amd64 または arm64）が必要です。",
@@ -777,7 +889,25 @@ const dict = {
     },
     network: {
       title: "ネットワーク",
+      h1: "TokenSwitch ネットワーク",
       subtitle: "プロバイダートンネルが接続し Share が稼働するリアルタイムエッジノード。",
+      explainer: {
+        title: "TokenSwitch のリージョンとは",
+        items: [
+          {
+            title: "リージョンごとに Router は 1 つ",
+            desc: "各リージョンで動くのは cc-switch-router のプロセス 1 つだけです。公開サブドメインを終端し、プロバイダークライアントが張る SSH 逆トンネルを保持し、すべてのリクエストの署名を検証して、クライアントが信頼する ID コンテキストを注入します。その上位に中央コントロールプレーンはありません。",
+          },
+          {
+            title: "認証情報はプロバイダーの手元に残る",
+            desc: "Claude / Codex / Gemini の認証情報は cc-switch-server が動くマシンから出ません。Router はトンネル越しにプロトコル通信を転送するだけで、上流 API キーを平文で保存しません。したがってリージョンが侵害されてもサブスクを再利用されることはありません。",
+          },
+          {
+            title: "利用量は公開、ID は非公開",
+            desc: "上の 24h の数値は各リージョンの公開利用量エンドポイント由来の純粋な集計値です。総量、入力/出力/キャッシュの内訳、モデル別の行、稼働中の Share とクライアント数のみで、メール・Share・アカウント・金額は含みません。",
+          },
+        ],
+      },
       healthy: "正常",
       down: "ダウン",
       latency: "レイテンシ",
@@ -793,6 +923,24 @@ const dict = {
     },
     download: {
       title: "クライアントをインストール",
+      h1: "TokenSwitch クライアントをインストール",
+      explainer: {
+        title: "インストール前に",
+        items: [
+          {
+            title: "Linux のみ、amd64 か arm64",
+            desc: "cc-switch-server は Web UI を内蔵した Rust の単一バイナリです。VPS、NAS、自宅の余ったマシンで動きます。デスクトップ版は終了しており、macOS や Windows にインストールするものはありません。",
+          },
+          {
+            title: "セットアップで聞かれること",
+            desc: "オーナーのメール、Web UI のパスワード、リージョンです。メールは請求と Share アクセスのためにノードを Router に紐づけます。パスワードはご自身の Web UI ログイン専用で、本サイトに送信されることはありません。",
+          },
+          {
+            title: "起動した後は",
+            desc: "Claude / Codex / Gemini のプロバイダーを追加し、ローカル CLI をノードのリバースプロキシに向け、必要なら Share を開いて席を出品します。出品するまで公開はされません。",
+          },
+        ],
+      },
       subtitle:
         "TokenSwitch クライアントは cc-switch-server——組み込み Web UI 付き Linux プロバイダーランタイムです。デスクトップ版は終了しました。",
       scriptTitle: "推奨：ワンラインインストール",
@@ -816,6 +964,7 @@ const dict = {
     },
     earnPage: {
       title: "サブスクを収益に",
+      h1: "TokenSwitch でサブスクを収益に",
       subtitle: "貸せるものは 2 つ：遊休のサブスク枠か、遊休の Linux ホスト。",
       compareTitle: "モデルを選ぶ",
       shareMarket: "Share Market",
@@ -859,7 +1008,25 @@ const dict = {
     },
     marketsPage: {
       title: "マーケット",
+      h1: "TokenSwitch マーケット",
       subtitle: "2 つのマーケット、どちらも各リージョンの Router が自ら提供。",
+      explainer: {
+        title: "2 つのマーケットの違い",
+        items: [
+          {
+            title: "Share Market が貸すのは枠",
+            desc: "Share とは 1 つのサブスクアカウントで、その上に最大 20 の相乗り席を開けます。席ごとに日額・トークン上限・同時実行上限があり、最初の 12 時間の健全なサービス時間は無料。買い手は支払う前に席を検証できます。",
+          },
+          {
+            title: "Client Market が貸すのはマシン",
+            desc: "リスティングは遊休の Linux ホストです。Router が cc-switch-server を導入し借り手のために登録まで行い、借り手は自分のプロバイダーアカウントを追加します。枠は自分で持ち込み、他人のマシンで動かす形です。",
+          },
+          {
+            title: "資金を預からず、手数料も取らない",
+            desc: "買い手はオーナーに直接支払い、受領を確認します。TokenSwitch は資金を預からず、API キーを転売せず、プラットフォーム手数料も取りません。マーケットはマッチング・価格・計測だけを担います。",
+          },
+        ],
+      },
       shareTitle: "Share Market",
       shareDesc:
         "他人の Claude / Codex / Gemini サブスクの相乗り席を借りる。席ごとに日額・トークン上限・同時実行上限があり、最初の 12 時間の健全なサービス時間は無料。",
@@ -903,6 +1070,7 @@ const dict = {
     },
     faqPage: {
       title: "FAQ",
+      h1: "TokenSwitch よくある質問",
       items: [
         {
           q: "公式 Claude / Codex API との違いは？",
@@ -967,6 +1135,10 @@ export function getDict(locale: Locale): Dict {
 }
 
 export function localePath(locale: Locale, path = ""): string {
+  // The English home is the bare domain, not `/en/` — see `lib/seo.ts`. Internal
+  // links have to agree with the canonical, otherwise half the site points one
+  // way and the canonical points the other.
+  if (locale === "en" && (!path || path === "/")) return "/";
   const base = `/${locale}`;
   if (!path || path === "/") return `${base}/`;
   const clean = path.startsWith("/") ? path.slice(1) : path;

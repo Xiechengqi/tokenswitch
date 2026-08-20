@@ -15,7 +15,7 @@ export function EarnPage({ locale }: { locale: Locale }) {
   return (
     <section className="py-12 sm:py-16">
       <div className="mx-auto max-w-[var(--container)] px-4 sm:px-6">
-        <h1 className="font-heading text-4xl font-bold">{t.earnPage.title}</h1>
+        <h1 className="font-heading text-4xl font-bold">{t.earnPage.h1}</h1>
         <p className="mt-3 max-w-2xl text-muted-foreground">{t.earnPage.subtitle}</p>
 
         <h2 className="mt-12 font-heading text-2xl font-bold">{t.earnPage.compareTitle}</h2>

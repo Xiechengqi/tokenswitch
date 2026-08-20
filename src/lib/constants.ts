@@ -14,8 +14,8 @@ export const GITHUB_REPO = "https://github.com/Xiechengqi/tokenswitch";
 export const TELEGRAM_URL = "https://t.me/tokenswitchorg";
 export const X_URL = "https://x.com/TokenSwitch";
 /** Provider runtime (server). Desktop cc-switch is deprecated and must not be linked from the site. */
-export const CLIENT_REPO = "https://github.com/xiechengqi/cc-switch-server";
-export const ROUTER_REPO = "https://github.com/xiechengqi/cc-switch-router";
+export const CLIENT_REPO = "https://github.com/Xiechengqi/cc-switch-server";
+export const ROUTER_REPO = "https://github.com/Xiechengqi/cc-switch-router";
 /* Neither market has a repo of its own — both live in cc-switch-router
  * (`src/client_market.rs`, `src/share_market.rs`). The former
  * cc-switch-market and cc-switch-share-market repos are retired; do not link

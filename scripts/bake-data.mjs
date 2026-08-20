@@ -5,6 +5,7 @@
  * On failure, keeps the previous baked JSON files as fallback.
  */
 
+import { execFileSync } from "node:child_process";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -466,6 +467,80 @@ async function bakeRelease(previous) {
   }
 }
 
+/* Sitemap `lastmod`, per page, from git.
+ *
+ * The previous sitemap stamped `new Date()` on every URL, so the nightly cron
+ * republished 21 unchanged pages as "modified today" — a signal a crawler
+ * learns to ignore. These dates are the real commit times of the files that
+ * render each page, plus `i18n.ts`, which holds the copy for all of them.
+ *
+ * If git is unavailable (or shallow enough to have no history for a path) the
+ * entry is simply omitted and the sitemap ships without a `lastmod` for that
+ * URL. An absent date is honest; a fabricated one is what we are fixing. */
+const PAGE_SOURCES = {
+  "": [
+    "src/app/(root)/page.tsx",
+    "src/app/[locale]/page.tsx",
+    "src/components/pages/HomeSections.tsx",
+    "src/components/Hero.tsx",
+    "src/components/HowItWorks.tsx",
+    "src/components/EcosystemCards.tsx",
+    "src/components/EarnStrip.tsx",
+    "src/components/TrustStrip.tsx",
+    "src/components/MapSection.tsx",
+    "src/components/StatsStrip.tsx",
+    "src/components/InstallCard.tsx",
+  ],
+  network: [
+    "src/app/[locale]/network/page.tsx",
+    "src/components/pages/NetworkPage.tsx",
+    "src/components/RegionCard.tsx",
+    "src/components/UsagePanel.tsx",
+  ],
+  download: [
+    "src/app/[locale]/download/page.tsx",
+    "src/components/pages/DownloadPage.tsx",
+    "src/components/InstallCard.tsx",
+  ],
+  earn: ["src/app/[locale]/earn/page.tsx", "src/components/pages/EarnPage.tsx"],
+  markets: ["src/app/[locale]/markets/page.tsx", "src/components/pages/MarketsPage.tsx"],
+  faq: ["src/app/[locale]/faq/page.tsx", "src/components/pages/FaqPage.tsx"],
+};
+
+/** Copy for every page lives in one dictionary, so it dates every page. */
+const SHARED_SOURCES = ["src/lib/i18n.ts"];
+
+function lastCommitIso(files) {
+  try {
+    const out = execFileSync(
+      "git",
+      // `:(literal)` because `[locale]` and `(root)` are glob syntax to a
+      // pathspec, and would match the wrong files — or nothing at all.
+      ["log", "-1", "--format=%cI", "--", ...files.map((f) => `:(literal)${f}`)],
+      { cwd: ROOT, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] },
+    ).trim();
+    return out || null;
+  } catch {
+    return null;
+  }
+}
+
+async function bakePageDates() {
+  const outPath = join(OUT_DIR, "page-dates.json");
+  const dates = {};
+  for (const [page, files] of Object.entries(PAGE_SOURCES)) {
+    const iso = lastCommitIso([...files, ...SHARED_SOURCES]);
+    if (iso) dates[page] = iso;
+  }
+  await writeJson(outPath, dates);
+  const missing = Object.keys(PAGE_SOURCES).length - Object.keys(dates).length;
+  console.log(
+    `bake: page-dates ${Object.keys(dates).length} dated` +
+      (missing ? `, ${missing} without git history (lastmod omitted)` : ""),
+  );
+  return dates;
+}
+
 async function main() {
   const prevRegions = await readJsonSafe(join(OUT_DIR, "regions.json"));
   const prevMapPoints = await readJsonSafe(join(OUT_DIR, "map-points.json"));
@@ -478,6 +553,7 @@ async function main() {
   await bakeNetworkStats(regions, prevNetworkStats);
   await bakeUsage(regions, prevUsage);
   await bakeRelease(prevRelease);
+  await bakePageDates();
   console.log("bake: done");
 }
 

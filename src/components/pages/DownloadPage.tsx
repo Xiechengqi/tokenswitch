@@ -14,6 +14,7 @@ import {
 } from "@/lib/releases";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { Explainer } from "@/components/Explainer";
 import Link from "next/link";
 
 export function DownloadPage({ locale }: { locale: Locale }) {
@@ -37,7 +38,7 @@ export function DownloadPage({ locale }: { locale: Locale }) {
   return (
     <section className="py-12 sm:py-16">
       <div className="mx-auto max-w-[var(--container)] px-4 sm:px-6">
-        <h1 className="font-heading text-4xl font-bold">{t.download.title}</h1>
+        <h1 className="font-heading text-4xl font-bold">{t.download.h1}</h1>
         <p className="mt-3 max-w-2xl text-muted-foreground">{t.download.subtitle}</p>
 
         <Card className="mt-8 border-accent/40 bg-accent/5">
@@ -108,6 +109,8 @@ export function DownloadPage({ locale }: { locale: Locale }) {
             </a>
           </p>
         </Card>
+
+        <Explainer title={t.download.explainer.title} items={t.download.explainer.items} />
 
         <div className="mt-12">
           <h2 className="font-heading text-2xl font-bold">{t.download.afterDownload}</h2>
