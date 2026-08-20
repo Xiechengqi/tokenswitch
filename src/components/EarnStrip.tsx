@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import { ArrowRight } from "lucide-react";
 import type { Locale } from "@/lib/types";
 import { getDict, localePath } from "@/lib/i18n";
@@ -13,21 +14,27 @@ export function EarnStrip({ locale }: { locale: Locale }) {
           <h2 className="font-heading text-2xl font-bold sm:text-3xl">{t.earn.title}</h2>
           <p className="mt-3 max-w-2xl text-muted-foreground">{t.earn.subtitle}</p>
 
-          {/* Split of one dollar of routed usage. The 10 % / 5 % figures are
-           * the commission defaults in tokens.css, not illustrative. */}
+          {/* The path a payment actually takes. The platform is not a step in
+           * this chain — it holds no funds and takes no cut, so the last link
+           * is the provider, not a settlement queue. */}
           <div className="mt-8 rounded-2xl bg-card p-4 sm:p-5">
-            <div className="flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-sm tabular-nums">
-              <span className="rounded-full bg-muted/60 px-3 py-1.5 font-semibold">$1.00</span>
-              <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden />
-              <span className="rounded-full border-2 border-accent bg-accent/10 px-3 py-1.5 font-semibold text-accent">
-                Provider $0.85
-              </span>
-              <span className="rounded-full border-2 border-border px-3 py-1.5 text-muted-foreground">
-                Market $0.10
-              </span>
-              <span className="rounded-full border-2 border-border px-3 py-1.5 text-muted-foreground">
-                Router $0.05
-              </span>
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm">
+              {t.earn.flow.map((step, i) => (
+                <Fragment key={step}>
+                  {i > 0 && (
+                    <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden />
+                  )}
+                  <span
+                    className={
+                      i === t.earn.flow.length - 1
+                        ? "rounded-full border-2 border-accent bg-accent/10 px-3 py-1.5 font-semibold text-accent"
+                        : "rounded-full border-2 border-border px-3 py-1.5 font-semibold"
+                    }
+                  >
+                    {step}
+                  </span>
+                </Fragment>
+              ))}
             </div>
             <p className="mt-3 text-sm text-muted-foreground">{t.earn.breakdown}</p>
           </div>

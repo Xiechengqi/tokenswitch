@@ -5,6 +5,7 @@ export function EarnPage({ locale }: { locale: Locale }) {
   const t = getDict(locale);
 
   const rows = [
+    t.earnPage.rows.sell,
     t.earnPage.rows.billing,
     t.earnPage.rows.payout,
     t.earnPage.rows.fee,
@@ -23,16 +24,16 @@ export function EarnPage({ locale }: { locale: Locale }) {
             <thead className="bg-muted/50">
               <tr>
                 <th className="px-4 py-3 font-semibold" />
-                <th className="px-4 py-3 font-semibold">{t.earnPage.tokenMarket}</th>
                 <th className="px-4 py-3 font-semibold">{t.earnPage.shareMarket}</th>
+                <th className="px-4 py-3 font-semibold">{t.earnPage.clientMarket}</th>
               </tr>
             </thead>
             <tbody>
               {rows.map((row) => (
                 <tr key={row.label} className="odd:bg-muted/20">
                   <th className="px-4 py-3 font-medium text-muted-foreground">{row.label}</th>
-                  <td className="px-4 py-3">{row.token}</td>
                   <td className="px-4 py-3">{row.share}</td>
+                  <td className="px-4 py-3">{row.client}</td>
                 </tr>
               ))}
             </tbody>

@@ -50,10 +50,25 @@ const dict = {
       snapshot: "Snapshot",
       explore: "Explore the network",
     },
-    ecosystem: {
-      title: "Four pieces, one network",
+    usage: {
+      title: "24h token usage",
       subtitle:
-        "TokenSwitch is the ecosystem brand. The open-source client runtime is cc-switch-server.",
+        "Tokens routed across every region in the last 24 hours, summed from each router's public usage feed.",
+      total: "Total tokens",
+      input: "Input",
+      output: "Output",
+      cache: "Cache",
+      showModels: (n: number) => (n === 1 ? "Show 1 model" : `Show ${n} models`),
+      hideModels: "Hide models",
+      otherModels: (n: number) => (n === 1 ? "1 other model" : `${n} other models`),
+      noData: "no data",
+      partial: (reporting: number, total: number) =>
+        `${reporting} of ${total} regions reporting — the total below is a floor. Not reporting:`,
+    },
+    ecosystem: {
+      title: "Two programs, one network",
+      subtitle:
+        "TokenSwitch is the ecosystem brand. Providers run cc-switch-server; every region runs cc-switch-router, which hosts both markets.",
       client: {
         title: "Client",
         desc: "Linux provider runtime with Web UI — manage providers, shares, and tunnels.",
@@ -61,24 +76,24 @@ const dict = {
       },
       router: {
         title: "Router",
-        desc: "Global edge routing, SSH tunnels, share ACL.",
+        desc: "Global edge routing, SSH tunnels, share access control — and both markets.",
         cta: "Network",
-      },
-      tokenMarket: {
-        title: "Token Market",
-        desc: "Pay-per-token API access with platform settlement.",
-        cta: "Buy usage",
       },
       shareMarket: {
         title: "Share Market",
-        desc: "Fixed-period access & carpool — zero custody.",
+        desc: "Rent a carpool seat on someone's subscription. Paid seats start with 12 free hours.",
         cta: "Browse listings",
+      },
+      clientMarket: {
+        title: "Client Market",
+        desc: "Rent out an idle Linux host, or rent one with the client already installed.",
+        cta: "Browse hosts",
       },
     },
     howItWorks: {
       title: "How the network works",
       subtitle:
-        "Providers run the client on a server they control. Routers route traffic. Markets connect consumers — upstream keys stay on your provider node.",
+        "Providers run the client on a server they control. Routers route traffic and host the markets — upstream keys stay on your provider node.",
       steps: [
         {
           bold: "Share.",
@@ -90,7 +105,7 @@ const dict = {
         },
         {
           bold: "Earn.",
-          text: "List on Token Market (usage) or Share Market (period) and collect revenue.",
+          text: "List a carpool seat on Share Market, or a spare host on Client Market.",
         },
       ],
       labels: {
@@ -104,15 +119,18 @@ const dict = {
         router: "router",
         routerCap: "global edge",
         market: "market",
-        marketCap: "billing layer",
+        marketCap: "router module",
         consumer: "consumer",
         consumerCap: "anywhere",
       },
     },
     earn: {
-      title: "Provider revenue flow",
-      subtitle: "On Token Market, $1.00 of usage yields ~$0.85 net to the provider after platform fees.",
-      breakdown: "Market 10% · Router 5% · fully ledgered",
+      title: "How a provider gets paid",
+      subtitle:
+        "The platform never touches the money. You set a daily price, the router meters healthy service time, and the buyer pays you directly.",
+      flow: ["Daily price", "Healthy hours", "Invoice", "Paid to you"],
+      breakdown:
+        "No custody, no commission, no withdrawal queue — 100% of the invoice is yours. The first 12 healthy hours of every paid seat are free to the buyer, and time the router could not confirm is never billed.",
       cta: "Start earning",
     },
     map: {
@@ -130,8 +148,9 @@ const dict = {
       latency: "Latency",
       clients: "Clients online",
       dashboard: "Dashboard",
-      tokenMarket: "Token Market",
+      clientMarket: "Client Market",
       shareMarket: "Share Market",
+      tokens24h: "24h tokens",
       selfHost: "Run your own region",
       selfHostDesc: "Deploy cc-switch-router on your own domain and join the open network.",
       selfHostCta: "Router deploy docs",
@@ -154,49 +173,70 @@ const dict = {
       paths: [
         { title: "Personal use", desc: "Point Claude, Codex & Gemini CLIs at your provider node." },
         { title: "Share with friends", desc: "Free or private shares via email whitelist." },
-        { title: "Monetize", desc: "List on Token Market or Share Market.", href: "earn" },
+        {
+          title: "Monetize",
+          desc: "List a carpool seat on Share Market, or a spare host on Client Market.",
+          href: "earn",
+        },
       ],
     },
     earnPage: {
       title: "Earn from your subscriptions",
-      subtitle: "Two ways to monetize idle Claude, Codex & Gemini access.",
+      subtitle: "Two things you can rent out: spare subscription capacity, or a spare Linux host.",
       compareTitle: "Choose your model",
-      tokenMarket: "Token Market",
       shareMarket: "Share Market",
+      clientMarket: "Client Market",
       rows: {
-        billing: { label: "Billing", token: "Per-token usage, auto-deducted", share: "Fixed period / carpool price" },
+        sell: {
+          label: "What you rent out",
+          share: "A carpool seat on a share you own",
+          client: "An idle Linux host the router installs onto",
+        },
+        billing: {
+          label: "Billing",
+          share: "Your daily seat price × healthy service hours",
+          client: "Your daily host price, on the same account",
+        },
         payout: {
           label: "Payout",
-          token: "Platform settlement, Gate.io auto-withdraw",
-          share: "Buyer pays you directly",
+          share: "Buyer pays you directly; you confirm receipt",
+          client: "Same credit account, same direct payment",
         },
-        fee: { label: "Platform fee", token: "10% market + 5% router", share: "Zero custody — no platform cut" },
-        fit: { label: "Best for", token: "Passive income, no negotiation", share: "Custom pricing, community trades" },
+        fee: {
+          label: "Platform fee",
+          share: "None — no custody, no commission",
+          client: "None — no custody, no commission",
+        },
+        fit: {
+          label: "Best for",
+          share: "You have Claude / Codex / Gemini capacity to spare",
+          client: "You have a Linux box sitting idle",
+        },
       },
       steps: {
         title: "Get started in four steps",
         items: [
           "Install the client (cc-switch-server) on a Linux host.",
           "Complete setup and bind your owner email on the router.",
-          "Create a share and pick Token Market or Share Market.",
-          "Track earnings on the market dashboard.",
+          "Add your payment details, then create a share and list a seat.",
+          "Track healthy service time and invoices on the router dashboard.",
         ],
       },
     },
     marketsPage: {
       title: "Markets",
-      subtitle: "Buy AI usage or fixed-period access across regions.",
-      tokenTitle: "Token Market",
-      tokenDesc: "OpenAI / Anthropic compatible API. Top up balance, get an API key, pay per token.",
+      subtitle: "Two markets, both hosted by the router in every region.",
       shareTitle: "Share Market",
-      shareDesc: "Buy fixed-period share access or join a carpool. Pay the owner directly in chat.",
+      shareDesc:
+        "Rent a carpool seat on someone's Claude, Codex or Gemini subscription. Each seat has its own daily price, token limit and concurrency limit — and the first 12 healthy hours are free.",
+      clientTitle: "Client Market",
+      clientDesc:
+        "Rent a Linux host with the client already installed, or list one of your own. The router installs and registers it for you.",
       pickRegion: "Pick a region",
       open: "Open",
-      comingSoon: "Coming soon",
       stats: {
         onlineShares: "Online shares",
         listings: "Active listings",
-        models: "Popular models",
       },
     },
     securityPage: {
@@ -205,25 +245,25 @@ const dict = {
       provider: {
         title: "Provider",
         items: [
-          "Upstream API keys stay on your provider node — never sent to markets or this website.",
-          "Shares sync metadata only — router stores subdomain & ACL, not secrets.",
-          "Token Market revenue is ledgered; withdrawals are auditable.",
+          "Upstream API keys stay on your client node — never sent to a market or to this website.",
+          "Shares sync metadata only — the router stores the subdomain and the grant list, not secrets.",
+          "No custody and no commission: the buyer pays you directly and you confirm receipt.",
         ],
       },
       consumer: {
         title: "Consumer",
         items: [
-          "Token Market API keys are market-issued, separate from provider keys.",
-          "Usage is metered and visible in your dashboard.",
-          "Share Market: access granted only after the owner confirms payment.",
+          "You call the router with your own user API token, scoped to share:invoke.",
+          "You are billed for healthy service time only — unavailable and unverifiable time is never charged.",
+          "Share Market: access is granted only after the owner confirms your payment.",
         ],
       },
       platform: {
         title: "Platform boundary",
         items: [
-          "Share Market does not hold funds, verify transfers, or guarantee refunds.",
-          "Router is the trust boundary for routing and ACL — not a payment processor.",
-          "Token Market uses double-entry ledger; admin cannot silently edit balances.",
+          "Neither market holds funds, verifies transfers, or guarantees refunds.",
+          "The router is the trust boundary for routing and access — not a payment processor.",
+          "An invoice freezes the supplier's payment details and the FX rate at issue time.",
         ],
       },
     },
@@ -232,7 +272,7 @@ const dict = {
       items: [
         {
           q: "How is this different from official Claude / Codex APIs?",
-          a: "Consumers buy routed access through provider shares. Providers keep subscriptions and keys on their own node; the network handles routing and (on Token Market) billing.",
+          a: "Consumers buy routed access to a provider's share. Providers keep their subscriptions and keys on their own node; the network handles routing, metering and invoicing.",
         },
         {
           q: "Can I get banned for sharing?",
@@ -240,19 +280,19 @@ const dict = {
         },
         {
           q: "What is a free share?",
-          a: "A public share with forSale=Free. Routers may enforce per-IP concurrency limits on free shares.",
+          a: "A share with freeAccess enabled: anyone signed in to the router can use it. A share is either freeAccess or listed on Share Market — never both.",
         },
         {
-          q: "How do Token Market payouts work?",
-          a: "Earnings accrue in your provider balance. Withdraw via Gate.io auto-payout or a manual ticket for other methods.",
+          q: "How does the money actually reach me?",
+          a: "The platform never holds it. Each buyer–supplier pair has a USD credit account; when an invoice is issued the buyer pays you offline and declares it, and you confirm receipt. No commission, no withdrawal queue.",
         },
         {
           q: "How does Share Market carpool work?",
-          a: "Listings can offer multiple seats (default 3) with a 24h formation window. Access is granted after the owner confirms payment.",
+          a: "A listing can offer up to 20 seats, each with its own daily price, token limit and concurrency limit. There is no formation window — a paid seat starts with 12 free hours of healthy service, and access is granted once the owner confirms payment.",
         },
         {
           q: "Does Share Market hold my money?",
-          a: "No. Buyers pay owners directly in the order chat. The platform only triggers router ACL grants after owner confirmation.",
+          a: "No. Buyers pay owners directly. The platform only grants router access after the owner confirms payment, and suspends service if an invoice goes unpaid.",
         },
         {
           q: "What is the client vs TokenSwitch?",
@@ -264,7 +304,7 @@ const dict = {
         },
         {
           q: "Can I self-host a router?",
-          a: "Yes. Deploy cc-switch-router on your own domain. See docs for DNS, TLS, and market registration.",
+          a: "Yes. Deploy cc-switch-router on your own domain. See the docs for DNS, TLS and client onboarding.",
         },
         {
           q: "Where is live network data from?",
@@ -333,9 +373,24 @@ const dict = {
       snapshot: "快照",
       explore: "查看网络",
     },
+    usage: {
+      title: "24 小时 Token 用量",
+      subtitle: "过去 24 小时全部区域路由的 Token 总量，来自各 Router 的公开用量出口。",
+      total: "总 Token",
+      input: "输入",
+      output: "输出",
+      cache: "缓存",
+      showModels: (n: number) => `展开 ${n} 个模型`,
+      hideModels: "收起模型",
+      otherModels: (n: number) => `其余 ${n} 个模型`,
+      noData: "无数据",
+      partial: (reporting: number, total: number) =>
+        `${total} 个区域中有 ${reporting} 个上报，下面的总量是下限。未上报：`,
+    },
     ecosystem: {
-      title: "四组件，一张网",
-      subtitle: "TokenSwitch 是生态品牌；开源客户端运行时是 cc-switch-server。",
+      title: "两个程序，一张网",
+      subtitle:
+        "TokenSwitch 是生态品牌。供应商跑 cc-switch-server；每个区域跑 cc-switch-router，两个市场都内建在它里面。",
       client: {
         title: "Client",
         desc: "Linux Provider 运行时 + Web UI：管理供应商、Share 与隧道。",
@@ -343,28 +398,28 @@ const dict = {
       },
       router: {
         title: "Router",
-        desc: "全球边缘路由、SSH 隧道、Share ACL。",
+        desc: "全球边缘路由、SSH 隧道、Share 访问控制——两个市场也在这里。",
         cta: "网络",
-      },
-      tokenMarket: {
-        title: "Token Market",
-        desc: "按 Token 计费的 API 市场，平台结算。",
-        cta: "按量购买",
       },
       shareMarket: {
         title: "Share Market",
-        desc: "固定周期 / 拼车访问权，平台零托管。",
+        desc: "租别人订阅上的一个拼车位。付费位前 12 小时免费。",
         cta: "浏览挂牌",
+      },
+      clientMarket: {
+        title: "Client Market",
+        desc: "把闲置 Linux 主机租出去，或租一台装好客户端的机器。",
+        cta: "浏览主机",
       },
     },
     howItWorks: {
       title: "网络如何运作",
       subtitle:
-        "Provider 在自己控制的服务器上运行客户端；Router 路由流量；Market 连接消费者——上游密钥只留在你的 Provider 节点。",
+        "Provider 在自己控制的服务器上运行客户端；Router 路由流量、也承载两个市场——上游密钥只留在你的 Provider 节点。",
       steps: [
         { bold: "分享。", text: "安装客户端，注册到 Router，并打开出站 SSH 隧道。" },
         { bold: "路由。", text: "公网请求命中 Router 子域，经隧道回传到你的节点。" },
-        { bold: "变现。", text: "上架 Token Market（按量）或 Share Market（包周期）获取收益。" },
+        { bold: "变现。", text: "在 Share Market 挂一个拼车位，或在 Client Market 出租闲置主机。" },
       ],
       labels: {
         tunnel: "SSH 隧道",
@@ -377,15 +432,18 @@ const dict = {
         router: "router",
         routerCap: "全球边缘",
         market: "market",
-        marketCap: "计费层",
+        marketCap: "Router 内模块",
         consumer: "消费者",
         consumerCap: "任何地方",
       },
     },
     earn: {
-      title: "Provider 收益流向",
-      subtitle: "Token Market 上，每 $1.00 消费约 $0.85 净收入归 Provider。",
-      breakdown: "Market 10% · Router 5% · 全程 ledger 可查",
+      title: "供应商怎么收到钱",
+      subtitle:
+        "平台不经手资金。你定每日价格，Router 只按观测到的健康服务时长计费，买家直接付给你。",
+      flow: ["每日价格", "健康服务时长", "出账", "买家直付"],
+      breakdown:
+        "不托管、不抽成、不排队提现——账单金额 100% 归你。每个付费位前 12 小时健康时长对买家免费；Router 无法确认的时间一律不计费。",
       cta: "开始变现",
     },
     map: {
@@ -403,8 +461,9 @@ const dict = {
       latency: "延迟",
       clients: "在线客户端",
       dashboard: "Dashboard",
-      tokenMarket: "Token Market",
+      clientMarket: "Client Market",
       shareMarket: "Share Market",
+      tokens24h: "24h Token",
       selfHost: "自建 Region",
       selfHostDesc: "在你自己的域名部署 cc-switch-router，加入开放网络。",
       selfHostCta: "Router 部署文档",
@@ -426,45 +485,70 @@ const dict = {
       paths: [
         { title: "自己用", desc: "把 Claude、Codex、Gemini CLI 指向你的 Provider 节点。" },
         { title: "分享给朋友", desc: "Free 或私有 Share，邮箱白名单控制。" },
-        { title: "变现", desc: "上架 Token Market 或 Share Market。", href: "earn" },
+        {
+          title: "变现",
+          desc: "在 Share Market 挂拼车位，或在 Client Market 出租闲置主机。",
+          href: "earn",
+        },
       ],
     },
     earnPage: {
       title: "把订阅变成收入",
-      subtitle: "两种模式变现闲置的 Claude、Codex、Gemini 访问权。",
+      subtitle: "两样东西可以租出去：闲置的订阅额度，或闲置的 Linux 主机。",
       compareTitle: "选择变现模式",
-      tokenMarket: "Token Market（按量）",
-      shareMarket: "Share Market（包周期）",
+      shareMarket: "Share Market",
+      clientMarket: "Client Market",
       rows: {
-        billing: { label: "计费", token: "按 Token 用量自动扣费", share: "固定周期一口价 / 拼车" },
-        payout: { label: "收款", token: "平台结算，Gate.io 自动提现", share: "买家在群聊中直接转给你" },
-        fee: { label: "抽成", token: "Market 10% + Router 5%", share: "平台不经手资金" },
-        fit: { label: "适合", token: "想躺赚、不想沟通", share: "自主定价、熟人/社群交易" },
+        sell: {
+          label: "租什么",
+          share: "你自己 Share 上的一个拼车位",
+          client: "一台闲置 Linux 主机，由 Router 自动装好客户端",
+        },
+        billing: {
+          label: "计费",
+          share: "位子每日价格 × 健康服务时长",
+          client: "主机每日价格，走同一本账",
+        },
+        payout: {
+          label: "收款",
+          share: "买家直接付给你，你确认到账",
+          client: "同一本赊账账户，同样线下直付",
+        },
+        fee: {
+          label: "抽成",
+          share: "没有——不托管、不抽成",
+          client: "没有——不托管、不抽成",
+        },
+        fit: {
+          label: "适合",
+          share: "手上 Claude / Codex / Gemini 额度用不满",
+          client: "手上有台 Linux 机器闲着",
+        },
       },
       steps: {
         title: "四步上手",
         items: [
           "在 Linux 主机上安装客户端（cc-switch-server）。",
           "完成 setup，并在 Router 绑定 Owner 邮箱。",
-          "创建 Share 并选择 Token Market 或 Share Market。",
-          "在市场 Dashboard 查看收益。",
+          "填好收款资料，创建 Share 并挂出拼车位。",
+          "在 Router Dashboard 查看健康服务时长与账单。",
         ],
       },
     },
     marketsPage: {
       title: "市场",
-      subtitle: "按量购买 AI 用量，或购买固定周期访问权。",
-      tokenTitle: "Token Market",
-      tokenDesc: "OpenAI / Anthropic 兼容 API。充值余额、获取 API Key、按 Token 计费。",
+      subtitle: "两个市场，都由各区域的 Router 自己承载。",
       shareTitle: "Share Market",
-      shareDesc: "购买固定周期 Share 或拼车席位。在订单群聊中直接向 Owner 付款。",
+      shareDesc:
+        "在别人的 Claude、Codex、Gemini 订阅上租一个拼车位。每个位子有各自的日价、Token 上限和并发上限，前 12 小时健康服务时间免费。",
+      clientTitle: "Client Market",
+      clientDesc:
+        "租一台已经装好客户端的 Linux 主机，或把自己的闲置主机挂上去。安装与注册由 Router 自动完成。",
       pickRegion: "选择区域",
       open: "打开",
-      comingSoon: "即将开放",
       stats: {
         onlineShares: "在线 Share",
         listings: "活跃挂牌",
-        models: "热门模型",
       },
     },
     securityPage: {
@@ -473,25 +557,25 @@ const dict = {
       provider: {
         title: "Provider",
         items: [
-          "上游 API Key 只留在你的 Provider 节点——不会发给市场或本网站。",
-          "Share 仅同步元数据——Router 存子域与 ACL，不存密钥。",
-          "Token Market 收益写入 ledger，提现可审计。",
+          "上游 API Key 只留在你的客户端节点——不会发给市场或本网站。",
+          "Share 仅同步元数据——Router 只存子域和授权名单，不存密钥。",
+          "不托管、不抽成：买家直接付给你，你自己确认到账。",
         ],
       },
       consumer: {
         title: "Consumer",
         items: [
-          "Token Market API Key 由市场签发，与 Provider 密钥无关。",
-          "用量在 Dashboard 可见、可核对。",
+          "用你自己的 Router 用户 API Token 调用，权限范围限定为 share:invoke。",
+          "只按健康服务时间计费——不可用和无法确认的时间不计费。",
           "Share Market：Owner 确认收款后才授予访问权。",
         ],
       },
       platform: {
         title: "平台边界",
         items: [
-          "Share Market 不托管资金、不验证转账、不担保退款。",
-          "Router 是路由与 ACL 的信任边界——不是支付处理方。",
-          "Token Market 使用复式 ledger，Admin 无法静默改余额。",
+          "两个市场都不托管资金、不验证转账、不担保退款。",
+          "Router 是路由与访问控制的信任边界——不是支付处理方。",
+          "开票时会冻结供应商的收款资料和汇率，事后改动不影响已开账单。",
         ],
       },
     },
@@ -500,7 +584,7 @@ const dict = {
       items: [
         {
           q: "和直接用官方 API 有什么区别？",
-          a: "消费者通过 Provider Share 购买路由访问。Provider 在自己的节点持有订阅与密钥；网络负责路由，Token Market 负责计费。",
+          a: "消费者购买的是到 Provider Share 的路由访问。Provider 在自己的节点持有订阅与密钥；网络负责路由、计量和开票。",
         },
         {
           q: "分享会被封号吗？",
@@ -508,19 +592,19 @@ const dict = {
         },
         {
           q: "什么是 Free Share？",
-          a: "forSale=Free 的公开 Share。Router 可能对 Free Share 实施单 IP 并发限制。",
+          a: "开启了 freeAccess 的 Share，任何登录 Router 的用户都能用。一个 Share 要么 freeAccess，要么挂到 Share Market，二者互斥。",
         },
         {
-          q: "Token Market 如何提现？",
-          a: "收益计入 Provider 余额。可通过 Gate.io 自动提现，或提交人工工单使用其他收款方式。",
+          q: "钱到底怎么到我手上？",
+          a: "平台不经手。每一对「买家 × 供应商」有一本美元赊账账户；开票后买家线下付款并申报，你确认到账即可。没有抽成，也没有提现排队。",
         },
         {
           q: "Share Market 拼车规则？",
-          a: "挂牌可设多席位（默认 3 座），24 小时成团窗口。Owner 确认收款后授予访问权。",
+          a: "一个挂牌最多 20 个席位，每个席位有各自的日价、Token 上限和并发上限。没有成团窗口——付费席位自带 12 小时免费健康服务时间，Owner 确认收款后授予访问权。",
         },
         {
           q: "Share Market 会托管我的钱吗？",
-          a: "不会。买家在订单群聊直接向 Owner 转账。平台仅在 Owner 确认后触发 Router ACL grant。",
+          a: "不会。买家直接付给 Owner。平台只在 Owner 确认收款后授予 Router 访问权；账单逾期未付则暂停服务。",
         },
         {
           q: "客户端和 TokenSwitch 是什么关系？",
@@ -532,7 +616,7 @@ const dict = {
         },
         {
           q: "可以自建 Router 吗？",
-          a: "可以。在你自己的域名部署 cc-switch-router，参见文档中的 DNS、TLS 与市场注册说明。",
+          a: "可以。在你自己的域名部署 cc-switch-router，参见文档中的 DNS、TLS 与客户端接入说明。",
         },
         {
           q: "官网的网络数据从哪来？",
@@ -601,9 +685,25 @@ const dict = {
       snapshot: "スナップショット",
       explore: "ネットワークを見る",
     },
+    usage: {
+      title: "24時間のトークン使用量",
+      subtitle:
+        "過去24時間に全リージョンでルーティングされたトークンの合計。各 Router の公開使用量フィードを集計しています。",
+      total: "合計トークン",
+      input: "入力",
+      output: "出力",
+      cache: "キャッシュ",
+      showModels: (n: number) => `${n} 個のモデルを表示`,
+      hideModels: "モデルを隠す",
+      otherModels: (n: number) => `その他 ${n} 個のモデル`,
+      noData: "データなし",
+      partial: (reporting: number, total: number) =>
+        `${total} リージョン中 ${reporting} が応答。以下の合計は下限値です。未応答：`,
+    },
     ecosystem: {
-      title: "4 つのコンポーネント、1 つのネットワーク",
-      subtitle: "TokenSwitch はエコシステムブランド。オープンソースのクライアントランタイムは cc-switch-server です。",
+      title: "2 つのプログラム、1 つのネットワーク",
+      subtitle:
+        "TokenSwitch はエコシステムブランド。プロバイダーは cc-switch-server を、各リージョンは 2 つのマーケットを内蔵した cc-switch-router を実行します。",
       client: {
         title: "Client",
         desc: "Linux プロバイダーランタイム + Web UI。プロバイダー、Share、トンネルを管理。",
@@ -611,24 +711,24 @@ const dict = {
       },
       router: {
         title: "Router",
-        desc: "グローバルエッジルーティング、SSH トンネル、Share ACL。",
+        desc: "グローバルエッジルーティング、SSH トンネル、Share アクセス制御——2 つのマーケットもここに。",
         cta: "ネットワーク",
-      },
-      tokenMarket: {
-        title: "Token Market",
-        desc: "トークン従量 API、プラットフォーム決済。",
-        cta: "利用量を購入",
       },
       shareMarket: {
         title: "Share Market",
-        desc: "固定期間アクセス＆相乗り——非保管。",
+        desc: "他人のサブスクの相乗り席を借りる。有料席は最初の 12 時間が無料。",
         cta: "リスティングを見る",
+      },
+      clientMarket: {
+        title: "Client Market",
+        desc: "遊休 Linux ホストを貸す、またはクライアント導入済みのホストを借りる。",
+        cta: "ホストを見る",
       },
     },
     howItWorks: {
       title: "ネットワークの仕組み",
       subtitle:
-        "プロバイダーは自分が制御するサーバーでクライアントを実行。Router がトラフィックをルーティング。Market が利用者と接続——上流キーはプロバイダーノードに留まります。",
+        "プロバイダーは自分が制御するサーバーでクライアントを実行。Router はトラフィックをルーティングし、2 つのマーケットも動かします——上流キーはプロバイダーノードに留まります。",
       steps: [
         {
           bold: "共有。",
@@ -640,7 +740,7 @@ const dict = {
         },
         {
           bold: "収益。",
-          text: "Token Market（従量）または Share Market（期間）に出品して収益を得る。",
+          text: "Share Market に相乗り席を、または Client Market に遊休ホストを出品する。",
         },
       ],
       labels: {
@@ -654,15 +754,18 @@ const dict = {
         router: "router",
         routerCap: "グローバルエッジ",
         market: "market",
-        marketCap: "課金レイヤ",
+        marketCap: "Router 内モジュール",
         consumer: "利用者",
         consumerCap: "どこでも",
       },
     },
     earn: {
-      title: "プロバイダー収益フロー",
-      subtitle: "Token Market では $1.00 の利用のうち約 $0.85 が手数料控除後にプロバイダーへ。",
-      breakdown: "Market 10% · Router 5% · すべて ledger 記録",
+      title: "プロバイダーへの支払い",
+      subtitle:
+        "プラットフォームは資金に一切触れません。日額を設定し、Router が健全なサービス時間のみを計測し、購入者が直接支払います。",
+      flow: ["日額", "健全な稼働時間", "請求", "直接受け取り"],
+      breakdown:
+        "保管なし、手数料なし、出金待ちなし——請求額は 100% あなたのものです。有料席は最初の 12 健全時間が購入者に無料で、Router が確認できなかった時間は課金されません。",
       cta: "収益化を始める",
     },
     map: {
@@ -680,8 +783,9 @@ const dict = {
       latency: "レイテンシ",
       clients: "オンラインクライアント",
       dashboard: "ダッシュボード",
-      tokenMarket: "Token Market",
+      clientMarket: "Client Market",
       shareMarket: "Share Market",
+      tokens24h: "24hトークン",
       selfHost: "独自リージョンを運用",
       selfHostDesc: "独自ドメインに cc-switch-router をデプロイし、オープンネットワークに参加。",
       selfHostCta: "Router デプロイドキュメント",
@@ -703,45 +807,70 @@ const dict = {
       paths: [
         { title: "個人利用", desc: "Claude、Codex、Gemini CLI をプロバイダーノードに向ける。" },
         { title: "友人と共有", desc: "Free またはプライベート Share、メールホワイトリスト。" },
-        { title: "収益化", desc: "Token Market または Share Market に出品。", href: "earn" },
+        {
+          title: "収益化",
+          desc: "Share Market に相乗り席を、または Client Market に遊休ホストを出品。",
+          href: "earn",
+        },
       ],
     },
     earnPage: {
       title: "サブスクを収益に",
-      subtitle: "遊休の Claude、Codex、Gemini アクセスを収益化する 2 つの方法。",
+      subtitle: "貸せるものは 2 つ：遊休のサブスク枠か、遊休の Linux ホスト。",
       compareTitle: "モデルを選ぶ",
-      tokenMarket: "Token Market",
       shareMarket: "Share Market",
+      clientMarket: "Client Market",
       rows: {
-        billing: { label: "課金", token: "トークン従量、自動控除", share: "固定期間 / 相乗り価格" },
-        payout: { label: "支払い", token: "プラットフォーム決済、Gate.io 自動出金", share: "購入者が直接支払い" },
-        fee: { label: "手数料", token: "Market 10% + Router 5%", share: "非保管——プラットフォーム手数料なし" },
-        fit: { label: "向いている人", token: "受動的収入、交渉不要", share: "カスタム価格、コミュニティ取引" },
+        sell: {
+          label: "貸すもの",
+          share: "自分の Share の相乗り席",
+          client: "Router が自動導入する遊休 Linux ホスト",
+        },
+        billing: {
+          label: "課金",
+          share: "席の日額 × 健全なサービス時間",
+          client: "ホストの日額、同じ口座で合算",
+        },
+        payout: {
+          label: "支払い",
+          share: "購入者が直接支払い、あなたが入金確認",
+          client: "同じ与信口座、同じ直接支払い",
+        },
+        fee: {
+          label: "手数料",
+          share: "なし——保管も手数料もなし",
+          client: "なし——保管も手数料もなし",
+        },
+        fit: {
+          label: "向いている人",
+          share: "Claude / Codex / Gemini の枠が余っている",
+          client: "Linux マシンが遊んでいる",
+        },
       },
       steps: {
         title: "4 ステップで開始",
         items: [
           "Linux ホストにクライアント（cc-switch-server）をインストール。",
           "セットアップを完了し、Router でオーナーメールを紐付け。",
-          "Share を作成し Token Market または Share Market を選択。",
-          "マーケットダッシュボードで収益を確認。",
+          "受取情報を登録し、Share を作成して席を出品。",
+          "Router ダッシュボードで健全なサービス時間と請求を確認。",
         ],
       },
     },
     marketsPage: {
       title: "マーケット",
-      subtitle: "リージョン横断で AI 利用量または固定期間アクセスを購入。",
-      tokenTitle: "Token Market",
-      tokenDesc: "OpenAI / Anthropic 互換 API。残高チャージ、API キー取得、トークン従量課金。",
+      subtitle: "2 つのマーケット、どちらも各リージョンの Router が自ら提供。",
       shareTitle: "Share Market",
-      shareDesc: "固定期間 Share アクセスまたは相乗りを購入。チャットでオーナーに直接支払い。",
+      shareDesc:
+        "他人の Claude / Codex / Gemini サブスクの相乗り席を借りる。席ごとに日額・トークン上限・同時実行上限があり、最初の 12 時間の健全なサービス時間は無料。",
+      clientTitle: "Client Market",
+      clientDesc:
+        "クライアント導入済みの Linux ホストを借りる、または自分の遊休ホストを出品する。導入と登録は Router が自動で行います。",
       pickRegion: "リージョンを選択",
       open: "開く",
-      comingSoon: "近日公開",
       stats: {
         onlineShares: "オンライン Share",
         listings: "アクティブリスティング",
-        models: "人気モデル",
       },
     },
     securityPage: {
@@ -750,25 +879,25 @@ const dict = {
       provider: {
         title: "プロバイダー",
         items: [
-          "上流 API キーはプロバイダーノードに留まり、マーケットや本サイトには送られません。",
-          "Share はメタデータのみ同期——Router はサブドメインと ACL のみ保存。",
-          "Token Market 収益は ledger 記録、出金は監査可能。",
+          "上流 API キーはクライアントノードに留まり、マーケットや本サイトには送られません。",
+          "Share はメタデータのみ同期——Router はサブドメインと許可リストのみ保存し、秘密情報は持ちません。",
+          "非保管・手数料なし：購入者があなたに直接支払い、入金確認もあなたが行います。",
         ],
       },
       consumer: {
         title: "利用者",
         items: [
-          "Token Market API キーはマーケット発行、プロバイダーキーとは別。",
-          "利用量はダッシュボードで可視化・照合可能。",
+          "自分の Router ユーザー API トークン（スコープは share:invoke）で呼び出します。",
+          "課金対象は健全なサービス時間のみ——利用不可・確認不能な時間は課金されません。",
           "Share Market：オーナーが支払い確認後にアクセス付与。",
         ],
       },
       platform: {
         title: "プラットフォーム境界",
         items: [
-          "Share Market は資金を預からず、送金を検証せず、返金を保証しません。",
-          "Router はルーティングと ACL の信頼境界——決済処理者ではありません。",
-          "Token Market は複式 ledger、Admin は残高を黙って変更できません。",
+          "どちらのマーケットも資金を預からず、送金を検証せず、返金を保証しません。",
+          "Router はルーティングとアクセス制御の信頼境界——決済処理者ではありません。",
+          "請求書の発行時点で、供給者の受取情報と為替レートが固定されます。",
         ],
       },
     },
@@ -777,7 +906,7 @@ const dict = {
       items: [
         {
           q: "公式 Claude / Codex API との違いは？",
-          a: "利用者はプロバイダー Share 経由でルーティングアクセスを購入。プロバイダーはノード上にサブスクとキーを保持。ネットワークがルーティングと（Token Market では）課金を担当。",
+          a: "利用者はプロバイダー Share へのルーティングアクセスを購入します。プロバイダーはノード上にサブスクとキーを保持し、ネットワークがルーティング・計測・請求を担当します。",
         },
         {
           q: "共有で BAN される？",
@@ -785,19 +914,19 @@ const dict = {
         },
         {
           q: "Free Share とは？",
-          a: "forSale=Free の公開 Share。Router は Free Share に IP あたり同時接続制限を設ける場合があります。",
+          a: "freeAccess を有効にした Share で、Router にサインインした誰もが利用できます。Share は freeAccess か Share Market 出品かのどちらか一方のみです。",
         },
         {
-          q: "Token Market の出金は？",
-          a: "収益はプロバイダー残高に計上。Gate.io 自動出金または手動チケットで他の方法も可能。",
+          q: "お金はどうやって受け取る？",
+          a: "プラットフォームは一切預かりません。購入者と供給者のペアごとに USD の与信口座があり、請求書が発行されたら購入者がオフラインで支払って申告し、あなたが入金を確認します。手数料も出金待ちもありません。",
         },
         {
           q: "Share Market の相乗りは？",
-          a: "リスティングは複数席（デフォルト 3）と 24 時間成約ウィンドウ。オーナーが支払い確認後にアクセス付与。",
+          a: "1 つのリスティングで最大 20 席、席ごとに日額・トークン上限・同時実行上限を設定できます。成約ウィンドウはなく、有料席には 12 時間の無料の健全なサービス時間が付き、オーナーの支払い確認後にアクセスが付与されます。",
         },
         {
           q: "Share Market はお金を預かる？",
-          a: "いいえ。購入者はオーダーチャットでオーナーに直接支払い。プラットフォームはオーナー確認後に Router ACL grant をトリガーするのみ。",
+          a: "いいえ。購入者はオーナーに直接支払います。プラットフォームはオーナーの確認後に Router のアクセスを付与するだけで、請求が未払いならサービスを一時停止します。",
         },
         {
           q: "クライアントと TokenSwitch の関係は？",
@@ -809,7 +938,7 @@ const dict = {
         },
         {
           q: "Router を自前ホストできる？",
-          a: "はい。独自ドメインに cc-switch-router をデプロイ。DNS、TLS、マーケット登録はドキュメント参照。",
+          a: "はい。独自ドメインに cc-switch-router をデプロイします。DNS、TLS、クライアント導入はドキュメントを参照してください。",
         },
         {
           q: "ライブネットワークデータの出所は？",

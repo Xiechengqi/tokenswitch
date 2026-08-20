@@ -6,7 +6,7 @@ Static marketing site for the [TokenSwitch](https://tokenswitch.org) network —
 
 - **Framework**: Next.js 15 (`output: "export"`) → GitHub Pages
 - **Locales**: English (`/en/`), Chinese (`/zh/`), Japanese (`/ja/`)
-- **Data**: Build-time baked snapshots + browser live refresh from public router/market APIs
+- **Data**: Build-time baked snapshots + browser live refresh from the routers' public APIs
 
 ## Development
 
@@ -26,7 +26,8 @@ pnpm typecheck
 |------|--------|
 | `regions.json` | Router repo `regions` file (local checkout or GitHub raw) |
 | `map-points.json` | Router `/v1/public/map-points` |
-| `network-stats.json` | Router `/v1/public/network-stats` + market KPIs + share-market listings |
+| `network-stats.json` | Router `/v1/public/network-stats` + `/v1/share-market/listings` |
+| `usage.json` | Router `/v1/public/usage/global?period=24h`, summed across regions |
 | `release.json` | GitHub releases API (`cc-switch-server`) |
 
 Failed fetches keep the previous baked file.
@@ -37,11 +38,17 @@ At runtime, client components poll public endpoints every 60s (paused when tab i
 
 - Region membership → GitHub raw `cc-switch-router` `regions` file (shared by install card, map, and stats)
 - Map points & region health → router `/v1/public/map-points`, `/v1/healthz`
-- Network stats → router `/v1/public/network-stats`, market `/v1/public/dashboard/kpis`, share-market `/v1/listings`
+- Network stats → router `/v1/public/network-stats`
+- 24h token usage → router `/v1/public/usage/global?period=24h`, summed across every region in the browser
 
 Map `clients[]` are country-centroid aggregates from the router; `clientCount` is the true active installation count.
 
-Requires CORS on router public routes (deployed in `cc-switch-router`).
+Requires CORS on the router public routes (`public_cors_layer()` in `cc-switch-router`).
+`/v1/share-market/listings` sits outside that layer, so listing counts are baked at build time
+only and are not refreshed in the browser.
+
+A region running an older router build simply 404s on `/v1/public/usage/global`; it is reported
+as *not reporting* — never as zero — and the usage panel labels the aggregate as partial.
 
 ## Deployment (GitHub Pages + Cloudflare)
 
@@ -91,8 +98,7 @@ public/CNAME        # tokenswitch.org
 |-----------|------------|
 | Client (`cc-switch-server`) | [xiechengqi/cc-switch-server](https://github.com/xiechengqi/cc-switch-server) |
 | Router | [xiechengqi/cc-switch-router](https://github.com/xiechengqi/cc-switch-router) |
-| Token Market | [xiechengqi/cc-switch-market](https://github.com/xiechengqi/cc-switch-market) |
-| Share Market | [xiechengqi/cc-switch-share-market](https://github.com/xiechengqi/cc-switch-share-market) |
+| Share Market / Client Market | modules inside `cc-switch-router` (`src/share_market.rs`, `src/client_market.rs`) — no repo of their own |
 | Docs | [tokenswitch-docsify](https://github.com/Xiechengqi/tokenswitch-docsify) → docs.tokenswitch.org |
 
 ## License

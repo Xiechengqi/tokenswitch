@@ -1,6 +1,7 @@
 /* Hallmark · macrostructure: Workbench · genre: playful
- * theme: Playful Geometric (locked — shared with cc-switch-market /
- *        cc-switch-share-market; see cc-switch-market/CLAUDE.md)
+ * theme: Playful Geometric (locked). It was originally shared with the
+ *        standalone cc-switch-market / cc-switch-share-market front-ends;
+ *        both repos are retired and this file is now the only definition.
  * paper: #FFFDF5 warm cream · accent: #7C3AED violet-600 · ink: #1E293B
  * display: Outfit 700/800 · body: Plus Jakarta Sans · mono: JetBrains Mono
  * depth: colour blocking + soft borders — page dividers use bands, not ink rules
@@ -16,8 +17,9 @@
  *   passes on bare paper (4.67:1) and white cards (4.76:1) but falls to
  *   4.03–4.37:1 on this system's tinted colour-blocked surfaces.
  *   Disabled controls are exempt per WCAG 2.1 SC 1.4.3.
- *   cc-switch-market and cc-switch-share-market still carry the Slate 500 /
- *   Violet 500 pair and need the same two-token edit to stay in sync.
+ *   The retired market front-ends still carried the uncorrected Slate 500 /
+ *   Violet 500 pair; anything reviving this palette must take the fixed
+ *   values from here, not from those snapshots.
  * tokens: pass (48) — the network map's blue/green live in tokens.css as
  *   --map-* and are read by both the canvas (lib/map-palette.ts) and the DOM
  *   legend, so the two can no longer drift.

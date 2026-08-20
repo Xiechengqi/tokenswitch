@@ -1,5 +1,5 @@
 {
-  "bakedAt": "2026-07-21T07:25:21.119Z",
+  "bakedAt": "2026-08-20T06:36:24.888Z",
   "source": "live",
   "regions": [
     {
@@ -13,18 +13,22 @@
     {
       "region": "hongkong",
       "url": "https://hktokenswitch.cc"
+    },
+    {
+      "region": "usa",
+      "url": "https://ustokenswitch.cc"
     }
   ],
   "servers": [
     {
-      "lat": 35.6893,
-      "lon": 139.6899,
+      "lat": 35.6164,
+      "lon": 139.7425,
       "region": "japan",
       "url": "https://jptokenswitch.cc"
     },
     {
-      "lat": 1.28009,
-      "lon": 103.851,
+      "lat": 37.3387,
+      "lon": -121.885,
       "region": "singapore",
       "url": "https://sgptokenswitch.cc"
     },
@@ -33,10 +37,28 @@
       "lon": 114.169,
       "region": "hongkong",
       "url": "https://hktokenswitch.cc"
+    },
+    {
+      "lat": 34.0515,
+      "lon": -118.2707,
+      "region": "usa",
+      "url": "https://ustokenswitch.cc"
     }
   ],
-  "clientCount": 3,
+  "clientCount": 6,
   "clients": [
+    {
+      "lat": 1.35,
+      "lon": 103.82,
+      "region": "singapore",
+      "count": 1
+    },
+    {
+      "lat": 39.83,
+      "lon": -98.58,
+      "region": "hongkong",
+      "count": 2
+    },
     {
       "lat": 1.35,
       "lon": 103.82,
@@ -44,16 +66,10 @@
       "count": 1
     },
     {
-      "lat": 36.2,
-      "lon": 138.25,
-      "region": "hongkong",
-      "count": 1
-    },
-    {
       "lat": 39.83,
       "lon": -98.58,
-      "region": "hongkong",
-      "count": 1
+      "region": "usa",
+      "count": 2
     }
   ]
 }

@@ -1,14 +1,14 @@
 {
-  "bakedAt": "2026-07-21T07:25:24.291Z",
+  "bakedAt": "2026-08-20T06:36:26.318Z",
   "tagName": "latest",
   "name": "Latest Build (v0.1.0)",
-  "publishedAt": "2026-07-20T15:43:11Z",
+  "publishedAt": "2026-08-20T05:47:15Z",
   "repo": "xiechengqi/cc-switch-server",
   "assets": [
     {
       "name": "cc-switch-server-linux-amd64",
       "downloadUrl": "https://github.com/Xiechengqi/cc-switch-server/releases/download/latest/cc-switch-server-linux-amd64",
-      "size": 34285472,
+      "size": 49915528,
       "contentType": "application/octet-stream"
     },
     {
@@ -20,7 +20,7 @@
     {
       "name": "cc-switch-server-linux-arm64",
       "downloadUrl": "https://github.com/Xiechengqi/cc-switch-server/releases/download/latest/cc-switch-server-linux-arm64",
-      "size": 30206304,
+      "size": 43508640,
       "contentType": "application/octet-stream"
     },
     {

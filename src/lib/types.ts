@@ -64,7 +64,6 @@ export interface RegionHealth {
 export interface RegionNetworkStats {
   region: string;
   sharesOnline: number | null;
-  tokenMarketShares: number | null;
   shareListings: number | null;
 }
 
@@ -73,8 +72,45 @@ export interface NetworkStats {
   source?: string;
   isSnapshot?: boolean;
   sharesOnline: number | null;
-  tokenMarketShares: number | null;
   shareListings: number | null;
-  publicModels: string[];
   byRegion: RegionNetworkStats[];
+}
+
+/** One model row from a router's `/v1/public/usage/global`. */
+export interface UsageModelRow {
+  model: string;
+  inputTokens: number;
+  outputTokens: number;
+  cacheTokens: number;
+  totalTokens: number;
+}
+
+export interface RegionUsage {
+  region: string;
+  /** False when the region did not answer — distinct from an answer of zero. */
+  reporting: boolean;
+  totalTokens: number;
+  inputTokens: number;
+  outputTokens: number;
+  cacheTokens: number;
+  models: UsageModelRow[];
+}
+
+export interface AggregatedUsage {
+  bakedAt?: string;
+  source?: string;
+  isSnapshot?: boolean;
+  period: string;
+  totalTokens: number;
+  inputTokens: number;
+  outputTokens: number;
+  cacheTokens: number;
+  /** Summed across every reporting region, then sorted — never truncated here. */
+  models: UsageModelRow[];
+  byRegion: RegionUsage[];
+  regionsReporting: number;
+  regionsTotal: number;
+  missingRegions: string[];
+  /** True when at least one region is missing, so the total is a floor. */
+  partial: boolean;
 }

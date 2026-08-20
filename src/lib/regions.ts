@@ -1,5 +1,4 @@
 import regionsData from "@/data/baked/regions.json";
-import marketsReadyData from "@/data/markets-ready.json";
 import type { Locale, Region } from "./types";
 import { REGIONS_RAW_URL } from "./constants";
 import { safeFetch } from "./safe-fetch";
@@ -13,24 +12,24 @@ export function getBakedRegions(): BakedRegions {
   return regionsData as BakedRegions;
 }
 
-export function isMarketReady(regionName: string): boolean {
-  const ready = (marketsReadyData as { ready: string[] }).ready ?? [];
-  return ready.includes(regionName.toLowerCase());
-}
-
 export function regionLabel(name: string, locale: Locale): string {
   const labels: Record<string, { en: string; zh: string; ja: string }> = {
     japan: { en: "Japan", zh: "日本", ja: "日本" },
     singapore: { en: "Singapore", zh: "新加坡", ja: "シンガポール" },
     hongkong: { en: "Hong Kong", zh: "香港", ja: "香港" },
+    usa: { en: "United States", zh: "美国", ja: "アメリカ" },
   };
   const hit = labels[name.toLowerCase()];
   if (hit) return hit[locale];
   return name.charAt(0).toUpperCase() + name.slice(1);
 }
 
-export function tokenMarketUrl(region: Region): string {
-  return `https://market.${region.domain}`;
+/** Client Market — where a Client publishes spare capacity and a consumer buys
+ * it. Like Share Market it is a module inside the router
+ * (cc-switch-router `src/client_market.rs`) served from the router's own host;
+ * the former `market.<domain>` subdomain is retired and no longer resolves. */
+export function clientMarketUrl(region: Region): string {
+  return `${region.url.replace(/\/$/, "")}/client-market`;
 }
 
 /** Share Market is no longer a standalone service — it is a module inside the

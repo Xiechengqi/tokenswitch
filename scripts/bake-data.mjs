@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /**
- * Build-time data baker: regions, map-points snapshot, GitHub release info.
+ * Build-time data baker: regions, map-points, network stats, cross-region 24h
+ * token usage, and GitHub release info.
  * On failure, keeps the previous baked JSON files as fallback.
  */
 
@@ -21,6 +22,10 @@ const REGIONS_RAW_URLS = [
 const RELEASES_URL =
   "https://api.github.com/repos/xiechengqi/cc-switch-server/releases/latest";
 
+/** Keep in sync with `USAGE_PERIOD` in src/lib/usage.ts — the baked snapshot and
+ * the browser refresh have to describe the same window. */
+const USAGE_PERIOD = "24h";
+
 const FALLBACK_REGIONS = [
   { name: "japan", domain: "jptokenswitch.cc", url: "https://jptokenswitch.cc" },
   {
@@ -33,6 +38,7 @@ const FALLBACK_REGIONS = [
     domain: "hktokenswitch.cc",
     url: "https://hktokenswitch.cc",
   },
+  { name: "usa", domain: "ustokenswitch.cc", url: "https://ustokenswitch.cc" },
 ];
 
 const FALLBACK_RELEASE = {
@@ -56,10 +62,27 @@ const FALLBACK_NETWORK_STATS = {
   bakedAt: new Date().toISOString(),
   source: "fallback",
   sharesOnline: null,
-  tokenMarketShares: null,
   shareListings: null,
-  publicModels: [],
   byRegion: [],
+};
+
+/** Matches `AggregatedUsage` in src/lib/types.ts. `regionsReporting: 0` is what
+ * the UI reads as "no usage data", so the panel hides itself instead of
+ * rendering a fabricated zero. */
+const FALLBACK_USAGE = {
+  bakedAt: new Date().toISOString(),
+  source: "fallback",
+  period: USAGE_PERIOD,
+  totalTokens: 0,
+  inputTokens: 0,
+  outputTokens: 0,
+  cacheTokens: 0,
+  models: [],
+  byRegion: [],
+  regionsReporting: 0,
+  regionsTotal: 0,
+  missingRegions: [],
+  partial: true,
 };
 
 async function readJsonSafe(path) {
@@ -212,34 +235,28 @@ async function bakeNetworkStats(regionsData, previous) {
   const regions = regionsData?.regions ?? FALLBACK_REGIONS;
 
   let sharesOnline = 0;
-  let tokenMarketShares = 0;
   let shareListings = 0;
   let routerOk = 0;
-  const modelSet = new Set();
   const byRegion = [];
 
   const results = await Promise.allSettled(
     regions.map(async (region) => {
       const base = region.url.replace(/\/$/, "");
-      const marketBase = `https://market.${region.domain}`;
-      const shareBase = `https://share-market.${region.domain}`;
-
-      const [routerRes, marketRes, shareRes, modelsRes] = await Promise.allSettled([
+      // Both endpoints live on the router itself. The former `market.<domain>`
+      // and `share-market.<domain>` hosts were retired when the markets moved
+      // into the router; fetching them only ever produced silent failures.
+      const [routerRes, listingsRes] = await Promise.allSettled([
         fetchJson(`${base}/v1/public/network-stats`),
-        fetchJson(`${marketBase}/v1/public/dashboard/kpis?window=7d`),
-        fetchJson(`${shareBase}/v1/listings`),
-        fetchJson(`${marketBase}/v1/public/dashboard/top-models?days=30&limit=10`),
+        fetchJson(`${base}/v1/share-market/listings`),
       ]);
-
-      return { region: region.name, routerRes, marketRes, shareRes, modelsRes };
+      return { region: region.name, routerRes, listingsRes };
     }),
   );
 
   for (const result of results) {
     if (result.status !== "fulfilled") continue;
-    const { region, routerRes, marketRes, shareRes, modelsRes } = result.value;
+    const { region, routerRes, listingsRes } = result.value;
     let regionShares = null;
-    let regionMarketShares = null;
     let regionListings = null;
 
     if (routerRes.status === "fulfilled") {
@@ -247,30 +264,22 @@ async function bakeNetworkStats(regionsData, previous) {
       regionShares = Number(routerRes.value.activeShares ?? 0);
       sharesOnline += regionShares;
     }
-    if (marketRes.status === "fulfilled") {
-      regionMarketShares = Number(marketRes.value.onlineShares ?? 0);
-      tokenMarketShares += regionMarketShares;
-    }
-    if (shareRes.status === "fulfilled") {
-      const listings = Array.isArray(shareRes.value.listings) ? shareRes.value.listings : [];
+    if (listingsRes.status === "fulfilled") {
+      const listings = Array.isArray(listingsRes.value.listings)
+        ? listingsRes.value.listings
+        : [];
       regionListings = listings.length;
       shareListings += regionListings;
-    }
-    if (modelsRes.status === "fulfilled") {
-      for (const item of modelsRes.value.items ?? []) {
-        if (item?.model) modelSet.add(item.model);
-      }
     }
 
     byRegion.push({
       region,
       sharesOnline: regionShares,
-      tokenMarketShares: regionMarketShares,
       shareListings: regionListings,
     });
   }
 
-  if (routerOk === 0 && tokenMarketShares === 0 && shareListings === 0) {
+  if (routerOk === 0 && shareListings === 0) {
     console.warn("bake: network-stats — all fetches failed, using fallback");
     const fallback = previous ?? FALLBACK_NETWORK_STATS;
     await writeJson(outPath, { ...fallback, bakedAt: new Date().toISOString() });
@@ -281,14 +290,150 @@ async function bakeNetworkStats(regionsData, previous) {
     bakedAt: new Date().toISOString(),
     source: "live",
     sharesOnline: routerOk > 0 ? sharesOnline : null,
-    tokenMarketShares: tokenMarketShares > 0 ? tokenMarketShares : null,
     shareListings: shareListings > 0 ? shareListings : null,
-    publicModels: [...modelSet].sort(),
     byRegion,
   };
   await writeJson(outPath, data);
   console.log(
-    `bake: network-stats (shares=${data.sharesOnline}, market=${data.tokenMarketShares}, listings=${data.shareListings})`,
+    `bake: network-stats (shares=${data.sharesOnline}, listings=${data.shareListings})`,
+  );
+  return data;
+}
+
+function usageCount(value) {
+  const n = Number(value);
+  return Number.isFinite(n) && n > 0 ? n : 0;
+}
+
+/** Cross-region 24h token usage, summed before anything is truncated.
+ *
+ * Mirrors `aggregateUsage` in src/lib/usage.ts: the same shape has to come out
+ * of the build-time bake and the browser refresh, or the first paint would
+ * disagree with the value that replaces it a moment later. A region that does
+ * not answer is recorded as `reporting: false`, never as a zero — an old router
+ * build answers 404 here, and counting that as no traffic would understate the
+ * network total without saying so. */
+async function bakeUsage(regionsData, previous) {
+  const outPath = join(OUT_DIR, "usage.json");
+  const regions = regionsData?.regions ?? FALLBACK_REGIONS;
+
+  const results = await Promise.allSettled(
+    regions.map(async (region) => {
+      const base = region.url.replace(/\/$/, "");
+      // No `models=` cap: every row is needed here, because truncating a region
+      // before summing drops that region's long tail and the model rows stop
+      // adding up to the total.
+      const data = await fetchJson(
+        `${base}/v1/public/usage/global?period=${USAGE_PERIOD}`,
+      );
+      return { region: region.name, data };
+    }),
+  );
+
+  const byRegion = [];
+  const missingRegions = [];
+  const modelTotals = new Map();
+  let totalTokens = 0;
+  let inputTokens = 0;
+  let outputTokens = 0;
+  let cacheTokens = 0;
+  let regionsReporting = 0;
+
+  regions.forEach((region, index) => {
+    const result = results[index];
+    if (result.status !== "fulfilled" || !result.value?.data) {
+      missingRegions.push(region.name);
+      byRegion.push({
+        region: region.name,
+        reporting: false,
+        totalTokens: 0,
+        inputTokens: 0,
+        outputTokens: 0,
+        cacheTokens: 0,
+        models: [],
+      });
+      return;
+    }
+    const data = result.value.data;
+    const models = (Array.isArray(data.models) ? data.models : [])
+      .map((row) => {
+        const model = typeof row?.model === "string" ? row.model.trim() : "";
+        if (!model) return null;
+        return {
+          model,
+          inputTokens: usageCount(row.inputTokens),
+          outputTokens: usageCount(row.outputTokens),
+          cacheTokens:
+            usageCount(row.cacheReadTokens) + usageCount(row.cacheCreationTokens),
+          totalTokens: usageCount(row.totalTokens),
+        };
+      })
+      .filter(Boolean);
+
+    const row = {
+      region: region.name,
+      reporting: true,
+      totalTokens: usageCount(data.totalTokens),
+      inputTokens: usageCount(data.inputTokens),
+      outputTokens: usageCount(data.outputTokens),
+      cacheTokens:
+        usageCount(data.cacheReadTokens) + usageCount(data.cacheCreationTokens),
+      models,
+    };
+
+    regionsReporting += 1;
+    byRegion.push(row);
+    totalTokens += row.totalTokens;
+    inputTokens += row.inputTokens;
+    outputTokens += row.outputTokens;
+    cacheTokens += row.cacheTokens;
+    for (const model of models) {
+      const hit = modelTotals.get(model.model);
+      if (hit) {
+        hit.inputTokens += model.inputTokens;
+        hit.outputTokens += model.outputTokens;
+        hit.cacheTokens += model.cacheTokens;
+        hit.totalTokens += model.totalTokens;
+      } else {
+        modelTotals.set(model.model, { ...model });
+      }
+    }
+  });
+
+  if (regionsReporting === 0) {
+    console.warn("bake: usage — no region reported, using fallback");
+    const fallback = previous ?? FALLBACK_USAGE;
+    await writeJson(outPath, { ...fallback, bakedAt: new Date().toISOString() });
+    return fallback;
+  }
+
+  const models = [...modelTotals.values()].sort((a, b) => {
+    // "unknown" is a real bucket the router emits for requests whose model it
+    // could not read, but it never leads the list.
+    const aUnknown = a.model === "unknown" ? 1 : 0;
+    const bUnknown = b.model === "unknown" ? 1 : 0;
+    if (aUnknown !== bUnknown) return aUnknown - bUnknown;
+    return b.totalTokens - a.totalTokens || a.model.localeCompare(b.model);
+  });
+
+  const data = {
+    bakedAt: new Date().toISOString(),
+    source: "live",
+    period: USAGE_PERIOD,
+    totalTokens,
+    inputTokens,
+    outputTokens,
+    cacheTokens,
+    models,
+    byRegion,
+    regionsReporting,
+    regionsTotal: regions.length,
+    missingRegions,
+    partial: missingRegions.length > 0,
+  };
+  await writeJson(outPath, data);
+  console.log(
+    `bake: usage (${regionsReporting}/${regions.length} regions, ${totalTokens} tokens, ${models.length} models)`,
   );
   return data;
 }
@@ -325,11 +470,13 @@ async function main() {
   const prevRegions = await readJsonSafe(join(OUT_DIR, "regions.json"));
   const prevMapPoints = await readJsonSafe(join(OUT_DIR, "map-points.json"));
   const prevNetworkStats = await readJsonSafe(join(OUT_DIR, "network-stats.json"));
+  const prevUsage = await readJsonSafe(join(OUT_DIR, "usage.json"));
   const prevRelease = await readJsonSafe(join(OUT_DIR, "release.json"));
 
   const regions = await bakeRegions(prevRegions);
   await bakeMapPoints(regions, prevMapPoints);
   await bakeNetworkStats(regions, prevNetworkStats);
+  await bakeUsage(regions, prevUsage);
   await bakeRelease(prevRelease);
   console.log("bake: done");
 }

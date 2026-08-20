@@ -5,12 +5,13 @@ import { ArrowUpRight } from "lucide-react";
 import type { Locale, Region } from "@/lib/types";
 import { getDict } from "@/lib/i18n";
 import {
+  clientMarketUrl,
   regionLabel,
   routerDashboardUrl,
   shareMarketUrl,
-  tokenMarketUrl,
 } from "@/lib/regions";
 import { probeRegionHealth } from "@/lib/map-points";
+import { formatCompactTokens, formatFullTokens } from "@/lib/usage";
 import { cn } from "@/lib/cn";
 
 export function RegionCard({
@@ -20,6 +21,7 @@ export function RegionCard({
   lat,
   lon,
   clientsOnline,
+  tokens24h,
   selected,
   onSelect,
 }: {
@@ -29,6 +31,9 @@ export function RegionCard({
   lat?: number;
   lon?: number;
   clientsOnline?: number;
+  /** Null when the region did not report — the line is dropped rather than
+   * rendered as a zero. */
+  tokens24h?: number | null;
   selected?: boolean;
   onSelect?: () => void;
 }) {
@@ -52,7 +57,7 @@ export function RegionCard({
 
   const links = [
     { label: t.network.dashboard, href: routerDashboardUrl(region) },
-    { label: t.network.tokenMarket, href: tokenMarketUrl(region) },
+    { label: t.network.clientMarket, href: clientMarketUrl(region) },
     { label: t.network.shareMarket, href: shareMarketUrl(region) },
   ];
 
@@ -102,6 +107,14 @@ export function RegionCard({
           {clientsOnline != null && (
             <p className="mt-3 text-sm">
               {t.network.clients}: <b>{clientsOnline}</b>
+            </p>
+          )}
+          {tokens24h != null && (
+            <p className="mt-1 text-sm">
+              {t.network.tokens24h}:{" "}
+              <b className="tabular-nums" title={formatFullTokens(tokens24h)}>
+                {formatCompactTokens(tokens24h)}
+              </b>
             </p>
           )}
         </div>

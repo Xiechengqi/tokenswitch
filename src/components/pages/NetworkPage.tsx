@@ -6,8 +6,10 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import type { Locale } from "@/lib/types";
 import { getDict } from "@/lib/i18n";
 import { useMapPoints } from "@/hooks/useMapPoints";
+import { useNetworkUsage } from "@/hooks/useNetworkUsage";
 import { useRegions } from "@/hooks/useRegions";
 import { RegionCard } from "@/components/RegionCard";
+import { UsagePanel } from "@/components/UsagePanel";
 import { DOCS_URL } from "@/lib/constants";
 import { Button } from "@/components/ui/Button";
 import { WorldMapLazy } from "@/components/WorldMapLazy";
@@ -15,6 +17,7 @@ import { WorldMapLazy } from "@/components/WorldMapLazy";
 export function NetworkPage({ locale }: { locale: Locale }) {
   const t = getDict(locale);
   const regions = useRegions();
+  const usage = useNetworkUsage();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -81,6 +84,9 @@ export function NetworkPage({ locale }: { locale: Locale }) {
   useMapPoints(handleUpdate);
 
   const serverByRegion = Object.fromEntries(data.servers.map((s) => [s.region, s]));
+  const usageByRegion = new Map(
+    usage.byRegion.filter((row) => row.reporting).map((row) => [row.region, row.totalTokens]),
+  );
 
   return (
     <>
@@ -104,6 +110,10 @@ export function NetworkPage({ locale }: { locale: Locale }) {
           <h1 className="font-heading text-4xl font-bold">{t.network.title}</h1>
           <p className="mt-3 max-w-2xl text-muted-foreground">{t.network.subtitle}</p>
 
+          <div className="mt-10">
+            <UsagePanel locale={locale} usage={usage} />
+          </div>
+
           <div className="mt-10 grid gap-4 md:grid-cols-2">
             {regions.map((region) => {
               const server = serverByRegion[region.name];
@@ -116,6 +126,7 @@ export function NetworkPage({ locale }: { locale: Locale }) {
                   lat={server?.lat}
                   lon={server?.lon}
                   clientsOnline={data.clientCountByRegion.get(region.name)}
+                  tokens24h={usageByRegion.get(region.name) ?? null}
                   selected={selectedRegion === region.name}
                   onSelect={() => selectRegion(region.name, { scrollToCard: false })}
                 />

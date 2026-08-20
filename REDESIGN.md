@@ -355,7 +355,7 @@ jobs:
 | GitHub API 匿名限额 60/h/IP | 仅 /download 页触发一次 + 烘焙保底，实际不可能触顶 |
 | rust-embed 时代的旧 URL（/routers、/api/map-points）失效 | `/routers` 建静态跳转页 → `/network`；`/api/map-points` 无外部消费方（原仅前端自用），确认后直接废弃 |
 | 品牌与上游 cc-switch（ccswitch.io）混淆 | 文案统一用 TokenSwitch 作为网络品牌；提及 cc-switch 时注明 based on the open-source cc-switch |
-| 收益计算器数字与 market 实际抽成漂移 | bps 常量单点定义并注释来源（`MARKET_PLATFORM_COMMISSION_BPS` 等），market 调整时同步 |
+| 收益计算器数字与 market 实际抽成漂移 | ~~bps 常量单点定义并注释来源（`MARKET_PLATFORM_COMMISSION_BPS` 等），market 调整时同步~~ **已作废**：抽成与提现已退役，平台不经手资金、不抽成，买家直接付给供应商，官网不再出现任何分成数字 |
 
 ## 9. 明确不做（本次范围外）
 

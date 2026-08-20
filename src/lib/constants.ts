@@ -1,15 +1,5 @@
 import type { Locale } from "./types";
 
-/** Basis points — source: cc-switch-market MARKET_PLATFORM_COMMISSION_BPS */
-export const MARKET_PLATFORM_COMMISSION_BPS = 1000;
-/** Basis points — source: cc-switch-market MARKET_ROUTER_COMMISSION_BPS */
-export const MARKET_ROUTER_COMMISSION_BPS = 500;
-
-export function providerNetFromGross(grossUsd: number): number {
-  const totalBps = MARKET_PLATFORM_COMMISSION_BPS + MARKET_ROUTER_COMMISSION_BPS;
-  return grossUsd * (1 - totalBps / 10000);
-}
-
 export function formatUsd(value: number, locale: Locale): string {
   const localeTag = locale === "zh" ? "zh-CN" : locale === "ja" ? "ja-JP" : "en-US";
   return new Intl.NumberFormat(localeTag, {
@@ -26,10 +16,10 @@ export const X_URL = "https://x.com/TokenSwitch";
 /** Provider runtime (server). Desktop cc-switch is deprecated and must not be linked from the site. */
 export const CLIENT_REPO = "https://github.com/xiechengqi/cc-switch-server";
 export const ROUTER_REPO = "https://github.com/xiechengqi/cc-switch-router";
-export const MARKET_REPO = "https://github.com/xiechengqi/cc-switch-market";
-/* Share Market has no repo of its own — it lives in cc-switch-router as
- * `src/share_market.rs`. The former cc-switch-share-market repo is retired;
- * do not link it from the site. */
+/* Neither market has a repo of its own — both live in cc-switch-router
+ * (`src/client_market.rs`, `src/share_market.rs`). The former
+ * cc-switch-market and cc-switch-share-market repos are retired; do not link
+ * them from the site. */
 export const DOCS_URL = "https://docs.tokenswitch.org";
 
 /** Region membership source of truth (router repo). */

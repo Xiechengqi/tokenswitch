@@ -44,9 +44,3 @@
   --map-server-ring: #1d4ed8;
   --map-client: #22c55e;
 }
-
-/* Commission bps — keep in sync with cc-switch-market config defaults */
-:root {
-  --market-platform-commission-bps: 1000;
-  --market-router-commission-bps: 500;
-}

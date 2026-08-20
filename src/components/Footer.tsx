@@ -7,7 +7,6 @@ import {
   CLIENT_REPO,
   DOCS_URL,
   GITHUB_REPO,
-  MARKET_REPO,
   ROUTER_REPO,
 } from "@/lib/constants";
 import { regionLabel } from "@/lib/regions";
@@ -15,7 +14,7 @@ import { useRegions } from "@/hooks/useRegions";
 import { SocialTextLinks } from "@/components/SocialLinks";
 import { BrandMark } from "@/components/BrandMark";
 
-/* Ft4 dense colophon — the ecosystem is four repos and a handful of regions,
+/* Ft4 dense colophon — the ecosystem is three repos and a handful of regions,
  * which is a colophon's worth of metadata, not a four-column sitemap. Runs wrap
  * inline instead of stacking into columns nobody reads. Regions follow the same
  * bake+live source as the map and install card. */
@@ -26,7 +25,6 @@ export function Footer({ locale }: { locale: Locale }) {
   const components = [
     { label: t.footer.clientRepo, href: CLIENT_REPO },
     { label: "cc-switch-router", href: ROUTER_REPO },
-    { label: "cc-switch-market", href: MARKET_REPO },
     { label: "tokenswitch.org", href: GITHUB_REPO },
   ];
 

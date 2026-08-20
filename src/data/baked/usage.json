@@ -1,0 +1,15 @@
+{
+  "bakedAt": "2026-08-20T06:36:25.662Z",
+  "source": "fallback",
+  "period": "24h",
+  "totalTokens": 0,
+  "inputTokens": 0,
+  "outputTokens": 0,
+  "cacheTokens": 0,
+  "models": [],
+  "byRegion": [],
+  "regionsReporting": 0,
+  "regionsTotal": 0,
+  "missingRegions": [],
+  "partial": true
+}

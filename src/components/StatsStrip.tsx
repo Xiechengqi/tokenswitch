@@ -7,6 +7,8 @@ import type { Locale } from "@/lib/types";
 import { getDict, localePath } from "@/lib/i18n";
 import { useMapPoints } from "@/hooks/useMapPoints";
 import { useNetworkStats } from "@/hooks/useNetworkStats";
+import { useNetworkUsage } from "@/hooks/useNetworkUsage";
+import { formatCompactTokens, formatFullTokens } from "@/lib/usage";
 import { cn } from "@/lib/cn";
 
 /* Rotational confetti — each figure gets its own rule colour so the band reads
@@ -16,6 +18,7 @@ const RULES = ["bg-accent", "bg-secondary", "bg-tertiary", "bg-quaternary"] as c
 export function StatsStrip({ locale }: { locale: Locale }) {
   const t = getDict(locale);
   const networkStats = useNetworkStats();
+  const usage = useNetworkUsage();
   const [counts, setCounts] = useState({
     clients: 0,
     servers: 0,
@@ -44,12 +47,24 @@ export function StatsStrip({ locale }: { locale: Locale }) {
 
   const isSnapshot = counts.isSnapshot || networkStats.isSnapshot !== false;
   const shares = networkStats.sharesOnline != null ? networkStats.sharesOnline : null;
+  // Only once a region has actually answered — a zero here would read as
+  // "nobody used the network today" rather than "we could not ask".
+  const tokens = usage.regionsReporting > 0 ? usage.totalTokens : null;
 
-  const stats = [
+  const stats: { label: string; value: string | number; title?: string }[] = [
     { label: t.stats.regions, value: counts.regions },
     { label: t.stats.servers, value: counts.servers },
     { label: t.stats.connections, value: counts.clients },
     ...(shares != null ? [{ label: t.stats.shares, value: shares }] : []),
+    ...(tokens != null
+      ? [
+          {
+            label: t.usage.title,
+            value: formatCompactTokens(tokens),
+            title: formatFullTokens(tokens),
+          },
+        ]
+      : []),
   ];
 
   return (
@@ -78,12 +93,18 @@ export function StatsStrip({ locale }: { locale: Locale }) {
         <div
           className={cn(
             "mt-5 grid grid-cols-2 gap-4",
-            stats.length === 4 ? "sm:grid-cols-4" : "sm:grid-cols-3",
+            stats.length >= 5
+              ? "sm:grid-cols-5"
+              : stats.length === 4
+                ? "sm:grid-cols-4"
+                : "sm:grid-cols-3",
           )}
         >
           {stats.map((stat, i) => (
             <div key={stat.label} className="min-w-0">
-              <div className="font-heading text-3xl font-bold tabular-nums">{stat.value}</div>
+              <div className="font-heading text-3xl font-bold tabular-nums" title={stat.title}>
+                {stat.value}
+              </div>
               <div className={cn("mt-2 h-0.5 w-8 rounded-full", RULES[i % RULES.length])} aria-hidden />
               <div className="mt-2 text-sm text-muted-foreground">{stat.label}</div>
             </div>

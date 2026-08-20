@@ -4,8 +4,8 @@ import type { Locale } from "@/lib/types";
 import { getDict, localePath } from "@/lib/i18n";
 import { Card } from "./ui/Card";
 
-/* Four ecosystem components, deliberately NOT four equal columns: the client
- * and the share market carry the wide tiles, router and token market the
+/* Four ecosystem tiles, deliberately NOT four equal columns: the client and
+ * the share market carry the wide tiles, the router and the client market the
  * narrow ones. Only the Client tile keeps a primary CTA voice — other tiles
  * are quiet navigation into secondary paths. */
 export function EcosystemCards({ locale }: { locale: Locale }) {
@@ -28,19 +28,19 @@ export function EcosystemCards({ locale }: { locale: Locale }) {
       primary: false,
     },
     {
-      ...t.ecosystem.tokenMarket,
+      ...t.ecosystem.shareMarket,
       href: localePath(locale, "markets"),
       tone: "border-tertiary bg-tertiary/15",
       chip: "bg-tertiary/30 border-tertiary",
-      span: "lg:col-span-2",
+      span: "lg:col-span-3",
       primary: false,
     },
     {
-      ...t.ecosystem.shareMarket,
+      ...t.ecosystem.clientMarket,
       href: localePath(locale, "markets"),
       tone: "border-quaternary bg-quaternary/10",
       chip: "bg-quaternary/25 border-quaternary",
-      span: "lg:col-span-3",
+      span: "lg:col-span-2",
       primary: false,
     },
   ];
