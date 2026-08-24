@@ -12,6 +12,8 @@ import {
 } from "./constants";
 
 export const SITE_URL = "https://tokenswitch.org";
+export const LOGO_IMAGE = `${SITE_URL}/tokenswitch-logo.png`;
+export const LOGO_IMAGE_SIZE = 204;
 export const OG_IMAGE = `${SITE_URL}/og.png`;
 /* The real pixels of `public/og.png`. Declaring 1200x630 when the file is 3:2
  * makes every consumer that trusts the declaration crop or refetch. */
@@ -58,8 +60,8 @@ export function buildAlternates(locale: Locale, path: string) {
 
 /** Declared once per root layout; page metadata merges on top of it. */
 export const SITE_ICONS: Metadata["icons"] = {
-  icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
-  apple: [{ url: "/apple-touch-icon.png", sizes: "1024x1024" }],
+  icon: [{ url: "/tokenswitch-logo.png", type: "image/png", sizes: "204x204" }],
+  apple: [{ url: "/tokenswitch-logo.png", type: "image/png", sizes: "204x204" }],
 };
 
 export function buildPageMetadata(
@@ -123,9 +125,9 @@ export function siteJsonLd(locale: Locale) {
         description: t.tagline,
         logo: {
           "@type": "ImageObject",
-          url: OG_IMAGE,
-          width: OG_IMAGE_WIDTH,
-          height: OG_IMAGE_HEIGHT,
+          url: LOGO_IMAGE,
+          width: LOGO_IMAGE_SIZE,
+          height: LOGO_IMAGE_SIZE,
         },
         sameAs: [GITHUB_REPO, CLIENT_REPO, ROUTER_REPO, DOCS_URL, X_URL, TELEGRAM_URL],
       },

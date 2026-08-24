@@ -11,7 +11,7 @@
  * The previous card was a bitmap with no source, so when the brand violet moved
  * from #8b5cf6 to #7c3aed it silently went stale. Everything visual here is READ
  * from the repo rather than typed in: colours from src/styles/tokens.css, the
- * monogram from public/favicon.svg, brand + tagline from src/lib/i18n.ts,
+ * profile mark from public/tokenswitch-logo.png, brand + tagline from src/lib/i18n.ts,
  * regions and node coordinates from src/data/baked/. Change a token, re-run
  * `pnpm og`, and the card follows.
  *
@@ -64,12 +64,10 @@ function copy() {
   return { brand, tagline };
 }
 
-/** The favicon's monogram, minus its wrapper, so both marks stay identical. */
-function monogram() {
-  const svg = read("public/favicon.svg");
-  const inner = svg.match(/<svg[^>]*>([\s\S]*)<\/svg>/)?.[1];
-  if (!inner) throw new Error("could not read public/favicon.svg");
-  return inner.trim();
+/** Inline the local profile image so the screenshot has no network dependency. */
+function logoDataUrl() {
+  const png = readFileSync(path.join(ROOT, "public/tokenswitch-logo.png"));
+  return `data:image/png;base64,${png.toString("base64")}`;
 }
 
 /* ---------- fonts ---------- */
@@ -151,7 +149,7 @@ function regionNames() {
   });
 }
 
-function buildHtml({ t, text, mark, map, fontCss }) {
+function buildHtml({ t, text, logo, map, fontCss }) {
   const meta = ["tokenswitch.org", ...regionNames()].join(" · ");
 
   return `<!doctype html>
@@ -189,7 +187,7 @@ body{background:var(--background);color:var(--foreground);
 /* Everything below sits inside y 110-914 so a 1.91:1 centre crop loses nothing. */
 .content{position:absolute;left:${104}px;top:${300}px;width:${1040}px}
 .lockup{display:flex;align-items:center;gap:${32}px}
-.mark{width:${108}px;height:${108}px;display:block}
+.mark{width:${108}px;height:${108}px;display:block;border-radius:999px;object-fit:cover}
 .wordmark{font-family:"Outfit",system-ui,sans-serif;font-weight:800;font-size:${132}px;
   line-height:1;letter-spacing:-0.035em}
 .tagline{margin-top:${36}px;font-size:${46}px;font-weight:500;line-height:1.25;
@@ -206,7 +204,7 @@ body{background:var(--background);color:var(--foreground);
   <span class="confetti c4"></span>
   <div class="content">
     <div class="lockup">
-      <svg class="mark" viewBox="0 0 32 32" aria-hidden="true">${mark}</svg>
+      <img class="mark" src="${logo}" alt="" aria-hidden="true">
       <p class="wordmark">${text.brand}</p>
     </div>
     <p class="tagline">${text.tagline}</p>
@@ -233,7 +231,7 @@ const fontCss = await inlineFontCss(
 const html = buildHtml({
   t,
   text: copy(),
-  mark: monogram(),
+  logo: logoDataUrl(),
   map: buildMap(palette),
   fontCss,
 });
